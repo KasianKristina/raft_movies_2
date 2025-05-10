@@ -1,0 +1,102 @@
+{
+	"extends": [
+		"eslint:recommended",
+		"plugin:svelte/recommended",
+		"plugin:prettier/recommended",
+		"prettier"
+	],
+	"plugins": ["prettier", "svelte", "import"],
+	"rules": {
+		"prettier/prettier": "error",
+		"svelte/no-ignored-unsubscribe": "error",
+		"svelte/no-dom-manipulating": "error",
+		"svelte/valid-compile": "error",
+		"svelte/no-reactive-reassign": "error",
+		"reportUnusedInlineConfigs": "error",
+		"no-unused-vars": "error",
+		"no-unused-expressions": "error",
+		"no-duplicate-imports": "error",
+		"no-irregular-whitespace": "error",
+		"no-useless-assignment": "error",
+		"use-isnan": "error",
+		"camelcase": [
+			"error",
+			{
+				"ignoreDestructuring": false,
+				"ignoreImports": false,
+				"ignoreGlobals": false,
+				"properties": "always"
+			}
+		],
+		"no-console": "error",
+		"no-empty": "error",
+		"no-else-return": "error",
+		"no-empty-function": "error",
+		"no-lonely-if": "error",
+		"no-nested-ternary": "error",
+		"no-restricted-exports": "error",
+		"no-restricted-imports": "error",
+		"no-undefined": "error",
+		"no-undef-init": "error",
+		"no-unneeded-ternary": "error",
+		"no-useless-catch": "error",
+		"no-useless-rename": "error",
+		"no-unused-labels": "error",
+		"no-useless-call": "error",
+		"no-useless-concat": "error",
+		"no-useless-escape": "error",
+		"no-useless-return": "error",
+		"no-warning-comments": ["off", { "terms": ["todo"], "location": "start" }],
+		"no-var": "error",
+		"prefer-const": "error",
+		"prefer-destructuring": ["error", { "object": true, "array": false }],
+		"array-bracket-newline": ["off", "consistent"],
+		"array-element-newline": ["off", { "multiline": true, "minItems": 3 }],
+		"array-bracket-spacing": ["error", "never"],
+		"block-spacing": ["error", "always"],
+		"brace-style": ["error", "1tbs", { "allowSingleLine": true }],
+		"comma-dangle": [
+			"error",
+			{
+				"arrays": "always-multiline",
+				"objects": "always-multiline",
+				"imports": "always-multiline",
+				"exports": "always-multiline",
+				"functions": "always-multiline"
+			}
+		],
+		"comma-spacing": ["error", { "before": false, "after": true }],
+		"import/order": [
+			"error",
+			{
+				"groups": [
+					"builtin",
+					"external",
+					"internal",
+					"parent",
+					"sibling",
+					"index",
+					"object",
+					"type"
+				],
+				"pathGroups": [
+					{
+						"pattern": "@/**",
+						"group": "internal",
+						"position": "after"
+					},
+					{
+						"pattern": "*.css",
+						"group": "object",
+						"patternOptions": { "matchBase": true }
+					}
+				],
+				"newlines-between": "always",
+				"alphabetize": {
+					"order": "asc",
+					"caseInsensitive": true
+				}
+			}
+		]
+	}
+}
