@@ -13,7 +13,9 @@
 		"lint": "eslint .",
 		"lint:fix": "eslint . --fix",
 		"format": "prettier --write .",
-		"precheck": "npm run format && npm run lint:fix"
+		"precheck": "npm run format && npm run lint:fix",
+		"lint:css": "stylelint \"src/**/*.css\" --fix",
+		"format:css": "npm run format && npm run lint:css"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.2.5",
@@ -29,6 +31,8 @@
 		"globals": "^16.0.0",
 		"prettier": "^3.4.2",
 		"prettier-plugin-svelte": "^3.3.3",
+		"stylelint": "^16.19.1",
+		"stylelint-order": "^7.0.0",
 		"svelte": "^5.25.0",
 		"svelte-check": "^4.0.0",
 		"typescript": "^5.0.0",
