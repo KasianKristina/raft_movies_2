@@ -1,12 +1,14 @@
 <script lang="ts">
 	import Header from './Header.svelte';
 	import '../app.css';
+	import Button from '../components/Button.svelte';
 
 	let { children } = $props();
 </script>
 
 <div class="app">
 	<Header />
+	<Button label="Test"></Button>
 
 	<main>
 		{@render children()}
