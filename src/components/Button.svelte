@@ -1,15 +1,17 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
+
 	interface Props {
-		label: string;
+		children: Snippet;
 		onClick?: () => void;
 		disabled?: boolean;
 	}
 
-	const { label, onClick, disabled = false }: Props = $props();
+	const { children, onClick, disabled = false }: Props = $props();
 </script>
 
 <button type="button" class="button" onclick={onClick} {disabled}>
-	{label}
+	{@render children()}
 </button>
 
 <style>
@@ -23,7 +25,7 @@
 		transition: background-color 0.3s ease;
 		cursor: pointer;
 
-		&:hover {
+		&:hover, &:focus {
 			background-color: var(--primary-500);
 		}
 
