@@ -8,7 +8,7 @@
 
 <div class="app">
 	<Header />
-	<Button label="Test"></Button>
+	<Button>Test</Button>
 
 	<main>
 		{@render children()}
@@ -26,6 +26,7 @@
 		display: flex;
 		flex-direction: column;
 		min-height: 100vh;
+		padding: 0 120px;
 	}
 
 	main {
