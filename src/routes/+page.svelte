@@ -1,7 +1,4 @@
 <script lang="ts">
-	import Counter from './Counter.svelte';
-	import welcome from '$lib/images/svelte-welcome.webp';
-	import welcomeFallback from '$lib/images/svelte-welcome.png';
 </script>
 
 <svelte:head>
@@ -10,50 +7,96 @@
 </svelte:head>
 
 <section>
-	<h1>
-		<span class="welcome">
-			<picture>
-				<source srcset={welcome} type="image/webp" />
-				<img src={welcomeFallback} alt="Welcome" />
-			</picture>
-		</span>
+	<h1 class="welcome">Welcome</h1>
 
-		to your new<br />SvelteKit app
-	</h1>
+	<ul class="folders">
+		<li class="folder">
+			<p class="number">93</p>
+			<p class="text">Movies</p>
+		</li>
+		<li class="folder">
+			<p class="number">93</p>
+			<p class="text">Movies</p>
+		</li>
+		<li class="folder">
+			<p class="number">93</p>
+			<p class="text">Movies</p>
+		</li>
+		<li class="folder">
+			<p class="number">93</p>
+			<p class="text">Movies</p>
+		</li>
+	</ul>
 
-	<h2>
-		try editing <strong>src/routes/+page.svelte</strong>
-	</h2>
-
-	<Counter />
+	<h2 class="quickLinks">Quick Links</h2>
+	<ul class="quickLinksWrapper">
+		<li class="quickLink">Suggestions</li>
+		<li class="quickLink">Add</li>
+	</ul>
 </section>
 
 <style>
-	section {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		flex: 0.6;
-	}
-
-	h1 {
-		width: 100%;
-	}
-
 	.welcome {
-		display: block;
-		position: relative;
 		width: 100%;
-		height: 0;
-		padding: 0 0 calc(100% * 495 / 2048) 0;
+		font: var(--type-heading-two);
+		color: var(--grey-50);
+		text-align: left;
+		margin-top: 80px;
 	}
 
-	.welcome img {
-		position: absolute;
+	.folders {
+		display: flex;
+		gap: 24px;
+		margin-top: 40px;
+		margin-bottom: 80px;
 		width: 100%;
-		height: 100%;
-		top: 0;
-		display: block;
+	}
+
+	.folder {
+		width: 100%;
+		height: 152px;
+		background-color: var(--grey-900);
+		border-radius: 12px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-direction: column;
+		gap: 8.5px;
+		cursor: pointer;
+	}
+
+	.number {
+		color: var(--grey-50);
+		font: var(--type-heading-three);
+	}
+
+	.text {
+		color: var(--grey-400);
+		font: var(--type-body-regular);
+	}
+
+	.quickLinks {
+		font: var(--type-heading-five);
+		color: var(--grey-50);
+		text-align: center;
+	}
+
+	.quickLinksWrapper {
+		display: flex;
+		gap: 24px;
+		margin-top: 40px;
+	}
+
+	.quickLink {
+		background-color: var(--grey-900);
+		width: 100%;
+		border-radius: 12px;
+		height: 104px;
+		color: var(--primary-400);
+		font: var(--type-link-regular);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
 	}
 </style>

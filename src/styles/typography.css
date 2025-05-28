@@ -8,6 +8,7 @@
 	--size-body: 16px;
 	--size-heading-sm: 20px;
 	--size-heading-md: 24px;
+	--size-heading-ml: 32px;
 	--size-heading-lg: 48px;
 	--size-display: 64px;
 
@@ -38,9 +39,14 @@
 	--type-caption: var(--weight-regular) var(--size-body-sm) / var(--leading-ultra-dense)
 		var(--font-primary);
 
-	--type-link-extra-small: var(--font-semi-bold) var(--text-xxs) / var(--leading-ultra-dense)
+	--type-link-regular: var(--weight-regular) var(--size-body) / var(--leading-dense)
 		var(--font-primary);
 
-	--type-link-extra-large: var(--font-semi-bold) var(--text-xxl) / var(--leading-xxl)
+	--type-heading-two: var(--weight-medium) var(--size-heading-lg) / var(--heading-line-loose)
 		var(--font-primary);
+
+	--type-heading-three: var(--weight-medium) var(--size-heading-ml) / var(--leading-spacious)
+		var(--font-primary);
+
+	--type-heading-five: var(--weight-bold) var(--size-heading-sm) / 1.2 var(--font-primary);
 }

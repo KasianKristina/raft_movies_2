@@ -15,11 +15,11 @@
 			<li aria-current={page.url.pathname === '/' ? 'page' : undefined}>
 				<a href="/">Home</a>
 			</li>
-			<li aria-current={page.url.pathname === '/films' ? 'page' : undefined}>
-				<a href="/films">Фильмы</a>
+			<li aria-current={page.url.pathname === '/movies' ? 'page' : undefined}>
+				<a href="/movies">Movies</a>
 			</li>
 			<li aria-current={page.url.pathname === '/suggestions' ? 'page' : undefined}>
-				<a href="/suggestions">Подборки</a>
+				<a href="/suggestions">Suggestions</a>
 			</li>
 		</ul>
 	</nav>
@@ -29,6 +29,7 @@
 	header {
 		display: flex;
 		justify-content: space-between;
+		padding: 16px 0;
 	}
 
 	.corner {
@@ -63,6 +64,7 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
+		gap: 16px;
 		list-style: none;
 		background: var(--background);
 		background-size: contain;
@@ -77,11 +79,11 @@
 		display: flex;
 		height: 100%;
 		align-items: center;
-		padding: 0 0.5rem;
 		color: var(--grey-200);
-		font: var(--type-body-regular);
+		font: var(--type-link-regular);
 		text-decoration: none;
 		transition: color 0.2s linear;
+		padding: 12px 16px;
 	}
 
 	a:hover {
