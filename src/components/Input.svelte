@@ -8,6 +8,10 @@
 	export let required: boolean = false;
 	export let disabled: boolean = false;
 	export let errorMessage: string = '';
+	export let leftIcon: string = '';
+	export let rightIcon: string = '';
+	export let onLeftIconClick: () => void = () => {};
+	export let onRightIconClick: () => void = () => {};
 
 	let isFocused: boolean = false;
 	let hasValue: boolean = false;
@@ -26,21 +30,35 @@
 			</label>
 		{/if}
 
-		<input
-			{type}
-			{name}
-			{id}
-			{required}
-			{disabled}
-			bind:value
-			on:focus={handleFocus}
-			on:blur={handleBlur}
-			class="input"
-			class:input-with-label={Boolean(label)}
-			class:input-error={Boolean(errorMessage)}
-			placeholder={!label ? placeholder : null}
-			{...$$restProps}
-		/>
+		<div class="input">
+			{#if leftIcon}
+				<button class:disabled on:click={onLeftIconClick}>
+					<img src={leftIcon} alt="" />
+				</button>
+			{/if}
+
+			<input
+				{type}
+				{name}
+				{id}
+				{required}
+				{disabled}
+				bind:value
+				on:focus={handleFocus}
+				on:blur={handleBlur}
+				class="input-component"
+				class:input-with-label={Boolean(label)}
+				class:input-error={Boolean(errorMessage)}
+				placeholder={!label ? placeholder : null}
+				{...$$restProps}
+			/>
+
+			{#if rightIcon}
+				<button class:disabled on:click={onRightIconClick}>
+					<img src={rightIcon} alt="" />
+				</button>
+			{/if}
+		</div>
 	</div>
 
 	{#if errorMessage}
@@ -67,16 +85,29 @@
 		font: var(--type-body-regular);
 		border-radius: 12px;
 		transition: border-color 0.3s ease;
+		display: flex;
+		gap: 16px;
+		align-items: center;
+		max-height: 64px;
 
 		&:focus {
 			outline: none;
-			border-color: var(--tertary-500);
+			border-color: var(--tertiary-500);
 			color: white;
 		}
 
 		&:disabled {
 			opacity: 0.7;
 			cursor: not-allowed;
+		}
+	}
+
+	.input-component {
+		width: 100%;
+		&:focus {
+			outline: none;
+			border-color: var(--tertiary-500);
+			color: white;
 		}
 	}
 

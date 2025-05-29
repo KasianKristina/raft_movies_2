@@ -1,13 +1,9 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 
-	interface Props {
-		children: Snippet;
-		onClick?: () => void;
-		disabled?: boolean;
-	}
-
-	const { children, onClick, disabled = false }: Props = $props();
+	export let children: Snippet;
+	export let onClick: () => void | undefined;
+	export let disabled: boolean = false;
 </script>
 
 <button type="button" class="button" onclick={onClick} {disabled}>
@@ -17,19 +13,21 @@
 <style>
 	.button {
 		padding: 16px 32px;
-		color: var(--white);
+		color: white;
 		background-color: var(--primary-400);
 		font: var(--type-body-regular);
 		border-radius: 12px;
 		border: 2px solid transparent;
 		transition: background-color 0.3s ease;
 		cursor: pointer;
+		height: fit-content;
 
-		&:hover, &:focus {
+		&:hover {
 			background-color: var(--primary-500);
 		}
 
-		&:active {
+		&:active,
+		&:focus {
 			background-color: var(--primary-400);
 			border-color: var(--primary-500);
 		}
