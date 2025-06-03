@@ -1,12 +1,14 @@
 <script lang="ts">
 	import Header from './Header.svelte';
 	import '../app.css';
+	import HamburgerMenu from './HamburgerMenu.svelte';
 
 	let { children } = $props();
 </script>
 
 <div class="app">
 	<Header />
+	<HamburgerMenu />
 	<main>
 		{@render children()}
 	</main>
