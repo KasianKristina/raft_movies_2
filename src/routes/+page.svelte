@@ -50,10 +50,12 @@
 		margin-top: 40px;
 		margin-bottom: 80px;
 		width: 100%;
+		flex-wrap: wrap;
 	}
 
 	.folder {
 		width: 100%;
+		max-width: 272px;
 		height: 152px;
 		background-color: var(--grey-900);
 		border-radius: 12px;

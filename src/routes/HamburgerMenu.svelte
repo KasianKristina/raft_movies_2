@@ -1,148 +1,79 @@
-<!-- HamburgerMenu.svelte -->
-<script>
-	import { onMount, onDestroy } from 'svelte';
+<script lang="ts">
+	import logo from '$lib/images/logo.svg';
+	import arrow from '$lib/images/arrow-right.svg';
 
-	export let open = false;
+	let showMenu: boolean = false;
 
-	// Закрытие меню при клике вне области
-	function handleClickOutside(event) {
-		if (open && !event.target.closest('.menu-container, .hamburger')) {
-			open = false;
-		}
+	function toggleNavbar(): void {
+		showMenu = !showMenu;
 	}
-
-	// Закрытие при нажатии Escape
-	function handleKeyDown(event) {
-		if (open && event.key === 'Escape') {
-			open = false;
-		}
-	}
-
-	onMount(() => {
-		document.addEventListener('click', handleClickOutside);
-		document.addEventListener('keydown', handleKeyDown);
-	});
-
-	onDestroy(() => {
-		document.removeEventListener('click', handleClickOutside);
-		document.removeEventListener('keydown', handleKeyDown);
-	});
 </script>
 
-<div class="hamburger {open ? 'open' : ''}" on:click={() => (open = !open)}>
-	<div class="hamburger-line"></div>
-	<div class="hamburger-line"></div>
-	<div class="hamburger-line"></div>
+<div>
+	<nav class="nav">
+		<div class="nav-header">
+			<a href="/" class="logo">
+				<img src={logo} alt="logo" />
+			</a>
+			<button type="button" on:click={toggleNavbar}>
+				<img src={arrow} alt="menu button" />
+			</button>
+		</div>
+		<ul class="nav-menu {showMenu ? 'show' : ''}">
+			<li><a class="nav-link" href="/">Home</a></li>
+			<li><a class="nav-link" href="/movies">Movies</a></li>
+			<li><a class="nav-link" href="/suggestions">Suggestions</a></li>
+		</ul>
+	</nav>
 </div>
-
-<div class="menu-container">
-	<ul class="menu-links">
-		<li class="menu-link"><a href="/">Главная</a></li>
-		<li class="menu-link"><a href="/about">О нас</a></li>
-		<li class="menu-link"><a href="/services">Услуги</a></li>
-		<li class="menu-link"><a href="/contact">Контакты</a></li>
-	</ul>
-</div>
-
-<div class="overlay" on:click={() => (open = false)} />
 
 <style>
-	/* Кнопка гамбургера */
-	.hamburger {
-		position: relative;
-		z-index: 100;
+	.nav {
+		padding: 2rem 1.5rem;
+		max-width: 1200px;
+		margin-left: auto;
+		margin-right: auto;
+
+	}
+
+	.nav-header {
 		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.logo img {
+		width: 32px;
+		height: 32px;
+	}
+
+	.nav-menu {
+		display: none;
 		flex-direction: column;
-		justify-content: space-around;
-		width: 2rem;
-		height: 2rem;
-		background: transparent;
-		border: none;
-		cursor: pointer;
-		padding: 0;
+		gap: 1rem;
+		margin-top: 2rem;
 	}
 
-	.hamburger-line {
-		width: 2rem;
-		height: 0.25rem;
-		background: #333;
-		border-radius: 10px;
-		transition: all 0.3s ease;
-		transform-origin: left;
+	.nav-menu.show {
+		display: flex;
 	}
 
-	.open .hamburger-line:first-child {
-		transform: rotate(45deg) translate(0.35rem, -0.1rem);
+	@media (min-width: 768px) {
+		.nav-menu {
+			display: flex;
+			flex-direction: row;
+			gap: 2.5rem;
+			margin-top: 0;
+		}
 	}
 
-	.open .hamburger-line:nth-child(2) {
-		opacity: 0;
-	}
-
-	.open .hamburger-line:last-child {
-		transform: rotate(-45deg) translate(0.35rem, 0.1rem);
-	}
-
-	/* Меню */
-	.menu-container {
-		position: fixed;
-		top: 0;
-		left: 0;
-		width: 250px;
-		height: 100vh;
-		background: white;
-		box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-		transform: translateX(-100%);
-		transition: transform 0.3s ease;
-		z-index: 90;
-		padding: 5rem 1rem 1rem;
-	}
-
-	.open .menu-container {
-		transform: translateX(0);
-	}
-
-	/* Оверлей */
-	.overlay {
-		position: fixed;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		background: rgba(0, 0, 0, 0.5);
-		opacity: 0;
-		visibility: hidden;
-		transition: opacity 0.3s ease;
-		z-index: 80;
-	}
-
-	.open .overlay {
-		opacity: 1;
-		visibility: visible;
-	}
-
-	/* Ссылки меню */
-	.menu-links {
-		list-style: none;
-		padding: 0;
-		margin: 0;
-	}
-
-	.menu-link {
-		padding: 1rem;
-		border-bottom: 1px solid #eee;
-		transition: background 0.2s;
-	}
-
-	.menu-link:hover {
-		background: #f5f5f5;
-	}
-
-	.menu-link a {
+	.nav-link {
+		color: var(--grey-200);
+		font: var(--type-link-regular);
 		text-decoration: none;
-		color: #333;
-		display: block;
-		width: 100%;
-		height: 100%;
+	}
+
+	.nav-link:hover {
+		color: var(--grey-300);
 	}
 </style>

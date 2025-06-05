@@ -7,8 +7,12 @@
 </script>
 
 <div class="app">
-	<Header />
-	<HamburgerMenu />
+	<div class="desktop-header">
+		<Header />
+	</div>
+	<div class="mobile-header">
+		<HamburgerMenu />
+	</div>
 	<main>
 		{@render children()}
 	</main>
@@ -28,9 +32,22 @@
 		box-sizing: border-box;
 	}
 
+	.desktop-header {
+		display: block;
+	}
+	.mobile-header {
+		display: none;
+	}
+
 	@media (max-width: 480px) {
 		.app {
 			padding: 0;
+		}
+		.desktop-header {
+			display: none;
+		}
+		.mobile-header {
+			display: block;
 		}
 	}
 </style>
