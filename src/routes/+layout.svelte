@@ -41,7 +41,7 @@
 
 	@media (max-width: 480px) {
 		.app {
-			padding: 0;
+			padding: 20px;
 		}
 		.desktop-header {
 			display: none;

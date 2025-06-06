@@ -29,11 +29,12 @@
 
 <style>
 	.nav {
-		padding: 2rem 1.5rem;
-		max-width: 1200px;
-		margin-left: auto;
-		margin-right: auto;
-
+		padding: 15px;
+		background-color: var(--grey-900);
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
 	}
 
 	.nav-header {

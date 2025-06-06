@@ -4,9 +4,10 @@
 	export let children: Snippet;
 	export let onClick: () => void | undefined;
 	export let disabled: boolean = false;
+	export let className: string = '';
 </script>
 
-<button type="button" class="button" onclick={onClick} {disabled}>
+<button type="button" class={`button ${className}`} onclick={onClick} {disabled}>
 	{@render children()}
 </button>
 

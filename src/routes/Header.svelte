@@ -3,22 +3,22 @@
 	import logo from '$lib/images/logo.svg';
 </script>
 
-<header>
+<header class="header">
 	<div class="corner">
 		<a href="/">
 			<img src={logo} alt="logo" />
 		</a>
 	</div>
 
-	<nav>
-		<ul>
-			<li aria-current={page.url.pathname === '/' ? 'page' : undefined}>
+	<nav class="nav">
+		<ul class="ul">
+			<li class="li" aria-current={page.url.pathname === '/' ? 'page' : undefined}>
 				<a href="/">Home</a>
 			</li>
-			<li aria-current={page.url.pathname === '/movies' ? 'page' : undefined}>
+			<li class="li" aria-current={page.url.pathname === '/movies' ? 'page' : undefined}>
 				<a href="/movies">Movies</a>
 			</li>
-			<li aria-current={page.url.pathname === '/suggestions' ? 'page' : undefined}>
+			<li class="li" aria-current={page.url.pathname === '/suggestions' ? 'page' : undefined}>
 				<a href="/suggestions">Suggestions</a>
 			</li>
 		</ul>
@@ -26,7 +26,7 @@
 </header>
 
 <style>
-	header {
+	.header {
 		display: flex;
 		justify-content: space-between;
 		padding: 16px 0;
@@ -51,12 +51,12 @@
 		object-fit: contain;
 	}
 
-	nav {
+	.nav {
 		display: flex;
 		justify-content: center;
 	}
 
-	ul {
+	.ul {
 		position: relative;
 		padding: 0;
 		margin: 0;
@@ -70,12 +70,12 @@
 		background-size: contain;
 	}
 
-	li {
+	.li {
 		position: relative;
 		height: 100%;
 	}
 
-	nav a {
+	.li a {
 		display: flex;
 		height: 100%;
 		align-items: center;

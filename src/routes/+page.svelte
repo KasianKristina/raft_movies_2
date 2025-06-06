@@ -101,4 +101,14 @@
 		justify-content: center;
 		cursor: pointer;
 	}
+
+	@media (max-width: 480px) {
+		.welcome {
+			text-align: center;
+			font: var(--type-heading-three);
+		}
+		.folders {
+			justify-content: center;
+		}
+	}
 </style>

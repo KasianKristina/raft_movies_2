@@ -16,7 +16,8 @@
 	</p>
 	<div class="search-block">
 		<Input placeholder="Search Movies or TV Shows" leftIcon={searchIcon} />
-		<Button onClick={() => {}}>Search</Button>
+		<Button onClick={() => {}} className="text-btn">Search</Button>
+		<Button onClick={() => {}} className="icon-btn"><img src={searchIcon} alt="Search" /></Button>
 	</div>
 </div>
 
@@ -41,5 +42,16 @@
 		align-items: center;
 		gap: 8px;
 		width: 513px;
+	}
+
+	@media (max-width: 480px) {
+		.header {
+			text-align: center;
+			font: var(--type-heading-three);
+		}
+
+		.search-block {
+			width: 100%;
+		}
 	}
 </style>
