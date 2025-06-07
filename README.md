@@ -1,38 +1,45 @@
-# sv
+# Raft Movies
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+Краткое описание: Веб-приложение для выбора и обсуждения фильмов
 
-## Creating a project
+---
 
-If you're seeing this, you've probably already done this step. Congrats!
+## Инструкции к запуску
 
-```bash
-# create a new project in the current directory
-npx sv create
+### Требования
+- **Node.js**: версия 18 или выше
+- **npm**: версия 9 или выше
 
-# create a new project in my-app
-npx sv create my-app
-```
+### Установка
+1. Склонируйте репозиторий:
+   ```bash
+   git clone https://github.com/KasianKristina/raft_movies_2
+   cd raft-movies
+   ```
+2. Установите зависимости:
+   ```bash
+   npm install
+   ```
 
-## Developing
+### Запуск приложения
+  ```bash
+  npm run dev
+  ```
+  Откройте `http://localhost:5173` в браузере.
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
 
-```bash
-npm run dev
+---
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
+## Инструкции к применению линтеров перед коммитом
 
-## Building
+Для обеспечения качества кода перед коммитом:
+- **Форматирование и линтинг**: Выполните форматирование и исправление ошибок:
+  ```bash
+  npm run precheck
+  ```
+  Эта команда форматирует код с помощью Prettier и исправляет ошибки с помощью ESLint.
 
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+- **Линтинг CSS**: Для проверки и исправления CSS:
+  ```bash
+  npm run lint:css
+  ```
