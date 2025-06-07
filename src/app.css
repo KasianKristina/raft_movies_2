@@ -86,10 +86,17 @@ p {
 a {
 	color: var(--color-theme-1);
 	text-decoration: none;
+	transition: color 0.2s ease, text-decoration 0.2s ease;
 }
 
 a:hover {
 	text-decoration: underline;
+}
+
+a:focus-visible {
+	border-radius: 2px;
+	outline: 2px solid var(--color-theme-1);
+	outline-offset: 2px;
 }
 
 h1 {
@@ -133,6 +140,15 @@ textarea {
 
 button {
 	cursor: pointer;
+}
+
+button:hover {
+	opacity: 0.9;
+}
+
+button:focus-visible {
+	outline: 2px solid var(--primary-300);
+	outline-offset: 2px;
 }
 
 button:focus:not(:focus-visible) {

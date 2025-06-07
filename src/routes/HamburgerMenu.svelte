@@ -1,6 +1,6 @@
 <script lang="ts">
-	import logo from '$lib/images/logo.svg';
-	import arrow from '$lib/images/arrow-right.svg';
+	import logo from '$lib/icons/logo.svg';
+	import arrow from '$lib/icons/arrow-right.svg';
 
 	let showMenu: boolean = false;
 

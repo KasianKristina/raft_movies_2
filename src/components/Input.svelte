@@ -23,16 +23,16 @@
 </script>
 
 <div class="input-wrapper">
-	<div class="input-container" class:error={errorMessage}>
+	<div class="input-container">
 		{#if label}
 			<label for={id} class="floating-label" class:active={isFocused || hasValue}>
 				{label}
 			</label>
 		{/if}
 
-		<div class="input">
+		<div class="input" class:input-active={isFocused} class:input-error={Boolean(errorMessage)}>
 			{#if leftIcon}
-				<button class:disabled on:click={onLeftIconClick}>
+				<button class:disabled on:click={onLeftIconClick} class="button">
 					<img src={leftIcon} alt="" />
 				</button>
 			{/if}
@@ -48,13 +48,12 @@
 				on:blur={handleBlur}
 				class="input-component"
 				class:input-with-label={Boolean(label)}
-				class:input-error={Boolean(errorMessage)}
 				placeholder={!label ? placeholder : null}
 				{...$$restProps}
 			/>
 
 			{#if rightIcon}
-				<button class:disabled on:click={onRightIconClick}>
+				<button class:disabled on:click={onRightIconClick} class="button">
 					<img src={rightIcon} alt="" />
 				</button>
 			{/if}
@@ -68,62 +67,61 @@
 
 <style>
 	.input-wrapper {
-		margin: 1rem 0;
+		position: relative;
 		width: 100%;
-		position: relative;
-	}
-
-	.input-container {
-		position: relative;
+		padding-bottom: 25px;
 	}
 
 	.input {
+		display: flex;
+		align-items: center;
 		width: 100%;
 		padding: 16px 12px;
 		border: 1px solid var(--grey-600);
-		color: var(--white-400);
-		font: var(--type-body-regular);
 		border-radius: 12px;
-		transition: border-color 0.3s ease;
-		display: flex;
 		gap: 16px;
-		align-items: center;
-		max-height: 64px;
-
-		&:focus {
-			outline: none;
-			border-color: var(--tertiary-500);
-			color: white;
-		}
+		transition: border-color 0.3s ease;
 
 		&:disabled {
-			opacity: 0.7;
 			cursor: not-allowed;
+			opacity: 0.7;
 		}
 	}
 
 	.input-component {
 		width: 100%;
+		border: none;
+		background: transparent;
+		color: var(--white-400);
+		font: var(--type-body-regular);
+
 		&:focus {
-			outline: none;
-			border-color: var(--tertiary-500);
 			color: white;
+			outline: none;
 		}
 	}
 
+	.input-active {
+		border-color: var(--tertiary-500);
+	}
+
 	.input-with-label {
-		padding-top: 26px;
 		padding-bottom: 12px;
+		padding-top: 26px;
+	}
+
+	.input-error {
+		border-color: var(--error-500);
 	}
 
 	.floating-label {
 		position: absolute;
-		left: 12px;
 		top: 50%;
-		transform: translateY(-50%);
-		font: var(--type-caption);
+		left: 12px;
 		color: var(--grey-600);
+		font: var(--type-caption);
 		pointer-events: none;
+		transform: translateY(-50%);
 		transition: all 0.2s ease-out;
 
 		&.active {
@@ -133,13 +131,20 @@
 	}
 
 	.error-message {
+		position: absolute;
 		color: var(--error-500);
+		font: var(--type-caption);
 		margin-top: 12px;
+	}
+
+	::placeholder {
+		color: var(--grey-500);
 		font: var(--type-caption);
 	}
 
-	.error,
-	.input-error {
-		border-color: var(--error-500) !important;
+	.button {
+		display: flex;
+		justify-content: center;
+		align-self: center;
 	}
 </style>

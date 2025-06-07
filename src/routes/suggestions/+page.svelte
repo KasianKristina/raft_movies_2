@@ -1,7 +1,7 @@
 <script>
 	import Button from '../../components/Button.svelte';
 	import Input from '../../components/Input.svelte';
-	import searchIcon from '$lib/images/search-normal.svg';
+	import searchIcon from '$lib/icons/search-normal.svg';
 </script>
 
 <svelte:head>
@@ -39,7 +39,7 @@
 
 	.search-block {
 		display: flex;
-		align-items: center;
+		align-items: start;
 		width: 513px;
 		gap: 8px;
 	}

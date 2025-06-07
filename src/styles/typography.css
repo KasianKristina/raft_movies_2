@@ -32,7 +32,7 @@
 	--letter-spacing-l: -1.5%;
 	--letter-spacing-xl: -2%;
 
-	/* Композитные стили */
+	/* Composite styles */
 	--type-body-regular: var(--weight-regular) var(--size-body) / var(--leading-dense)
 		var(--font-primary);
 	--type-caption: var(--weight-regular) var(--size-body-sm) / var(--leading-ultra-dense)

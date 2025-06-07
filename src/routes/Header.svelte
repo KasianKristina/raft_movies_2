@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import logo from '$lib/images/logo.svg';
+	import logo from '$lib/icons/logo.svg';
 </script>
 
 <header class="header">
