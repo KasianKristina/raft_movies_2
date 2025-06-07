@@ -1,0 +1,14 @@
+{
+	"editor.formatOnSave": true,
+	"editor.defaultFormatter": "svelte.svelte-vscode",
+	"stylelint.enable": true,
+	"stylelint.validate": ["css", "svelte"],
+	"css.validate": false,
+	"editor.codeActionsOnSave": {
+		"source.fixAll.stylelint": true
+	},
+	"[svelte]": {
+		"editor.formatOnSave": true,
+		"editor.defaultFormatter": "svelte.svelte-vscode"
+	}
+}

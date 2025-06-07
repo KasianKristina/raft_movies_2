@@ -22,9 +22,9 @@
 	.app {
 		display: flex;
 		flex-direction: column;
-		min-height: 100vh;
 		padding: 0 120px;
 		background: var(--grey-900) url('$lib/images/background.png') no-repeat center / cover;
+		min-height: 100vh;
 	}
 
 	main {
@@ -35,17 +35,20 @@
 	.desktop-header {
 		display: block;
 	}
+
 	.mobile-header {
 		display: none;
 	}
 
-	@media (max-width: 480px) {
+	@media (width <= 480px) {
 		.app {
 			padding: 20px;
 		}
+
 		.desktop-header {
 			display: none;
 		}
+
 		.mobile-header {
 			display: block;
 		}

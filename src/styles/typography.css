@@ -1,6 +1,6 @@
 :root {
 	/* Font families */
-	--font-primary: 'Poppins', Georgia, sans-serif;
+	--font-primary: 'Poppins', georgia, sans-serif;
 
 	/* Font sizes */
 	--size-label: 12px;
@@ -35,18 +35,13 @@
 	/* Композитные стили */
 	--type-body-regular: var(--weight-regular) var(--size-body) / var(--leading-dense)
 		var(--font-primary);
-
 	--type-caption: var(--weight-regular) var(--size-body-sm) / var(--leading-ultra-dense)
 		var(--font-primary);
-
 	--type-link-regular: var(--weight-regular) var(--size-body) / var(--leading-dense)
 		var(--font-primary);
-
 	--type-heading-two: var(--weight-medium) var(--size-heading-lg) / var(--heading-line-loose)
 		var(--font-primary);
-
 	--type-heading-three: var(--weight-medium) var(--size-heading-ml) / var(--leading-spacious)
 		var(--font-primary);
-
 	--type-heading-five: var(--weight-bold) var(--size-heading-sm) / 1.2 var(--font-primary);
 }

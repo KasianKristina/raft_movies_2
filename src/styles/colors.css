@@ -9,7 +9,6 @@
 	--primary-700: #362c92;
 	--primary-800: #251e62;
 	--primary-900: #120f31;
-
 	--secondary-50: #e4f4ff;
 	--secondary-100: #d2ecfe;
 	--secondary-200: #a5dbfe;
@@ -20,7 +19,6 @@
 	--secondary-700: #126297;
 	--secondary-800: #0c4265;
 	--secondary-900: #062032;
-
 	--tertiary-50: #f6edff;
 	--tertiary-100: #f0e2ff;
 	--tertiary-200: #e2c5ff;
@@ -31,7 +29,6 @@
 	--tertiary-700: #6d4199;
 	--tertiary-800: #492c66;
 	--tertiary-900: #241633;
-
 	--success-50: #e1f9f2;
 	--success-100: #cdf5e9;
 	--success-200: #9bebd3;
@@ -42,7 +39,6 @@
 	--success-700: #037c57;
 	--success-800: #02523a;
 	--success-900: #01291d;
-
 	--error-50: #ffecec;
 	--error-100: #ffdfdf;
 	--error-200: #ffc0c0;
@@ -53,7 +49,6 @@
 	--error-700: #993a3a;
 	--error-800: #662727;
 	--error-900: #331313;
-
 	--warning-50: #fff5e9;
 	--warning-100: #ffefdb;
 	--warning-200: #ffdeb6;
@@ -64,7 +59,6 @@
 	--warning-700: #99682c;
 	--warning-800: #66451d;
 	--warning-900: #33230f;
-
 	--grey-50: #ebeef5;
 	--grey-100: #c3c8d4;
 	--grey-200: #a8aebf;
@@ -75,22 +69,20 @@
 	--grey-700: #323b54;
 	--grey-800: #20283e;
 	--grey-900: #121829;
-
 	--white: 255, 255, 255;
-	--white-50: rgba(var(--white), 0.1);
-	--white-100: rgba(var(--white), 0.2);
-	--white-200: rgba(var(--white), 0.3);
-	--white-300: rgba(var(--white), 0.4);
-	--white-400: rgba(var(--white), 0.5);
-	--white-500: rgba(var(--white), 0.65);
-	--white-600: rgba(var(--white), 0.75);
-
+	--white-50: rgb(var(--white), 0.1);
+	--white-100: rgb(var(--white), 0.2);
+	--white-200: rgb(var(--white), 0.3);
+	--white-300: rgb(var(--white), 0.4);
+	--white-400: rgb(var(--white), 0.5);
+	--white-500: rgb(var(--white), 0.65);
+	--white-600: rgb(var(--white), 0.75);
 	--black: 0, 0, 0;
-	--black-50: rgba(var(--black), 0.1);
-	--black-100: rgba(var(--black), 0.2);
-	--black-200: rgba(var(--black), 0.3);
-	--black-300: rgba(var(--black), 0.4);
-	--black-400: rgba(var(--black), 0.5);
-	--black-500: rgba(var(--black), 0.65);
-	--black-600: rgba(var(--black), 0.75);
+	--black-50: rgb(var(--black), 0.1);
+	--black-100: rgb(var(--black), 0.2);
+	--black-200: rgb(var(--black), 0.3);
+	--black-300: rgb(var(--black), 0.4);
+	--black-400: rgb(var(--black), 0.5);
+	--black-500: rgb(var(--black), 0.65);
+	--black-600: rgb(var(--black), 0.75);
 }

@@ -9,38 +9,36 @@
 	}
 </script>
 
-<div>
-	<nav class="nav">
-		<div class="nav-header">
-			<a href="/" class="logo">
-				<img src={logo} alt="logo" />
-			</a>
-			<button type="button" on:click={toggleNavbar}>
-				<img src={arrow} alt="menu button" />
-			</button>
-		</div>
-		<ul class="nav-menu {showMenu ? 'show' : ''}">
-			<li><a class="nav-link" href="/">Home</a></li>
-			<li><a class="nav-link" href="/movies">Movies</a></li>
-			<li><a class="nav-link" href="/suggestions">Suggestions</a></li>
-		</ul>
-	</nav>
-</div>
+<nav class="nav">
+	<div class="nav-header">
+		<a href="/" class="logo">
+			<img src={logo} alt="logo" />
+		</a>
+		<button type="button" on:click={toggleNavbar}>
+			<img src={arrow} alt="menu button" />
+		</button>
+	</div>
+	<ul class="nav-menu {showMenu ? 'show' : ''}">
+		<li><a class="nav-link" href="/">Home</a></li>
+		<li><a class="nav-link" href="/movies">Movies</a></li>
+		<li><a class="nav-link" href="/suggestions">Suggestions</a></li>
+	</ul>
+</nav>
 
 <style>
 	.nav {
-		padding: 15px;
-		background-color: var(--grey-900);
 		position: absolute;
 		top: 0;
 		left: 0;
 		width: 100%;
+		padding: 15px;
+		background-color: var(--grey-900);
 	}
 
 	.nav-header {
 		display: flex;
-		align-items: center;
 		justify-content: space-between;
+		align-items: center;
 	}
 
 	.logo img {
@@ -59,7 +57,7 @@
 		display: flex;
 	}
 
-	@media (min-width: 768px) {
+	@media (width >= 768px) {
 		.nav-menu {
 			display: flex;
 			flex-direction: row;

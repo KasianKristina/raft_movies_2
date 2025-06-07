@@ -39,8 +39,8 @@
 
 	.corner a {
 		display: flex;
-		align-items: center;
 		justify-content: center;
+		align-items: center;
 		width: 100%;
 		height: 100%;
 	}
@@ -58,16 +58,16 @@
 
 	.ul {
 		position: relative;
-		padding: 0;
-		margin: 0;
-		height: 3em;
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		gap: 16px;
-		list-style: none;
+		height: 3em;
+		margin: 0;
+		padding: 0;
 		background: var(--background);
 		background-size: contain;
+		gap: 16px;
+		list-style: none;
 	}
 
 	.li {
@@ -77,13 +77,13 @@
 
 	.li a {
 		display: flex;
-		height: 100%;
 		align-items: center;
+		height: 100%;
+		padding: 12px 16px;
 		color: var(--grey-200);
 		font: var(--type-link-regular);
 		text-decoration: none;
 		transition: color 0.2s linear;
-		padding: 12px 16px;
 	}
 
 	a:hover {

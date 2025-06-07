@@ -28,43 +28,43 @@
 		</li>
 	</ul>
 
-	<h2 class="quickLinks">Quick Links</h2>
-	<ul class="quickLinksWrapper">
-		<li class="quickLink">Suggestions</li>
-		<li class="quickLink">Add</li>
+	<h2 class="quick-links">Quick Links</h2>
+	<ul class="quick-links-wrapper">
+		<li class="quick-link">Suggestions</li>
+		<li class="quick-link">Add</li>
 	</ul>
 </section>
 
 <style>
 	.welcome {
 		width: 100%;
-		font: var(--type-heading-two);
 		color: var(--grey-50);
-		text-align: left;
+		font: var(--type-heading-two);
 		margin-top: 80px;
+		text-align: left;
 	}
 
 	.folders {
 		display: flex;
-		gap: 24px;
-		margin-top: 40px;
-		margin-bottom: 80px;
 		width: 100%;
 		flex-wrap: wrap;
+		gap: 24px;
+		margin-bottom: 80px;
+		margin-top: 40px;
 	}
 
 	.folder {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
 		width: 100%;
-		max-width: 272px;
 		height: 152px;
 		background-color: var(--grey-900);
 		border-radius: 12px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		flex-direction: column;
-		gap: 8.5px;
 		cursor: pointer;
+		gap: 8.5px;
+		max-width: 272px;
 	}
 
 	.number {
@@ -77,36 +77,37 @@
 		font: var(--type-body-regular);
 	}
 
-	.quickLinks {
-		font: var(--type-heading-five);
+	.quick-links {
 		color: var(--grey-50);
+		font: var(--type-heading-five);
 		text-align: center;
 	}
 
-	.quickLinksWrapper {
+	.quick-links-wrapper {
 		display: flex;
 		gap: 24px;
 		margin-top: 40px;
 	}
 
-	.quickLink {
-		background-color: var(--grey-900);
+	.quick-link {
+		display: flex;
+		justify-content: center;
+		align-items: center;
 		width: 100%;
-		border-radius: 12px;
 		height: 104px;
 		color: var(--primary-400);
 		font: var(--type-link-regular);
-		display: flex;
-		align-items: center;
-		justify-content: center;
+		background-color: var(--grey-900);
+		border-radius: 12px;
 		cursor: pointer;
 	}
 
-	@media (max-width: 480px) {
+	@media (width <= 480px) {
 		.welcome {
-			text-align: center;
 			font: var(--type-heading-three);
+			text-align: center;
 		}
+
 		.folders {
 			justify-content: center;
 		}

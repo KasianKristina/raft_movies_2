@@ -1,17 +1,17 @@
 @font-face {
-	font-family: 'Poppins';
-	src: url('/fonts/Poppins-Regular.woff2') format('truetype');
+	font-family: Poppins;
 	font-weight: 400;
+	src: url('/fonts/Poppins-Regular.woff2') format('truetype');
 }
 
 @font-face {
-	font-family: 'Poppins';
-	src: url('/fonts/Poppins-Bold.woff2') format('truetype');
+	font-family: Poppins;
 	font-weight: 700;
+	src: url('/fonts/Poppins-Bold.woff2') format('truetype');
 }
 
 @font-face {
-	font-family: 'Poppins';
-	src: url('/fonts/Poppins-SemiBold.woff2') format('truetype');
+	font-family: Poppins;
 	font-weight: 600;
+	src: url('/fonts/Poppins-SemiBold.woff2') format('truetype');
 }

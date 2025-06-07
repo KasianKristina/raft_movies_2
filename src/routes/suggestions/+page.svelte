@@ -24,30 +24,30 @@
 <style>
 	.header {
 		width: 100%;
-		font: var(--type-heading-two);
 		color: var(--grey-50);
-		text-align: left;
+		font: var(--type-heading-two);
 		margin-top: 80px;
+		text-align: left;
 	}
 
 	.text {
 		color: var(--grey-300);
 		font: var(--type-body-regular);
-		margin-top: 16px;
 		margin-bottom: 24px;
+		margin-top: 16px;
 	}
 
 	.search-block {
 		display: flex;
 		align-items: center;
-		gap: 8px;
 		width: 513px;
+		gap: 8px;
 	}
 
-	@media (max-width: 480px) {
+	@media (width <= 480px) {
 		.header {
-			text-align: center;
 			font: var(--type-heading-three);
+			text-align: center;
 		}
 
 		.search-block {

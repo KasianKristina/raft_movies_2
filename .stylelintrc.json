@@ -1,6 +1,12 @@
 {
-	"extends": ["stylelint-config-standard"],
+	"extends": ["stylelint-config-standard", "stylelint-config-recommended-vue"],
 	"plugins": ["stylelint-order"],
+	"overrides": [
+		{
+			"files": ["*.svelte"],
+			"customSyntax": "postcss-html"
+		}
+	],
 	"rules": {
 		"order/properties-order": [
 			[
