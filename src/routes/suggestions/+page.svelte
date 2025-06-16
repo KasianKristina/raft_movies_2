@@ -1,7 +1,7 @@
 <script>
-	import Button from '../../components/Button.svelte';
-	import Input from '../../components/Input.svelte';
-	import searchIcon from '$lib/icons/search-normal.svg';
+	import Button from '$lib/components/Button.svelte';
+	import Input from '$lib/components/Input.svelte';
+	import SearchIcon from '$lib/icons/SearchIcon.svelte';
 </script>
 
 <svelte:head>
@@ -15,9 +15,11 @@
 		I will really appreciate it if you take time to suggest me something good to watch
 	</p>
 	<div class="search-block">
-		<Input placeholder="Search Movies or TV Shows" leftIcon={searchIcon} />
+		<Input placeholder="Search Movies or TV Shows" leftIcon={SearchIcon} />
 		<Button onClick={() => {}} className="text-btn">Search</Button>
-		<Button onClick={() => {}} className="icon-btn"><img src={searchIcon} alt="Search" /></Button>
+		<Button onClick={() => {}} className="icon-btn">
+			<SearchIcon color="#475069" />
+		</Button>
 	</div>
 </div>
 

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import logo from '$lib/icons/logo.svg';
-	import arrow from '$lib/icons/arrow-right.svg';
+	import LogoIcon from '$lib/icons/Logo.svelte';
+	import ArrowIcon from '$lib/icons/ArrowRight.svelte';
 
 	let showMenu: boolean = false;
 
@@ -12,10 +12,11 @@
 <nav class="nav">
 	<div class="nav-header">
 		<a href="/" class="logo">
-			<img src={logo} alt="logo" />
+			<LogoIcon size={32} colorFirst="#1EA5FC" colorSecond="#7B6EF6" />
 		</a>
 		<button type="button" on:click={toggleNavbar}>
-			<img src={arrow} alt="menu button" />
+			<LogoIcon size={160} colorFirst="#1EA5FC" colorSecond="#7B6EF6" />
+			<ArrowIcon size={24} color="#8E95A9" />
 		</button>
 	</div>
 	<ul class="nav-menu {showMenu ? 'show' : ''}">
@@ -39,11 +40,6 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-	}
-
-	.logo img {
-		width: 32px;
-		height: 32px;
 	}
 
 	.nav-menu {

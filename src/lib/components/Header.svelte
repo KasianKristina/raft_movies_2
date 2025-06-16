@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import logo from '$lib/icons/logo.svg';
+	import LogoIcon from '$lib/icons/Logo.svelte';
 </script>
 
 <header class="header">
 	<div class="corner">
 		<a href="/">
-			<img src={logo} alt="logo" />
+			<LogoIcon size={32} colorFirst="#1EA5FC" colorSecond="#7B6EF6" />
 		</a>
 	</div>
 
@@ -43,12 +43,6 @@
 		align-items: center;
 		width: 100%;
 		height: 100%;
-	}
-
-	.corner img {
-		width: 2em;
-		height: 2em;
-		object-fit: contain;
 	}
 
 	.nav {

@@ -1,22 +1,47 @@
 <script lang="ts">
-	export let type: string = 'text';
-	export let value: string = '';
-	export let placeholder: string = '';
-	export let label: string = '';
-	export let name: string = '';
-	export let id: string = name;
-	export let required: boolean = false;
-	export let disabled: boolean = false;
-	export let errorMessage: string = '';
-	export let leftIcon: string = '';
-	export let rightIcon: string = '';
-	export let onLeftIconClick: () => void = () => {};
-	export let onRightIconClick: () => void = () => {};
+	import type { HTMLInputAttributes } from 'svelte/elements';
 
-	let isFocused: boolean = false;
-	let hasValue: boolean = false;
+	type Props = HTMLInputAttributes & {
+		label?: string;
+		errorMessage?: string;
+		leftIcon?: string;
+		rightIcon?: string;
+		onLeftIconClick?: () => void;
+		onRightIconClick?: () => void;
+		onValueChange?: (value: string) => void;
+	};
 
-	$: hasValue = Boolean(value);
+	const {
+		type = 'text',
+		value = '',
+		placeholder = '',
+		label = '',
+		name,
+		id,
+		required = false,
+		disabled = false,
+		errorMessage = '',
+		leftIcon = '',
+		rightIcon = '',
+		onLeftIconClick = () => {},
+		onRightIconClick = () => {},
+		onValueChange,
+		...rest
+	}: Props = $props();
+
+	let localValue = $state(value);
+
+	$effect(() => {
+		localValue = value;
+	});
+
+	$effect(() => {
+		onValueChange?.(localValue);
+	});
+
+	let isFocused = $state(false);
+
+	const hasValue = $derived(Boolean(value));
 
 	const handleFocus = () => (isFocused = true);
 	const handleBlur = () => (isFocused = false);
@@ -32,7 +57,7 @@
 
 		<div class="input" class:input-active={isFocused} class:input-error={Boolean(errorMessage)}>
 			{#if leftIcon}
-				<button class:disabled on:click={onLeftIconClick} class="button">
+				<button class:disabled onclick={onLeftIconClick} class="button">
 					<img src={leftIcon} alt="" />
 				</button>
 			{/if}
@@ -43,17 +68,17 @@
 				{id}
 				{required}
 				{disabled}
-				bind:value
-				on:focus={handleFocus}
-				on:blur={handleBlur}
+				bind:value={localValue}
+				onfocus={handleFocus}
+				onblur={handleBlur}
 				class="input-component"
 				class:input-with-label={Boolean(label)}
 				placeholder={!label ? placeholder : null}
-				{...$$restProps}
+				{...rest}
 			/>
 
 			{#if rightIcon}
-				<button class:disabled on:click={onRightIconClick} class="button">
+				<button class:disabled onclick={onRightIconClick} class="button">
 					<img src={rightIcon} alt="" />
 				</button>
 			{/if}

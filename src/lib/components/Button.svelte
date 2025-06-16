@@ -1,22 +1,28 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 
-	export let children: Snippet;
-	export let onClick: () => void | undefined;
-	export let disabled: boolean = false;
-	export let className: string = '';
+	const {
+		children,
+		onClick,
+		disabled = false,
+		className = '',
+	} = $props<{
+		children: Snippet<[]>;
+		onClick?: () => void;
+		disabled?: boolean;
+		className?: string;
+	}>();
 
-	function handleClick(
-		e: MouseEvent & {
-			currentTarget: EventTarget & HTMLButtonElement;
-		},
-	) {
-		onClick();
-		e.currentTarget.blur();
+	const derivedClassName = $derived(`button ${className}`);
+	const isDisabled = $derived(disabled);
+
+	function handleClick(e: MouseEvent) {
+		onClick?.();
+		(e.currentTarget as HTMLButtonElement).blur();
 	}
 </script>
 
-<button type="button" class={`button ${className}`} on:click={handleClick} {disabled}>
+<button type="button" class={derivedClassName} onclick={handleClick} disabled={isDisabled}>
 	{@render children()}
 </button>
 
