@@ -2,6 +2,7 @@
 	import Button from '$lib/components/Button.svelte';
 	import Input from '$lib/components/Input.svelte';
 	import SearchIcon from '$lib/icons/SearchIcon.svelte';
+	import { COLORS } from '$lib/colors/colors';
 </script>
 
 <svelte:head>
@@ -15,10 +16,14 @@
 		I will really appreciate it if you take time to suggest me something good to watch
 	</p>
 	<div class="search-block">
-		<Input placeholder="Search Movies or TV Shows" leftIcon={SearchIcon} />
+		<Input placeholder="Search Movies or TV Shows">
+			{#snippet leftIcon()}
+				<SearchIcon size={21} color={COLORS.GREY_600} />
+			{/snippet}
+		</Input>
 		<Button onClick={() => {}} className="text-btn">Search</Button>
 		<Button onClick={() => {}} className="icon-btn">
-			<SearchIcon color="#475069" />
+			<SearchIcon color={COLORS.GREY_600} />
 		</Button>
 	</div>
 </div>

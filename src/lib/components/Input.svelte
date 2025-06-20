@@ -4,10 +4,8 @@
 	type Props = HTMLInputAttributes & {
 		label?: string;
 		errorMessage?: string;
-		leftIcon?: string;
-		rightIcon?: string;
-		onLeftIconClick?: () => void;
-		onRightIconClick?: () => void;
+		leftIcon?: () => any;
+		rightIcon?: () => any;
 		onValueChange?: (value: string) => void;
 	};
 
@@ -21,10 +19,8 @@
 		required = false,
 		disabled = false,
 		errorMessage = '',
-		leftIcon = '',
-		rightIcon = '',
-		onLeftIconClick = () => {},
-		onRightIconClick = () => {},
+		leftIcon,
+		rightIcon,
 		onValueChange,
 		...rest
 	}: Props = $props();
@@ -57,9 +53,7 @@
 
 		<div class="input" class:input-active={isFocused} class:input-error={Boolean(errorMessage)}>
 			{#if leftIcon}
-				<button class:disabled onclick={onLeftIconClick} class="button">
-					<img src={leftIcon} alt="" />
-				</button>
+				{@render leftIcon()}
 			{/if}
 
 			<input
@@ -78,9 +72,7 @@
 			/>
 
 			{#if rightIcon}
-				<button class:disabled onclick={onRightIconClick} class="button">
-					<img src={rightIcon} alt="" />
-				</button>
+				{@render rightIcon()}
 			{/if}
 		</div>
 	</div>
@@ -165,11 +157,5 @@
 	::placeholder {
 		color: var(--grey-500);
 		font: var(--type-caption);
-	}
-
-	.button {
-		display: flex;
-		justify-content: center;
-		align-self: center;
 	}
 </style>

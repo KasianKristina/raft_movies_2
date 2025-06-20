@@ -1,12 +1,13 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { COLORS } from '$lib/colors/colors';
 	import LogoIcon from '$lib/icons/Logo.svelte';
 </script>
 
 <header class="header">
 	<div class="corner">
 		<a href="/">
-			<LogoIcon size={32} colorFirst="#1EA5FC" colorSecond="#7B6EF6" />
+			<LogoIcon size={32} colorFirst={COLORS.SECONDARY_500} colorSecond={COLORS.PRIMARY_400} />
 		</a>
 	</div>
 
