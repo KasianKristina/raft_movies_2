@@ -3,9 +3,7 @@
 @import url('./styles/typography.css');
 
 :root {
-	--font-body:
-		'Poppins', arial, -apple-system, blinkmacsystemfont, 'Segoe UI', roboto, oxygen, ubuntu,
-		cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+	--font-body: 'Poppins', arial, sans-serif;
 	--font-mono: 'Fira Mono', monospace;
 	--color-bg-0: rgb(202 216 228);
 	--color-bg-1: hsl(209deg 36% 86%);
@@ -43,7 +41,7 @@ body {
 		linear-gradient(180deg, var(--color-bg-0) 0%, var(--color-bg-1) 15%, var(--color-bg-2) 50%);
 	background-size: 100vw 100vh;
 	min-height: 100vh;
-	min-width: 300px;
+	min-width: 370px;
 }
 
 body,
@@ -86,10 +84,12 @@ p {
 a {
 	color: var(--color-theme-1);
 	text-decoration: none;
-	transition: color 0.2s ease, text-decoration 0.2s ease;
+	transition:
+		color 0.2s ease,
+		text-decoration 0.2s ease;
 }
 
-a:hover {
+a:active {
 	text-decoration: underline;
 }
 
@@ -185,4 +185,10 @@ button:focus:not(:focus-visible) {
 	.icon-btn {
 		display: block;
 	}
+}
+
+@media (hover: hover) {
+    a:hover {
+        text-decoration: underline;
+    }
 }

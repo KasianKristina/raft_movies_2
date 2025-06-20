@@ -68,7 +68,13 @@
 		text-decoration: none;
 	}
 
-	.nav-link:hover {
+	.nav-link:active {
 		color: var(--grey-300);
+	}
+
+	@media (hover: hover) {
+		.nav-link:hover {
+			color: var(--grey-300);
+		}
 	}
 </style>

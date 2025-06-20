@@ -81,7 +81,9 @@
 		transition: color 0.2s linear;
 	}
 
-	a:hover {
-		color: var(--grey-300);
+	@media (hover: hover) {
+		a:hover {
+			color: var(--grey-300);
+		}
 	}
 </style>
