@@ -1,31 +1,26 @@
 <script lang="ts">
+	const folders = [
+		{ number: 93, text: 'Movies' },
+		{ number: 93, text: 'Movies' },
+		{ number: 93, text: 'Movies' },
+		{ number: 93, text: 'Movies' },
+	];
 </script>
 
 <svelte:head>
 	<title>Home</title>
-	<meta name="description" content="Raft movies app" />
 </svelte:head>
 
 <section>
 	<h1 class="welcome">Welcome</h1>
 
 	<ul class="folders">
-		<li class="folder">
-			<p class="number">93</p>
-			<p class="text">Movies</p>
-		</li>
-		<li class="folder">
-			<p class="number">93</p>
-			<p class="text">Movies</p>
-		</li>
-		<li class="folder">
-			<p class="number">93</p>
-			<p class="text">Movies</p>
-		</li>
-		<li class="folder">
-			<p class="number">93</p>
-			<p class="text">Movies</p>
-		</li>
+		{#each folders as folder}
+			<li class="folder">
+				<p class="number">{folder.number}</p>
+				<p class="text">{folder.text}</p>
+			</li>
+		{/each}
 	</ul>
 
 	<h2 class="quick-links">Quick Links</h2>

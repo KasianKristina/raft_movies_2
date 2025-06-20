@@ -6,6 +6,10 @@
 	let { children } = $props();
 </script>
 
+<svelte:head>
+	<meta name="description" content="Raft movies app" />
+</svelte:head>
+
 <div class="app">
 	<div class="desktop-header">
 		<Header />
