@@ -20,7 +20,7 @@
 	.app {
 		display: flex;
 		flex-direction: column;
-		background: var(--grey-900) url('$lib/images/background.png') no-repeat center / cover;
+		background: var(--grey-900) url('$lib/images/background.webp') no-repeat center / cover;
 		min-height: 100vh;
 	}
 
