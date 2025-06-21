@@ -1,5 +1,5 @@
 <svelte:head>
-	<title>About</title>
+	<title>Movies</title>
 </svelte:head>
 
 <div class="text-column">

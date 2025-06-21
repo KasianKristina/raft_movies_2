@@ -11,29 +11,28 @@
 	<title>Home</title>
 </svelte:head>
 
-<div>
-	<section class="welcome-section">
-		<h1 class="welcome-section__title">Welcome</h1>
-		<ul class="welcome-section__folders">
-			{#each folders as folder}
-				<li class="folder">
-					<p class="folder__number">{folder.number}</p>
-					<p class="folder__text">{folder.text}</p>
-				</li>
-			{/each}
-		</ul>
-	</section>
-	<section class="quick-links">
-		<h2 class="quick-links__title">Quick Links</h2>
-		<ul class="quick-links__list">
-			<li class="quick-links__item">Suggestions</li>
-			<li class="quick-links__item">Add</li>
-		</ul>
-	</section>
-</div>
+<h1 class="title">Welcome</h1>
+<section class="welcome-section">
+	<h2 class="visually-hidden">Folders with films</h2>
+	<ul class="welcome-section__folders">
+		{#each folders as folder}
+			<li class="folder">
+				<p class="folder__number">{folder.number}</p>
+				<p class="folder__text">{folder.text}</p>
+			</li>
+		{/each}
+	</ul>
+</section>
+<section class="quick-links">
+	<h2 class="quick-links__title">Quick Links</h2>
+	<ul class="quick-links__list">
+		<li class="quick-links__item">Suggestions</li>
+		<li class="quick-links__item">Add</li>
+	</ul>
+</section>
 
 <style>
-	.welcome-section__title {
+	.title {
 		width: 100%;
 		color: var(--grey-50);
 		font: var(--type-heading-two);
@@ -100,7 +99,7 @@
 	}
 
 	@media (width <= 480px) {
-		.welcome-section__title {
+		.title {
 			font: var(--type-heading-three);
 			text-align: center;
 		}

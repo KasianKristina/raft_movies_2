@@ -6,15 +6,16 @@
 </script>
 
 <svelte:head>
-	<title>About</title>
+	<title>Suggestions</title>
 </svelte:head>
 
-<div>
-	<h1 class="header">Suggest me</h1>
-	<p class="text">
+<h1 class="title">Suggest me</h1>
+<section class="suggest">
+	<h2 class="visually-hidden">Block with search for movies or TV shows</h2>
+	<p class="suggest__text">
 		I will really appreciate it if you take time to suggest me something good to watch
 	</p>
-	<div class="search-block">
+	<div class="suggest__search">
 		<Input label="Search Movies or TV Shows">
 			{#snippet leftIcon()}
 				<SearchIcon size={21} color={COLORS.GREY_600} />
@@ -22,10 +23,10 @@
 		</Input>
 		<Button onClick={() => {}}>Search</Button>
 	</div>
-</div>
+</section>
 
 <style>
-	.header {
+	.title {
 		width: 100%;
 		color: var(--grey-50);
 		font: var(--type-heading-two);
@@ -33,14 +34,14 @@
 		text-align: left;
 	}
 
-	.text {
+	.suggest__text {
 		color: var(--grey-300);
 		font: var(--type-body-regular);
 		margin-bottom: 24px;
 		margin-top: 16px;
 	}
 
-	.search-block {
+	.suggest__search {
 		display: flex;
 		align-items: start;
 		width: 100%;
@@ -49,23 +50,23 @@
 	}
 
 	/* stylelint-disable-next-line selector-pseudo-class-no-unknown */
-	.search-block :global(.button) {
+	.suggest__search :global(.button) {
 		width: auto;
 	}
 
 	@media (width <= 480px) {
-		.header {
+		.title {
 			font: var(--type-heading-three);
 			text-align: center;
 		}
 
-		.search-block {
+		.suggest__search {
 			flex-direction: column;
 			width: auto;
 		}
 
 		/* stylelint-disable-next-line selector-pseudo-class-no-unknown */
-		.search-block :global(.button) {
+		.suggest__search :global(.button) {
 			width: 100%;
 		}
 	}
