@@ -1,9 +1,10 @@
-@import url('./styles/fonts.css');
+/* stylelint-disable-next-line import-notation */
+@import '@fontsource-variable/montserrat';
 @import url('./styles/colors.css');
 @import url('./styles/typography.css');
 
 :root {
-	--font-body: 'Poppins', arial, sans-serif;
+	--font-body: 'Montserrat Variable', arial, sans-serif;
 	--font-mono: 'Fira Mono', monospace;
 	--color-bg-0: rgb(202 216 228);
 	--color-bg-1: hsl(209deg 36% 86%);
