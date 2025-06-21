@@ -1,7 +1,6 @@
 <script lang="ts">
 	import Header from '$lib/components/Header.svelte';
 	import '../app.css';
-	import HamburgerMenu from './HamburgerMenu.svelte';
 
 	let { children } = $props();
 </script>
@@ -11,12 +10,7 @@
 </svelte:head>
 
 <div class="app">
-	<div class="desktop-header">
-		<Header />
-	</div>
-	<div class="mobile-header">
-		<HamburgerMenu />
-	</div>
+	<Header />
 	<main>
 		{@render children()}
 	</main>
@@ -26,7 +20,7 @@
 	.app {
 		display: flex;
 		flex-direction: column;
-		padding: 0 120px;
+		padding: 0 6em;
 		background: var(--grey-900) url('$lib/images/background.png') no-repeat center / cover;
 		min-height: 100vh;
 	}
@@ -36,25 +30,9 @@
 		box-sizing: border-box;
 	}
 
-	.desktop-header {
-		display: block;
-	}
-
-	.mobile-header {
-		display: none;
-	}
-
 	@media (width <= 480px) {
 		.app {
-			padding: 20px;
-		}
-
-		.desktop-header {
-			display: none;
-		}
-
-		.mobile-header {
-			display: block;
+			padding: 15px 40px;
 		}
 	}
 </style>

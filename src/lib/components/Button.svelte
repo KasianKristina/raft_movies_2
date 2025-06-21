@@ -6,11 +6,13 @@
 		onClick,
 		disabled = false,
 		className = '',
+		width = 'auto',
 	} = $props<{
 		children: Snippet<[]>;
 		onClick?: () => void;
 		disabled?: boolean;
 		className?: string;
+		width: string;
 	}>();
 
 	const derivedClassName = $derived(`button ${className}`);
@@ -22,7 +24,13 @@
 	}
 </script>
 
-<button type="button" class={derivedClassName} onclick={handleClick} disabled={isDisabled}>
+<button
+	type="button"
+	class={derivedClassName}
+	onclick={handleClick}
+	disabled={isDisabled}
+	style="width: {width};"
+>
 	{@render children()}
 </button>
 
@@ -38,10 +46,6 @@
 		cursor: pointer;
 		transition: background-color 0.3s ease;
 
-		&:hover {
-			background-color: var(--primary-500);
-		}
-
 		&:active {
 			background-color: var(--primary-400);
 			border-color: var(--primary-500);
@@ -50,6 +54,12 @@
 		&:disabled {
 			opacity: 0.4;
 			pointer-events: none;
+		}
+	}
+
+	@media (hover: hover) {
+		.button:hover {
+			background-color: var(--primary-500);
 		}
 	}
 </style>

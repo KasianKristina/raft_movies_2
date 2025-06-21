@@ -1,7 +1,11 @@
-<script>
-	export let size = 160;
-	export let colorFirst = 'currentColor';
-	export let colorSecond = 'currentColor';
+<script lang="ts">
+	type Props = {
+		size?: number;
+		colorFirst?: string;
+		colorSecond?: string;
+	};
+
+	const { size = 160, colorFirst = 'currentColor', colorSecond = 'currentColor' }: Props = $props();
 </script>
 
 <svg

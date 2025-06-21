@@ -142,10 +142,6 @@ button {
 	cursor: pointer;
 }
 
-button:hover {
-	opacity: 0.9;
-}
-
 button:focus-visible {
 	outline: 2px solid var(--primary-300);
 	outline-offset: 2px;
@@ -153,12 +149,6 @@ button:focus-visible {
 
 button:focus:not(:focus-visible) {
 	outline: none;
-}
-
-@media (width >= 720px) {
-	h1 {
-		font-size: 2.4rem;
-	}
 }
 
 .visually-hidden {
@@ -173,22 +163,12 @@ button:focus:not(:focus-visible) {
 	white-space: nowrap;
 }
 
-.icon-btn {
-	display: none;
-}
-
-@media (width <= 480px) {
-	.text-btn {
-		display: none;
-	}
-
-	.icon-btn {
-		display: block;
-	}
-}
-
 @media (hover: hover) {
     a:hover {
         text-decoration: underline;
     }
+
+	button:hover {
+		opacity: 0.9;
+	}
 }

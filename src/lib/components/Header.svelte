@@ -1,26 +1,62 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { COLORS } from '$lib/colors/colors';
+	import CloseIcon from '$lib/icons/CloseIcon.svelte';
 	import LogoIcon from '$lib/icons/Logo.svelte';
+	import MenuIcon from '$lib/icons/MenuIcon.svelte';
+
+	let showMenu: boolean = false;
+
+	function toggleNavbar(): void {
+		showMenu = !showMenu;
+	}
 </script>
 
 <header class="header">
-	<div class="corner">
+	<div class="header__logo-container">
 		<a href="/">
 			<LogoIcon size={32} colorFirst={COLORS.SECONDARY_500} colorSecond={COLORS.PRIMARY_400} />
 		</a>
+		<button type="button" onclick={toggleNavbar} class="header__toggle">
+			{#if showMenu}
+				<CloseIcon color={COLORS.GREY_300} size={30} />
+			{:else}
+				<MenuIcon color={COLORS.GREY_300} />
+			{/if}
+		</button>
 	</div>
 
-	<nav class="nav">
-		<ul class="ul">
-			<li class="li" aria-current={page.url.pathname === '/' ? 'page' : undefined}>
-				<a href="/">Home</a>
+	<nav class="header__nav" class:header__mobile={showMenu}>
+		<ul class="header__menu-list">
+			<li class="header__menu-item" aria-current={page.url.pathname === '/' ? 'page' : undefined}>
+				<a
+					class="header__menu-link"
+					href="/"
+					onclick={toggleNavbar}
+					class:header__menu-item--current={page.url.pathname === '/'}>Home</a
+				>
 			</li>
-			<li class="li" aria-current={page.url.pathname === '/movies' ? 'page' : undefined}>
-				<a href="/movies">Movies</a>
+			<li
+				class="header__menu-item"
+				aria-current={page.url.pathname === '/movies' ? 'page' : undefined}
+			>
+				<a
+					class="header__menu-link"
+					href="/movies"
+					onclick={toggleNavbar}
+					class:header__menu-item--current={page.url.pathname === '/movies'}>Movies</a
+				>
 			</li>
-			<li class="li" aria-current={page.url.pathname === '/suggestions' ? 'page' : undefined}>
-				<a href="/suggestions">Suggestions</a>
+			<li
+				class="header__menu-item"
+				aria-current={page.url.pathname === '/suggestions' ? 'page' : undefined}
+			>
+				<a
+					class="header__menu-link"
+					href="/suggestions"
+					onclick={toggleNavbar}
+					class:header__menu-item--current={page.url.pathname === '/suggestions'}>Suggestions</a
+				>
 			</li>
 		</ul>
 	</nav>
@@ -33,25 +69,21 @@
 		padding: 16px 0;
 	}
 
-	.corner {
-		width: 3em;
+	.header__logo-container {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		width: 100%;
 		height: 3em;
 	}
 
-	.corner a {
+	.header__nav {
 		display: flex;
 		justify-content: center;
-		align-items: center;
-		width: 100%;
-		height: 100%;
+		z-index: 1;
 	}
 
-	.nav {
-		display: flex;
-		justify-content: center;
-	}
-
-	.ul {
+	.header__menu-list {
 		position: relative;
 		display: flex;
 		justify-content: center;
@@ -65,12 +97,12 @@
 		list-style: none;
 	}
 
-	.li {
+	.header__menu-item {
 		position: relative;
 		height: 100%;
 	}
 
-	.li a {
+	.header__menu-link {
 		display: flex;
 		align-items: center;
 		height: 100%;
@@ -81,9 +113,56 @@
 		transition: color 0.2s linear;
 	}
 
+	.header__menu-item--current {
+		color: var(--primary-400);
+	}
+
+	.header__toggle {
+		display: none;
+	}
+
 	@media (hover: hover) {
-		a:hover {
+		.header__menu-link:hover {
 			color: var(--grey-300);
+		}
+	}
+
+	@media (width <= 480px) {
+		.header__toggle {
+			display: block;
+		}
+
+		.header__menu-list {
+			flex-direction: column;
+		}
+
+		.header__nav {
+			display: none;
+		}
+
+		.header__mobile {
+			display: block;
+		}
+
+		.header__mobile .header__menu-list {
+			position: absolute;
+			top: 85px;
+			left: 0;
+			width: 100%;
+			height: fit-content;
+			background-color: var(--primary-900);
+		}
+
+		.header__logo-container {
+			position: relative;
+		}
+
+		.header__menu-item {
+			height: 65px;
+		}
+
+		.header__menu-link {
+			font-size: 20px;
 		}
 	}
 </style>
