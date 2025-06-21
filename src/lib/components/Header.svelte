@@ -10,6 +10,14 @@
 	function toggleNavbar(): void {
 		showMenu = !showMenu;
 	}
+
+	$: {
+		if (showMenu) {
+			document.body.style.overflow = 'hidden';
+		} else {
+			document.body.style.overflow = '';
+		}
+	}
 </script>
 
 <header class="header">
@@ -64,9 +72,13 @@
 
 <style>
 	.header {
+		position: sticky;
+		top: 0;
 		display: flex;
 		justify-content: space-between;
-		padding: 16px 0;
+		padding: 16px 6em;
+		background-color: var(--primary-900);
+		z-index: 1;
 	}
 
 	.header__logo-container {
@@ -80,7 +92,6 @@
 	.header__nav {
 		display: flex;
 		justify-content: center;
-		z-index: 1;
 	}
 
 	.header__menu-list {
@@ -128,6 +139,10 @@
 	}
 
 	@media (width <= 480px) {
+		.header {
+			padding: 16px 40px;
+		}
+
 		.header__toggle {
 			display: block;
 		}
@@ -146,7 +161,7 @@
 
 		.header__mobile .header__menu-list {
 			position: absolute;
-			top: 85px;
+			top: 80px;
 			left: 0;
 			width: 100%;
 			height: fit-content;

@@ -20,18 +20,18 @@
 	.app {
 		display: flex;
 		flex-direction: column;
-		padding: 0 6em;
 		background: var(--grey-900) url('$lib/images/background.png') no-repeat center / cover;
 		min-height: 100vh;
 	}
 
 	main {
 		width: 100%;
+		padding: 0 6em;
 		box-sizing: border-box;
 	}
 
 	@media (width <= 480px) {
-		.app {
+		main {
 			padding: 15px 40px;
 		}
 	}
