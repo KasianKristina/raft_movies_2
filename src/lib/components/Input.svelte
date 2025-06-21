@@ -39,15 +39,19 @@
 	const handleBlur = () => (isFocused = false);
 </script>
 
-<div class="input-wrapper">
-	<div class="input-container">
+<div class="input">
+	<div class="input__container">
 		{#if label}
-			<label for={id} class="floating-label" class:active={isFocused || hasValue}>
+			<label for={id} class="input__label" class:input__label--floating={isFocused || hasValue}>
 				{label}
 			</label>
 		{/if}
 
-		<div class="input" class:input-active={isFocused} class:input-error={Boolean(errorMessage)}>
+		<div
+			class="input__field"
+			class:input__field--focused={isFocused}
+			class:input__field--error={Boolean(errorMessage)}
+		>
 			{#if leftIcon}
 				{@render leftIcon()}
 			{/if}
@@ -57,8 +61,7 @@
 				bind:value={localValue}
 				onfocus={handleFocus}
 				onblur={handleBlur}
-				class="input-component"
-				class:input-with-label={Boolean(label)}
+				class="input__control"
 				placeholder={!label ? placeholder : null}
 				{...rest}
 			/>
@@ -70,18 +73,20 @@
 	</div>
 
 	{#if errorMessage}
-		<div class="error-message">{errorMessage}</div>
+		<div class="input__error">
+			<p class="input__error-text">{errorMessage}</p>
+		</div>
 	{/if}
 </div>
 
 <style>
-	.input-wrapper {
+	.input {
 		position: relative;
 		width: 100%;
 		padding-bottom: 25px;
 	}
 
-	.input {
+	.input__field {
 		display: flex;
 		align-items: center;
 		width: 100%;
@@ -97,7 +102,7 @@
 		}
 	}
 
-	.input-component {
+	.input__control {
 		width: 100%;
 		border: none;
 		background: transparent;
@@ -110,20 +115,15 @@
 		}
 	}
 
-	.input-active {
+	.input__field--focused {
 		border-color: var(--tertiary-500);
 	}
 
-	.input-with-label {
-		padding-bottom: 12px;
-		padding-top: 26px;
-	}
-
-	.input-error {
+	.input__field--error {
 		border-color: var(--error-500);
 	}
 
-	.floating-label {
+	.input__label {
 		position: absolute;
 		top: 50%;
 		left: 12px;
@@ -133,17 +133,20 @@
 		transform: translateY(-50%);
 		transition: all 0.2s ease-out;
 
-		&.active {
+		&.input__label--floating {
 			top: 12px;
 			transform: translateY(0);
 		}
 	}
 
-	.error-message {
+	.input__error {
 		position: absolute;
+		margin-top: 12px;
+	}
+
+	.input__error-text {
 		color: var(--error-500);
 		font: var(--type-caption);
-		margin-top: 12px;
 	}
 
 	::placeholder {

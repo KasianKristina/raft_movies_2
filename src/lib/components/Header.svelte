@@ -1,9 +1,16 @@
 <script lang="ts">
+	import { browser } from '$app/environment';
 	import { page } from '$app/state';
 	import { COLORS } from '$lib/colors/colors';
 	import CloseIcon from '$lib/icons/CloseIcon.svelte';
 	import LogoIcon from '$lib/icons/Logo.svelte';
 	import MenuIcon from '$lib/icons/MenuIcon.svelte';
+
+	const menuItems = [
+		{ pathName: '/', pageName: 'Home' },
+		{ pathName: '/movies', pageName: 'Movies' },
+		{ pathName: '/suggestions', pageName: 'Suggestions' },
+	];
 
 	let showMenu: boolean = false;
 
@@ -11,7 +18,7 @@
 		showMenu = !showMenu;
 	}
 
-	$: {
+	$: if (browser) {
 		if (showMenu) {
 			document.body.style.overflow = 'hidden';
 		} else {
@@ -36,36 +43,20 @@
 
 	<nav class="header__nav" class:header__mobile={showMenu}>
 		<ul class="header__menu-list">
-			<li class="header__menu-item" aria-current={page.url.pathname === '/' ? 'page' : undefined}>
-				<a
-					class="header__menu-link"
-					href="/"
-					onclick={toggleNavbar}
-					class:header__menu-item--current={page.url.pathname === '/'}>Home</a
+			{#each menuItems as menuItem}
+				<li
+					class="header__menu-item"
+					aria-current={page.url.pathname === menuItem.pathName ? 'page' : undefined}
 				>
-			</li>
-			<li
-				class="header__menu-item"
-				aria-current={page.url.pathname === '/movies' ? 'page' : undefined}
-			>
-				<a
-					class="header__menu-link"
-					href="/movies"
-					onclick={toggleNavbar}
-					class:header__menu-item--current={page.url.pathname === '/movies'}>Movies</a
-				>
-			</li>
-			<li
-				class="header__menu-item"
-				aria-current={page.url.pathname === '/suggestions' ? 'page' : undefined}
-			>
-				<a
-					class="header__menu-link"
-					href="/suggestions"
-					onclick={toggleNavbar}
-					class:header__menu-item--current={page.url.pathname === '/suggestions'}>Suggestions</a
-				>
-			</li>
+					<a
+						class="header__menu-link"
+						href={menuItem.pathName}
+						onclick={toggleNavbar}
+						class:header__menu-link--current={page.url.pathname === menuItem.pathName}
+						>{menuItem.pageName}</a
+					>
+				</li>
+			{/each}
 		</ul>
 	</nav>
 </header>
@@ -124,7 +115,7 @@
 		transition: color 0.2s linear;
 	}
 
-	.header__menu-item--current {
+	.header__menu-link--current {
 		color: var(--primary-400);
 	}
 

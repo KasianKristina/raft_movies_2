@@ -11,27 +11,29 @@
 	<title>Home</title>
 </svelte:head>
 
-<section>
-	<h1 class="welcome">Welcome</h1>
-
-	<ul class="folders">
-		{#each folders as folder}
-			<li class="folder">
-				<p class="number">{folder.number}</p>
-				<p class="text">{folder.text}</p>
-			</li>
-		{/each}
-	</ul>
-
-	<h2 class="quick-links">Quick Links</h2>
-	<ul class="quick-links-wrapper">
-		<li class="quick-link">Suggestions</li>
-		<li class="quick-link">Add</li>
-	</ul>
-</section>
+<div>
+	<section class="welcome-section">
+		<h1 class="welcome-section__title">Welcome</h1>
+		<ul class="welcome-section__folders">
+			{#each folders as folder}
+				<li class="folder">
+					<p class="folder__number">{folder.number}</p>
+					<p class="folder__text">{folder.text}</p>
+				</li>
+			{/each}
+		</ul>
+	</section>
+	<section class="quick-links">
+		<h2 class="quick-links__title">Quick Links</h2>
+		<ul class="quick-links__list">
+			<li class="quick-links__item">Suggestions</li>
+			<li class="quick-links__item">Add</li>
+		</ul>
+	</section>
+</div>
 
 <style>
-	.welcome {
+	.welcome-section__title {
 		width: 100%;
 		color: var(--grey-50);
 		font: var(--type-heading-two);
@@ -39,7 +41,7 @@
 		text-align: left;
 	}
 
-	.folders {
+	.welcome-section__folders {
 		display: flex;
 		width: 100%;
 		flex-wrap: wrap;
@@ -62,29 +64,29 @@
 		max-width: 272px;
 	}
 
-	.number {
+	.folder__number {
 		color: var(--grey-50);
 		font: var(--type-heading-three);
 	}
 
-	.text {
+	.folder__text {
 		color: var(--grey-400);
 		font: var(--type-body-regular);
 	}
 
-	.quick-links {
+	.quick-links__title {
 		color: var(--grey-50);
 		font: var(--type-heading-five);
 		text-align: center;
 	}
 
-	.quick-links-wrapper {
+	.quick-links__list {
 		display: flex;
 		gap: 24px;
 		margin-top: 40px;
 	}
 
-	.quick-link {
+	.quick-links__item {
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -98,12 +100,12 @@
 	}
 
 	@media (width <= 480px) {
-		.welcome {
+		.welcome-section__title {
 			font: var(--type-heading-three);
 			text-align: center;
 		}
 
-		.folders {
+		.welcome-section__folders {
 			justify-content: center;
 		}
 	}
