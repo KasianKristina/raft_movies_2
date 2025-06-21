@@ -15,16 +15,12 @@
 		I will really appreciate it if you take time to suggest me something good to watch
 	</p>
 	<div class="search-block">
-		<div class="search-block-input">
-			<Input placeholder="Search Movies or TV Shows">
-				{#snippet leftIcon()}
-					<SearchIcon size={21} color={COLORS.GREY_600} />
-				{/snippet}
-			</Input>
-		</div>
-		<div class="search-block-button">
-			<Button onClick={() => {}} width="100%">Search</Button>
-		</div>
+		<Input placeholder="Search Movies or TV Shows">
+			{#snippet leftIcon()}
+				<SearchIcon size={21} color={COLORS.GREY_600} />
+			{/snippet}
+		</Input>
+		<Button onClick={() => {}}>Search</Button>
 	</div>
 </div>
 
@@ -52,12 +48,9 @@
 		max-width: 513px;
 	}
 
-	.search-block-input {
-		flex: 2;
-	}
-
-	.search-block-button {
-		flex: 1;
+	/* stylelint-disable-next-line selector-pseudo-class-no-unknown */
+	.search-block :global(.button) {
+		width: auto;
 	}
 
 	@media (width <= 480px) {
@@ -71,9 +64,8 @@
 			width: auto;
 		}
 
-		.search-block-input,
-		.search-block-button {
-			flex: auto;
+		/* stylelint-disable-next-line selector-pseudo-class-no-unknown */
+		.search-block :global(.button) {
 			width: 100%;
 		}
 	}

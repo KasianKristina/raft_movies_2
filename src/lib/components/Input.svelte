@@ -10,14 +10,10 @@
 	};
 
 	const {
-		type = 'text',
 		value = '',
 		placeholder = '',
 		label = '',
-		name,
 		id,
-		required = false,
-		disabled = false,
 		errorMessage = '',
 		leftIcon,
 		rightIcon,
@@ -57,11 +53,7 @@
 			{/if}
 
 			<input
-				{type}
-				{name}
 				{id}
-				{required}
-				{disabled}
 				bind:value={localValue}
 				onfocus={handleFocus}
 				onblur={handleBlur}

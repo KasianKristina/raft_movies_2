@@ -5,17 +5,12 @@
 		children,
 		onClick,
 		disabled = false,
-		className = '',
-		width = 'auto',
 	} = $props<{
 		children: Snippet<[]>;
 		onClick?: () => void;
 		disabled?: boolean;
-		className?: string;
-		width: string;
 	}>();
 
-	const derivedClassName = $derived(`button ${className}`);
 	const isDisabled = $derived(disabled);
 
 	function handleClick(e: MouseEvent) {
@@ -24,13 +19,7 @@
 	}
 </script>
 
-<button
-	type="button"
-	class={derivedClassName}
-	onclick={handleClick}
-	disabled={isDisabled}
-	style="width: {width};"
->
+<button type="button" class="button" onclick={handleClick} disabled={isDisabled}>
 	{@render children()}
 </button>
 
