@@ -15,7 +15,7 @@
 		I will really appreciate it if you take time to suggest me something good to watch
 	</p>
 	<div class="search-block">
-		<Input placeholder="Search Movies or TV Shows" label="Movies or TV Shows">
+		<Input label="Search Movies or TV Shows">
 			{#snippet leftIcon()}
 				<SearchIcon size={21} color={COLORS.GREY_600} />
 			{/snippet}

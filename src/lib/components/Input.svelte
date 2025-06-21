@@ -30,46 +30,30 @@
 	$effect(() => {
 		onValueChange?.(localValue);
 	});
-
-	let isFocused = $state(false);
-
-	const hasValue = $derived(Boolean(value));
-
-	const handleFocus = () => (isFocused = true);
-	const handleBlur = () => (isFocused = false);
 </script>
 
 <div class="input">
-	<div class="input__container">
+	<div class="input__field" class:input__field--error={Boolean(errorMessage)}>
+		{#if leftIcon}
+			{@render leftIcon()}
+		{/if}
+
+		<input
+			bind:value={localValue}
+			class="input__control"
+			placeholder={!label ? placeholder : ''}
+			{...rest}
+		/>
+
 		{#if label}
-			<label for={id} class="input__label" class:input__label--floating={isFocused || hasValue}>
+			<label for={id} class="input__label">
 				{label}
 			</label>
 		{/if}
 
-		<div
-			class="input__field"
-			class:input__field--focused={isFocused}
-			class:input__field--error={Boolean(errorMessage)}
-		>
-			{#if leftIcon}
-				{@render leftIcon()}
-			{/if}
-
-			<input
-				{id}
-				bind:value={localValue}
-				onfocus={handleFocus}
-				onblur={handleBlur}
-				class="input__control"
-				placeholder={!label ? placeholder : null}
-				{...rest}
-			/>
-
-			{#if rightIcon}
-				{@render rightIcon()}
-			{/if}
-		</div>
+		{#if rightIcon}
+			{@render rightIcon()}
+		{/if}
 	</div>
 
 	{#if errorMessage}
@@ -115,8 +99,8 @@
 		}
 	}
 
-	.input__field--focused {
-		border-color: var(--tertiary-500);
+	.input__field:focus-within {
+		border-color: var(--primary-400);
 	}
 
 	.input__field--error {
@@ -125,18 +109,19 @@
 
 	.input__label {
 		position: absolute;
-		top: 50%;
-		left: 12px;
+		top: 28px;
+		left: 48px;
 		color: var(--grey-600);
 		font: var(--type-caption);
 		pointer-events: none;
 		transform: translateY(-50%);
 		transition: all 0.2s ease-out;
+	}
 
-		&.input__label--floating {
-			top: 12px;
-			transform: translateY(0);
-		}
+	.input__control:focus ~ .input__label,
+	.input__control:not(:placeholder-shown) ~ .input__label {
+		top: 4px;
+		transform: translateY(0);
 	}
 
 	.input__error {
