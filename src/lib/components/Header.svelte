@@ -7,9 +7,9 @@
 	import MenuIcon from '$lib/icons/MenuIcon.svelte';
 
 	const menuItems = [
-		{ pathName: '/', pageName: 'Home' },
-		{ pathName: '/movies', pageName: 'Movies' },
-		{ pathName: '/suggestions', pageName: 'Suggestions' },
+		{ pathName: '/', pageName: 'Главная' },
+		{ pathName: '/movies', pageName: 'Фильмы' },
+		{ pathName: '/suggestions', pageName: 'Предложения' },
 	];
 
 	let showMenu: boolean = false;

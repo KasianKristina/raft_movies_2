@@ -1,19 +1,19 @@
 <script lang="ts">
 	const folders = [
-		{ number: 93, text: 'Movies' },
-		{ number: 93, text: 'Movies' },
-		{ number: 93, text: 'Movies' },
-		{ number: 93, text: 'Movies' },
+		{ number: 93, text: 'Фильма' },
+		{ number: 91, text: 'Фильм' },
+		{ number: 90, text: 'Фильмов' },
+		{ number: 93, text: 'Фильма' },
 	];
 </script>
 
 <svelte:head>
-	<title>Home</title>
+	<title>Главная</title>
 </svelte:head>
 
-<h1 class="title">Welcome</h1>
+<h1 class="title">Добро пожаловать</h1>
 <section class="welcome-section">
-	<h2 class="visually-hidden">Folders with films</h2>
+	<h2 class="visually-hidden">Папки с подборками фильмов</h2>
 	<ul class="welcome-section__folders">
 		{#each folders as folder}
 			<li class="folder">
@@ -24,10 +24,10 @@
 	</ul>
 </section>
 <section class="quick-links">
-	<h2 class="quick-links__title">Quick Links</h2>
+	<h2 class="quick-links__title">Быстрые ссылки</h2>
 	<ul class="quick-links__list">
-		<li class="quick-links__item">Suggestions</li>
-		<li class="quick-links__item">Add</li>
+		<li class="quick-links__item">Предложения</li>
+		<li class="quick-links__item">Добавить</li>
 	</ul>
 </section>
 

@@ -6,22 +6,23 @@
 </script>
 
 <svelte:head>
-	<title>Suggestions</title>
+	<title>Предложения</title>
 </svelte:head>
 
-<h1 class="title">Suggest me</h1>
+<h1 class="title">Предложи фильм</h1>
 <section class="suggest">
-	<h2 class="visually-hidden">Block with search for movies or TV shows</h2>
+	<h2 class="visually-hidden">Блок с поиском фильмов или телепередач</h2>
 	<p class="suggest__text">
-		I will really appreciate it if you take time to suggest me something good to watch
+		Я буду очень признателен, если вы найдете время и предложите мне что-нибудь интересное для
+		просмотра
 	</p>
 	<div class="suggest__search">
-		<Input label="Search Movies or TV Shows">
+		<Input label="Поиск фильмов или телешоу">
 			{#snippet leftIcon()}
 				<SearchIcon size={21} color={COLORS.GREY_600} />
 			{/snippet}
 		</Input>
-		<Button onClick={() => {}}>Search</Button>
+		<Button onClick={() => {}}>Поиск</Button>
 	</div>
 </section>
 
