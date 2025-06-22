@@ -58,9 +58,8 @@
 		cursor: pointer;
 		border-radius: 12px;
 		background-color: var(--grey-900);
-		width: 100%;
-		max-width: 272px;
-		height: 152px;
+		padding: 40px 20px;
+		width: 282px;
 	}
 
 	.folder__number {
@@ -69,8 +68,13 @@
 	}
 
 	.folder__text {
+		width: 100%;
+		overflow: hidden;
 		color: var(--grey-400);
 		font: var(--type-body-regular);
+		text-align: center;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 
 	.quick-links__title {
@@ -93,7 +97,7 @@
 		border-radius: 12px;
 		background-color: var(--grey-900);
 		width: 100%;
-		height: 104px;
+		min-height: 104px;
 		color: var(--primary-400);
 		font: var(--type-link-regular);
 	}
@@ -106,6 +110,10 @@
 
 		.welcome-section__folders {
 			justify-content: center;
+		}
+
+		.quick-links__list {
+			flex-direction: column;
 		}
 	}
 </style>

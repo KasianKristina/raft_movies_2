@@ -13,12 +13,13 @@
 	];
 
 	let showMenu: boolean = false;
+	let size: number;
 
 	function toggleNavbar(): void {
 		showMenu = !showMenu;
 	}
 
-	$: if (browser) {
+	$: if (browser && size <= 480) {
 		if (showMenu) {
 			document.body.style.overflow = 'hidden';
 		} else {
@@ -27,6 +28,7 @@
 	}
 </script>
 
+<svelte:window bind:innerWidth={size} />
 <header class="header">
 	<div class="header__logo-container">
 		<a href="/">
@@ -77,7 +79,6 @@
 		justify-content: space-between;
 		align-items: center;
 		width: 100%;
-		height: 3em;
 	}
 
 	.header__nav {
@@ -95,7 +96,6 @@
 		background: var(--background);
 		background-size: contain;
 		padding: 0;
-		height: 3em;
 		list-style: none;
 	}
 

@@ -9,15 +9,13 @@
 	<meta name="description" content="Raft movies app" />
 </svelte:head>
 
-<div class="app">
-	<Header />
-	<main>
-		{@render children()}
-	</main>
-</div>
+<Header />
+<main>
+	{@render children()}
+</main>
 
 <style>
-	.app {
+	:global(#app) {
 		display: flex;
 		flex-direction: column;
 		background: var(--grey-900) url('$lib/images/background.webp') no-repeat center / cover;
