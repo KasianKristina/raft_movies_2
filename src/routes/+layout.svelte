@@ -25,9 +25,9 @@
 	}
 
 	main {
-		width: 100%;
-		padding: 0 6em;
 		box-sizing: border-box;
+		padding: 0 6em;
+		width: 100%;
 	}
 
 	@media (width <= 480px) {

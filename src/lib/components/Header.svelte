@@ -63,13 +63,13 @@
 
 <style>
 	.header {
+		display: flex;
 		position: sticky;
 		top: 0;
-		display: flex;
 		justify-content: space-between;
-		padding: 16px 6em;
-		background-color: var(--primary-900);
 		z-index: 1;
+		background-color: var(--primary-900);
+		padding: 16px 6em;
 	}
 
 	.header__logo-container {
@@ -86,16 +86,16 @@
 	}
 
 	.header__menu-list {
-		position: relative;
 		display: flex;
+		position: relative;
 		justify-content: center;
 		align-items: center;
-		height: 3em;
+		gap: 16px;
 		margin: 0;
-		padding: 0;
 		background: var(--background);
 		background-size: contain;
-		gap: 16px;
+		padding: 0;
+		height: 3em;
 		list-style: none;
 	}
 
@@ -107,12 +107,12 @@
 	.header__menu-link {
 		display: flex;
 		align-items: center;
-		height: 100%;
+		transition: color 0.2s linear;
 		padding: 12px 16px;
+		height: 100%;
 		color: var(--grey-200);
 		font: var(--type-link-regular);
 		text-decoration: none;
-		transition: color 0.2s linear;
 	}
 
 	.header__menu-link--current {
@@ -154,9 +154,9 @@
 			position: absolute;
 			top: 80px;
 			left: 0;
+			background-color: var(--primary-900);
 			width: 100%;
 			height: fit-content;
-			background-color: var(--primary-900);
 		}
 
 		.header__logo-container {

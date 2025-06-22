@@ -33,20 +33,20 @@
 
 <style>
 	.title {
+		margin-top: 80px;
 		width: 100%;
 		color: var(--grey-50);
 		font: var(--type-heading-two);
-		margin-top: 80px;
 		text-align: left;
 	}
 
 	.welcome-section__folders {
 		display: flex;
-		width: 100%;
 		flex-wrap: wrap;
 		gap: 24px;
-		margin-bottom: 80px;
 		margin-top: 40px;
+		margin-bottom: 80px;
+		width: 100%;
 	}
 
 	.folder {
@@ -54,13 +54,13 @@
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
-		width: 100%;
-		height: 152px;
-		background-color: var(--grey-900);
-		border-radius: 12px;
-		cursor: pointer;
 		gap: 8.5px;
+		cursor: pointer;
+		border-radius: 12px;
+		background-color: var(--grey-900);
+		width: 100%;
 		max-width: 272px;
+		height: 152px;
 	}
 
 	.folder__number {
@@ -89,13 +89,13 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
+		cursor: pointer;
+		border-radius: 12px;
+		background-color: var(--grey-900);
 		width: 100%;
 		height: 104px;
 		color: var(--primary-400);
 		font: var(--type-link-regular);
-		background-color: var(--grey-900);
-		border-radius: 12px;
-		cursor: pointer;
 	}
 
 	@media (width <= 480px) {

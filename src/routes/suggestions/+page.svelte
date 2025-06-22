@@ -28,29 +28,28 @@
 
 <style>
 	.title {
+		margin-top: 80px;
 		width: 100%;
 		color: var(--grey-50);
 		font: var(--type-heading-two);
-		margin-top: 80px;
 		text-align: left;
 	}
 
 	.suggest__text {
+		margin-top: 16px;
+		margin-bottom: 24px;
 		color: var(--grey-300);
 		font: var(--type-body-regular);
-		margin-bottom: 24px;
-		margin-top: 16px;
 	}
 
 	.suggest__search {
 		display: flex;
 		align-items: start;
-		width: 100%;
 		gap: 8px;
+		width: 100%;
 		max-width: 513px;
 	}
 
-	/* stylelint-disable-next-line selector-pseudo-class-no-unknown */
 	.suggest__search :global(.button) {
 		width: auto;
 	}
@@ -66,7 +65,6 @@
 			width: auto;
 		}
 
-		/* stylelint-disable-next-line selector-pseudo-class-no-unknown */
 		.suggest__search :global(.button) {
 			width: 100%;
 		}

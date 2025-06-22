@@ -25,19 +25,19 @@
 
 <style>
 	.button {
-		height: fit-content;
-		padding: 16px 32px;
+		transition: background-color 0.3s ease;
+		cursor: pointer;
 		border: 2px solid transparent;
+		border-radius: 12px;
+		background-color: var(--primary-400);
+		padding: 16px 32px;
+		height: fit-content;
 		color: white;
 		font: var(--type-body-regular);
-		background-color: var(--primary-400);
-		border-radius: 12px;
-		cursor: pointer;
-		transition: background-color 0.3s ease;
 
 		&:active {
-			background-color: var(--primary-400);
 			border-color: var(--primary-500);
+			background-color: var(--primary-400);
 		}
 
 		&:disabled {

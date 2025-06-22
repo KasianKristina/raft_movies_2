@@ -66,36 +66,36 @@
 <style>
 	.input {
 		position: relative;
-		width: 100%;
 		padding-bottom: 25px;
+		width: 100%;
 	}
 
 	.input__field {
 		display: flex;
 		align-items: center;
-		width: 100%;
-		padding: 16px 12px;
-		border: 1px solid var(--grey-600);
-		border-radius: 12px;
 		gap: 16px;
 		transition: border-color 0.3s ease;
+		border: 1px solid var(--grey-600);
+		border-radius: 12px;
+		padding: 16px 12px;
+		width: 100%;
 
 		&:disabled {
-			cursor: not-allowed;
 			opacity: 0.7;
+			cursor: not-allowed;
 		}
 	}
 
 	.input__control {
-		width: 100%;
 		border: none;
 		background: transparent;
+		width: 100%;
 		color: var(--white-400);
 		font: var(--type-body-regular);
 
 		&:focus {
-			color: white;
 			outline: none;
+			color: white;
 		}
 	}
 
@@ -111,11 +111,11 @@
 		position: absolute;
 		top: 28px;
 		left: 48px;
-		color: var(--grey-600);
-		font: var(--type-caption);
-		pointer-events: none;
 		transform: translateY(-50%);
 		transition: all 0.2s ease-out;
+		pointer-events: none;
+		color: var(--grey-600);
+		font: var(--type-caption);
 	}
 
 	.input__control:focus ~ .input__label,
