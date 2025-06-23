@@ -35,11 +35,6 @@
 		color: white;
 		font: var(--type-body-regular);
 
-		&:active {
-			border-color: var(--primary-500);
-			background-color: var(--primary-400);
-		}
-
 		&:disabled {
 			opacity: 0.4;
 			pointer-events: none;
@@ -47,8 +42,15 @@
 	}
 
 	@media (hover: hover) {
-		.button:hover {
-			background-color: var(--primary-500);
+		.button {
+			&:hover {
+				background-color: var(--primary-500);
+			}
+
+			&:active {
+				border-color: var(--primary-500);
+				background-color: var(--primary-400);
+			}
 		}
 	}
 </style>
