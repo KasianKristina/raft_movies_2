@@ -22,7 +22,7 @@
 				<SearchIcon size={21} color={COLORS.GREY_600} />
 			{/snippet}
 		</Input>
-		<Button onClick={() => {}}>Поиск</Button>
+		<Button>Поиск</Button>
 	</div>
 </section>
 

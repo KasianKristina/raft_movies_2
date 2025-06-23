@@ -1,25 +1,15 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import type { HTMLButtonAttributes } from 'svelte/elements';
 
-	const {
-		children,
-		onClick,
-		disabled = false,
-	} = $props<{
-		children: Snippet<[]>;
-		onClick?: () => void;
-		disabled?: boolean;
-	}>();
+	type Props = HTMLButtonAttributes & {
+		children: Snippet;
+	};
 
-	const isDisabled = $derived(disabled);
-
-	function handleClick(e: MouseEvent) {
-		onClick?.();
-		(e.currentTarget as HTMLButtonElement).blur();
-	}
+	const { children, ...props }: Props = $props();
 </script>
 
-<button type="button" class="button" onclick={handleClick} disabled={isDisabled}>
+<button class="button" {...props}>
 	{@render children()}
 </button>
 
