@@ -2,7 +2,6 @@
 	import Button from '$lib/components/Button.svelte';
 	import Input from '$lib/components/Input.svelte';
 	import SearchIcon from '$lib/icons/SearchIcon.svelte';
-	import { COLORS } from '$lib/colors/colors';
 </script>
 
 <svelte:head>
@@ -55,7 +54,7 @@
 		width: auto;
 	}
 
-	@media (width <= 480px) {
+	@media (width <= 760px) {
 		.title {
 			font: var(--type-heading-three);
 			text-align: center;

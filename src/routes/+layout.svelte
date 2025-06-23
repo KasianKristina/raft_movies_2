@@ -21,7 +21,7 @@
 		width: 100%;
 	}
 
-	@media (width <= 480px) {
+	@media (width <= 768px) {
 		main {
 			padding: 15px 40px;
 		}

@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
 	import { page } from '$app/state';
-	import { COLORS } from '$lib/colors/colors';
 	import CloseIcon from '$lib/icons/CloseIcon.svelte';
 	import LogoIcon from '$lib/icons/Logo.svelte';
 	import MenuIcon from '$lib/icons/MenuIcon.svelte';
@@ -19,7 +18,7 @@
 		showMenu = !showMenu;
 	}
 
-	$: if (browser && size <= 480) {
+	$: if (browser && size <= 768) {
 		if (showMenu) {
 			document.body.style.overflow = 'hidden';
 		} else {
@@ -134,7 +133,7 @@
 		}
 	}
 
-	@media (width <= 480px) {
+	@media (width <= 768px) {
 		.header {
 			padding: 16px 40px;
 		}
