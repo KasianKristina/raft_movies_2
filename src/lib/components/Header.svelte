@@ -32,13 +32,13 @@
 <header class="header">
 	<div class="header__logo-container">
 		<a href="/">
-			<LogoIcon size={32} colorFirst={COLORS.SECONDARY_500} colorSecond={COLORS.PRIMARY_400} />
+			<LogoIcon />
 		</a>
 		<button type="button" onclick={toggleNavbar} class="header__toggle">
 			{#if showMenu}
-				<CloseIcon color={COLORS.GREY_300} size={30} />
+				<CloseIcon />
 			{:else}
-				<MenuIcon color={COLORS.GREY_300} />
+				<MenuIcon />
 			{/if}
 		</button>
 	</div>
@@ -123,6 +123,11 @@
 		display: none;
 	}
 
+	.header__toggle :global(svg) {
+		width: 30px;
+		height: 30px;
+	}
+
 	@media (hover: hover) {
 		.header__menu-link:hover {
 			color: var(--grey-300);
@@ -136,6 +141,7 @@
 
 		.header__toggle {
 			display: block;
+			color: var(--grey-300);
 		}
 
 		.header__menu-list {
@@ -152,7 +158,7 @@
 
 		.header__mobile .header__menu-list {
 			position: absolute;
-			top: 80px;
+			top: 68px;
 			left: 0;
 			background-color: var(--primary-900);
 			width: 100%;

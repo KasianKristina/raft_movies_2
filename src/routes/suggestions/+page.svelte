@@ -19,7 +19,7 @@
 	<div class="suggest__search">
 		<Input label="Поиск фильмов или телешоу">
 			{#snippet leftIcon()}
-				<SearchIcon size={21} color={COLORS.GREY_600} />
+				<SearchIcon />
 			{/snippet}
 		</Input>
 		<Button>Поиск</Button>
@@ -48,6 +48,7 @@
 		gap: 8px;
 		width: 100%;
 		max-width: 513px;
+		color: var(--grey-600);
 	}
 
 	.suggest__search :global(.button) {

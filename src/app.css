@@ -172,7 +172,7 @@ button:focus:not(:focus-visible) {
 		}
 
 		&:active {
-			border: 2px solid var(--primary-500);
+			color: var(--primary-500);
 		}
 	}
 }
