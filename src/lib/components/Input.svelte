@@ -1,35 +1,24 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
 	import type { HTMLInputAttributes } from 'svelte/elements';
 
 	type Props = HTMLInputAttributes & {
 		label?: string;
 		errorMessage?: string;
-		leftIcon?: () => any;
-		rightIcon?: () => any;
-		onValueChange?: (value: string) => void;
+		leftIcon?: Snippet;
+		rightIcon?: Snippet;
 	};
 
-	const {
-		value = '',
+	let {
+		value = $bindable(),
 		placeholder = '',
 		label = '',
 		id,
 		errorMessage = '',
 		leftIcon,
 		rightIcon,
-		onValueChange,
 		...rest
 	}: Props = $props();
-
-	let localValue = $state(value);
-
-	$effect(() => {
-		localValue = value;
-	});
-
-	$effect(() => {
-		onValueChange?.(localValue);
-	});
 </script>
 
 <div class="input">
@@ -39,9 +28,10 @@
 		{/if}
 
 		<input
-			bind:value={localValue}
+			bind:value
 			class="input__control"
 			placeholder={!label ? placeholder : ''}
+			{id}
 			{...rest}
 		/>
 
