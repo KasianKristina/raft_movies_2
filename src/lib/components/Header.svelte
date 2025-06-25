@@ -11,23 +11,28 @@
 		{ pathName: '/suggestions', pageName: 'Предложения' },
 	];
 
-	let showMenu: boolean = false;
-	let size: number;
+	let showMenu = $state(false);
+	let size = $state(0);
 
 	function toggleNavbar(): void {
 		showMenu = !showMenu;
 	}
 
-	$: if (browser && size <= 768) {
-		if (showMenu) {
-			document.body.style.overflow = 'hidden';
-		} else {
-			document.body.style.overflow = '';
+	$effect(() => {
+		if (!browser) return;
+
+		const shouldHandle = size <= 768;
+
+		if (shouldHandle) {
+			document.body.style.overflow = showMenu ? 'hidden' : '';
+
+			return () => {
+				document.body.style.overflow = '';
+			};
 		}
-	}
+	});
 </script>
 
-<svelte:window bind:innerWidth={size} />
 <header class="header">
 	<div class="header__logo-container">
 		<a href="/">
