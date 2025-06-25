@@ -33,6 +33,7 @@
 	});
 </script>
 
+<svelte:window bind:innerWidth={size} />
 <header class="header">
 	<div class="header__logo-container">
 		<a href="/">
