@@ -10,7 +10,7 @@
 		bottomChildren?: Snippet;
 	};
 
-	let { id, imgSrc, name, score, bottomChildren }: Props = $props();
+	let { imgSrc, name, score, bottomChildren }: Props = $props();
 </script>
 
 <div class="card">
@@ -38,9 +38,10 @@
 		position: relative;
 		border-radius: 12px;
 		background-color: var(--black-100);
-		padding: 8px 8px 16px 8px;
+		padding: 8px;
 		width: 282px;
 	}
+
 	.card__score {
 		display: flex;
 		position: absolute;
@@ -54,6 +55,7 @@
 		padding: 4px 8px;
 		color: var(--warning-500);
 	}
+
 	.card__title {
 		margin: 24px 0 24px 8px;
 		overflow: hidden;
@@ -62,9 +64,11 @@
 		text-overflow: ellipsis;
 		white-space: nowrap;
 	}
+
 	.card__image-wrapper {
 		height: 400px;
 	}
+
 	.card__image {
 		border-radius: 12px;
 	}

@@ -15,11 +15,12 @@
 </script>
 
 <svelte:head>
-	<title>Фильмы</title>
+	<title>Название подборки</title>
 </svelte:head>
 
+<h1 class="title">Название подборки</h1>
 <div class="text-column">
-	<h1>Название подборки</h1>
+	<h2 class="visually-hidden">Поиск фильмов и телешоу</h2>
 	<Input label="Поиск фильмов или телешоу">
 		{#snippet leftIcon()}
 			<SearchIcon />
@@ -28,7 +29,7 @@
 
 	<ul class="cards">
 		{#each movies as movie}
-			<li class="cards__items">
+			<li class="cards__item">
 				<Card id={movie.id} name={movie.name} imgSrc={movie.imgSrc} score={movie.score} />
 			</li>
 		{/each}
@@ -36,11 +37,30 @@
 </div>
 
 <style>
+	.title {
+		margin-top: 80px;
+		width: 100%;
+		color: var(--grey-50);
+		font: var(--type-heading-two);
+		text-align: left;
+	}
+
 	.cards {
 		display: grid;
 		grid-template-columns: repeat(auto-fill, minmax(282px, 1fr));
 		justify-content: center;
 		gap: 16px 24px;
 		width: 100%;
+	}
+
+	.cards__item {
+		width: 100%;
+	}
+
+	@media (width <= 760px) {
+		.title {
+			font: var(--type-heading-three);
+			text-align: center;
+		}
 	}
 </style>

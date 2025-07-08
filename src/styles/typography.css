@@ -45,4 +45,6 @@
 	--type-heading-three: var(--weight-medium) var(--size-heading-ml) / var(--leading-spacious)
 		var(--font-primary);
 	--type-heading-five: var(--weight-bold) var(--size-heading-sm) / 1.2 var(--font-primary);
+	--type-body-large: var(--weight-regular) var(--size-heading-sm) / 1.2 var(--font-primary);
+	--type-heading-four: var(--weight-bold) var(--size-heading-md) / 1.2 var(--font-primary);
 }
