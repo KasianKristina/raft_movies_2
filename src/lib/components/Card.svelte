@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Star from '$lib/icons/Star.svelte';
 	import type { Snippet } from 'svelte';
+	import Score from './Score.svelte';
 
 	type Props = {
 		id: string;
@@ -14,9 +14,8 @@
 </script>
 
 <div class="card">
-	<div class="card__score">
-		<Star />
-		<p>{score}</p>
+	<div class="score-wrapper">
+		<Score {score} />
 	</div>
 	<div class="card__image-wrapper">
 		<img
@@ -42,18 +41,10 @@
 		width: 282px;
 	}
 
-	.card__score {
-		display: flex;
+	.score-wrapper {
 		position: absolute;
 		top: 16px;
 		left: 16px;
-		align-items: center;
-		gap: 4px;
-		z-index: 1;
-		border-radius: 8px;
-		background-color: var(--black-400);
-		padding: 4px 8px;
-		color: var(--warning-500);
 	}
 
 	.card__title {
