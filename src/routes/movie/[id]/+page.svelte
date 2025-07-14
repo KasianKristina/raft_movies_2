@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Breadcrumbs from '$lib/components/Breadcrumbs.svelte';
 	import Score from '$lib/components/Score.svelte';
 	import Poster from '$lib/images/poster.png';
 
@@ -23,56 +24,62 @@
 
 <h1 class="visually-hidden">Информация о фильме {data.name}</h1>
 <section class="header-section">
-	<div class="header-section_wrapper">
+	<div class="header-section__image_wrapper">
 		<img
 			src={data.image_url}
 			alt={`постер к фильму ${data.name}`}
 			width={1200}
 			height={480}
-			class="header-section_image"
+			class="header-section__image"
 		/>
 	</div>
-	<div class="name__wrapper">
+	<div class="header-section__name-wrapper">
+		<Breadcrumbs
+			breadcrumbs={[
+				{ text: 'suggestions', link: '/suggestions' },
+				{ text: 'Movie', link: '/movie/1' },
+			]}
+		/>
 		<p>{data.name}</p>
 	</div>
 </section>
 <section class="info-section">
 	<h2 class="visually-hidden">О фильме</h2>
-	<div class="wrapper">
+	<div class="info-section__wrapper">
 		<img
 			src={data.image_url}
 			alt={`постер к фильму ${data.name}`}
 			width={480}
 			height={720}
-			class="card__image"
+			class="info-section__image"
 		/>
-		<div class="right-column">
-			<p class="description">{data.description}</p>
-			<div class="score-wrapper">
+		<div>
+			<p class="info-section__description">{data.description}</p>
+			<div class="info-section__score">
 				<Score score={data.score} />
 			</div>
-			<div class="class">
-				<div class="key-value-wrapper">
-					<p class="key">Жанр</p>
-					<p class="value">{data.genres.join(', ')}</p>
-				</div>
-				<div class="key-value-wrapper">
-					<p class="key">Год производства</p>
-					<p class="value">{data.year_of_production}</p>
-				</div>
-				<div class="key-value-wrapper">
-					<p class="key">Страна</p>
-					<p class="value">{data.country}</p>
-				</div>
-				<div class="key-value-wrapper">
-					<p class="key">Режиссер</p>
-					<p class="value">{data.film_director}</p>
-				</div>
-				<div class="key-value-wrapper">
-					<p class="key">Время</p>
-					<p class="value">{data.time}</p>
-				</div>
-			</div>
+			<ul class="info-section__details">
+				<li class="info-section__detail">
+					<p class="info-section__detail-key">Жанр</p>
+					<p class="info-section__detail-value">{data.genres.join(', ')}</p>
+				</li>
+				<li class="info-section__detail">
+					<p class="info-section__detail-key">Год производства</p>
+					<p class="info-section__detail-value">{data.year_of_production}</p>
+				</li>
+				<li class="info-section__detail">
+					<p class="info-section__detail-key">Страна</p>
+					<p class="info-section__detail-value">{data.country}</p>
+				</li>
+				<li class="info-section__detail">
+					<p class="info-section__detail-key">Режиссер</p>
+					<p class="info-section__detail-value">{data.film_director}</p>
+				</li>
+				<li class="info-section__detail">
+					<p class="info-section__detail-key">Время</p>
+					<p class="info-section__detail-value">{data.time}</p>
+				</li>
+			</ul>
 		</div>
 	</div>
 </section>
@@ -82,14 +89,14 @@
 		margin-top: 40px;
 	}
 
-	.header-section_wrapper {
+	.header-section__image_wrapper {
 		position: relative;
 		width: 100%;
 		height: 480px;
 		overflow: hidden;
 	}
 
-	.header-section_image {
+	.header-section__image {
 		display: block;
 		border-radius: 40px;
 		width: 100%;
@@ -97,67 +104,66 @@
 		object-fit: cover;
 	}
 
-	.name__wrapper {
+	.header-section__name-wrapper {
+		display: flex;
 		position: absolute;
 		bottom: 92px;
 		left: 174px;
+		flex-direction: column;
+		gap: 8px;
 		-webkit-backdrop-filter: blur(10px);
 		backdrop-filter: blur(10px);
 		border-radius: 24px;
 		background: var(--black-200);
+		padding: 40px;
 		width: 560px;
-		height: 144px;
 
 		p {
-			padding: 40px;
 			color: var(--grey-50);
 			font: var(--type-heading-three);
 		}
 	}
 
-	.wrapper {
+	.info-section__wrapper {
 		display: flex;
+		align-items: center;
 		gap: 70px;
 		margin-top: 152px;
 		margin-left: 70px;
 	}
 
-	.description {
+	.info-section__description {
 		color: var(--grey-300);
 		font: var(--type-body-large);
 	}
 
-	.right-column {
-		display: flex;
-		flex-direction: column;
-		gap: 24px;
-		margin-right: 80px;
-		width: 480px;
-	}
-
-	.key-value-wrapper {
+	.info-section__detail {
 		display: flex;
 		flex-direction: column;
 		gap: 8px;
 	}
 
-	.key {
+	.info-section__detail-key {
 		color: var(--grey-400);
 		font: var(--type-body-regular);
+		overflow-wrap: break-word;
 	}
 
-	.value {
+	.info-section__detail-value {
+		min-width: 0;
 		color: var(--grey-100);
 		font: var(--type-body-large);
 	}
 
-	.class {
+	.info-section__details {
 		display: grid;
-		grid-template-columns: 1fr 1fr;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 		gap: 24px;
+		width: 100%;
 	}
 
-	.score-wrapper {
+	.info-section__score {
+		margin: 24px 0;
 		width: fit-content;
 	}
 
@@ -165,25 +171,54 @@
 		margin-bottom: 160px;
 	}
 
-	.card__image {
+	.info-section__image {
 		aspect-ratio: 2/3;
 		width: 100%;
+		max-width: 414px;
 		height: auto;
+		max-height: 621px;
 		object-fit: cover;
 	}
 
-	@media (width <= 760px) {
-		.wrapper {
+	@media (width <= 1000px) {
+		.info-section__wrapper {
+			margin-left: 0;
+		}
+	}
+
+	@media (width <= 880px) {
+		.info-section__wrapper {
 			flex-direction: column;
+			margin-top: 0;
 			margin-left: 0;
 		}
 
-		.name__wrapper {
+		.header-section__name-wrapper {
 			display: flex;
-			left: 0;
+			position: relative;
+			bottom: 20px;
 			left: 50%;
-			align-items: center;
 			transform: translateX(-50%);
+			padding: 20px;
+			width: 100%;
+
+			p {
+				font-size: 25px;
+			}
+		}
+
+		.header-section__image_wrapper {
+			display: none;
+		}
+	}
+
+	@media (width <= 480px) {
+		.info-section__details {
+			grid-template-columns: 1fr;
+		}
+
+		.info-section__detail {
+			width: 100%;
 		}
 	}
 </style>
