@@ -49,4 +49,5 @@
 	--type-heading-four: var(--weight-bold) var(--size-heading-md) / 1.2 var(--font-primary);
 	--type-body-extra-small: var(--weight-regular) var(--size-label) / var(--leading-dense)
 		var(--font-primary);
+	--type-heading-one: var(--weight-semibold) var(--size-display) / 1.2 var(--font-primary);
 }

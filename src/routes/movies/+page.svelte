@@ -19,22 +19,21 @@
 </svelte:head>
 
 <h1 class="title">Название подборки</h1>
-<div class="text-column">
-	<h2 class="visually-hidden">Поиск фильмов и телешоу</h2>
-	<Input label="Поиск фильмов или телешоу">
-		{#snippet leftIcon()}
-			<SearchIcon />
-		{/snippet}
-	</Input>
 
-	<ul class="cards">
-		{#each movies as movie}
-			<li class="cards__item">
-				<Card id={movie.id} name={movie.name} imgSrc={movie.imgSrc} score={movie.score} />
-			</li>
-		{/each}
-	</ul>
-</div>
+<h2 class="visually-hidden">Поиск фильмов и телешоу</h2>
+<Input label="Поиск фильмов или телешоу">
+	{#snippet leftIcon()}
+		<SearchIcon />
+	{/snippet}
+</Input>
+
+<ul class="cards">
+	{#each movies as movie}
+		<li class="cards__item">
+			<Card id={movie.id} name={movie.name} imgSrc={movie.imgSrc} score={movie.score} />
+		</li>
+	{/each}
+</ul>
 
 <style>
 	.title {
