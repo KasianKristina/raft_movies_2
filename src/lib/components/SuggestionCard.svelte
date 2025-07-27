@@ -7,7 +7,11 @@
 		description?: string;
 		author: string;
 		isNeedDisplayAuthor?: boolean;
+		beginningOfVoting?: number;
+		endOfVoting?: number;
 	};
+
+	const currentTimestamp = new Date().getTime();
 
 	let {
 		id,
@@ -17,11 +21,27 @@
 		description,
 		author,
 		isNeedDisplayAuthor = true,
+		beginningOfVoting,
+		endOfVoting,
 	}: Props = $props();
 </script>
 
-<a class="item" href={`/suggestion/${id}`}>
-	<p class="item__name" title={name}>{name}</p>
+<a
+	class="item"
+	class:votingItem={beginningOfVoting &&
+		endOfVoting &&
+		beginningOfVoting <= currentTimestamp &&
+		endOfVoting >= currentTimestamp}
+	href={`/suggestion/${id}`}
+>
+	<div class="item__name-wrapper">
+		<p class="item__name" title={name}>{name}</p>
+		{#if endOfVoting}
+			<p class="time">
+				{`Время голосования до ${new Date(endOfVoting).toLocaleDateString()}`}
+			</p>
+		{/if}
+	</div>
 	<p class="item__count">
 		{`Просмотрено ${countAlreadyWatched} из ${countAll}`}
 	</p>
@@ -43,9 +63,25 @@
 		text-decoration: none;
 	}
 
+	.votingItem {
+		border: 1.5px solid var(--warning-400);
+	}
+
+	.item__name-wrapper {
+		position: relative;
+	}
+
+	.time {
+		position: absolute;
+		top: 40px;
+		margin-bottom: 10px;
+		color: var(--warning-400);
+		font: var(--type-caption);
+	}
+
 	.item__name {
 		margin-bottom: 20px;
-		height: 48px;
+		height: 40px;
 		font: var(--type-link-regular);
 		-webkit-line-clamp: 2;
 		display: -webkit-box;

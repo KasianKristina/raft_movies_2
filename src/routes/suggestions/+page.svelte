@@ -33,6 +33,8 @@
 			authorId: '1313',
 			countAlreadyWatched: 1,
 			countAll: 10,
+			beginningOfVoting: 1753642335569,
+			endOfVoting: 1754851935569,
 		},
 		{
 			id: '4',

@@ -6,6 +6,8 @@
 	import Poster from '$lib/images/poster.png';
 	import MovieCard from '$lib/components/MovieCard.svelte';
 	import VideoTickIcon from '$lib/icons/VideoTick.svelte';
+	import LikeIcon from '$lib/icons/Like.svelte';
+	import Toast from '$lib/components/Toast.svelte';
 
 	const movies = [
 		{ id: '1', imgSrc: Poster, name: 'Фильм 1', score: '8.1', isAlreadyWatched: false },
@@ -26,7 +28,11 @@
 		name: 'Советские фильмы',
 		description:
 			'Самые важные фильмы, снятые в СССР: авангардные шедевры Эйзенштейна, комедии Гайдая, экзистенциальные драмы Шепитько и многое другое',
+		beginningOfVoting: 1753642335569,
+		endOfVoting: 1754851935569,
 	};
+
+	const currentTimestamp = new Date().getTime();
 
 	let inputValue = $state('');
 
@@ -40,11 +46,17 @@
 </svelte:head>
 
 <h1 class="title">{data.name}</h1>
+<Toast message="test" />
 <section class="suggest">
 	<h2 class="visually-hidden">Блок с подборками фильмов от пользователей</h2>
 	<p class="description">{data.description}</p>
+	{#if data.beginningOfVoting <= currentTimestamp && data.endOfVoting >= currentTimestamp}
+		<p class="time">
+			{`Время голосования до ${new Date(data.endOfVoting).toLocaleDateString()}`}
+		</p>
+	{/if}
 	<div class="suggest__search">
-		<Input label="Поиск подборок с фильмами" bind:value={inputValue}>
+		<Input label="Поиск фильмов" bind:value={inputValue}>
 			{#snippet leftIcon()}
 				<SearchIcon />
 			{/snippet}
@@ -65,6 +77,11 @@
 								<VideoTickIcon />
 								<p>Уже просмотрено</p>
 							</div>
+						{:else}
+							<button class="cards__item-text">
+								<LikeIcon />
+								<p>Предложить фильм</p>
+							</button>
 						{/if}
 					{/snippet}
 				</MovieCard>
@@ -86,6 +103,11 @@
 	.description {
 		margin-bottom: 30px;
 		color: var(--grey-50);
+	}
+
+	.time {
+		margin-bottom: 30px;
+		color: var(--warning-400);
 	}
 
 	.suggest__search {
@@ -138,7 +160,7 @@
 		gap: 8px;
 		margin-bottom: 16px;
 		margin-left: 8px;
-		color: var(--primary-400);
+		color: var(--warning-400);
 
 		p {
 			font: var(--type-link-regular);
