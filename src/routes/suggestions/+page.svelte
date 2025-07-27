@@ -1,113 +1,110 @@
-<script>
+<script lang="ts">
 	import Button from '$lib/components/Button.svelte';
-	import Card from '$lib/components/Card.svelte';
 	import Input from '$lib/components/Input.svelte';
-	import Modal from '$lib/components/Modal.svelte';
 	import SearchIcon from '$lib/icons/SearchIcon.svelte';
-	import VideoTickIcon from '$lib/icons/VideoTick.svelte';
-	import VideoPlayIcon from '$lib/icons/VideoPlayIcon.svelte';
-	import LinkIcon from '$lib/icons/Link.svelte';
-	import LikeIcon from '$lib/icons/Like.svelte';
-	import Poster from '$lib/images/poster.png';
+	import { getNoun } from '$lib/utils/formatNames';
 
-	const movies = [
-		{ id: '1', imgSrc: Poster, name: 'Фильм 1', score: '8.1', isAlreadyWatched: false },
-		{ id: '2', imgSrc: Poster, name: 'Фильм 2', score: '5.8', isAlreadyWatched: false },
-		{ id: '3', name: 'Фильм 3', score: '4.4', isAlreadyWatched: true },
+	const suggestions = [
+		{
+			id: '1',
+			name: 'Подборка 1',
+			description: 'Описание подборки 1',
+			author: 'Иван Иванов',
+			authorId: '1111',
+			countAlreadyWatched: 0,
+			countAll: 0,
+		},
+		{
+			id: '2',
+			name: 'Подборка с очень длинным названием',
+			description: 'Длинное описание для подборки 2',
+			author: 'Петр Петров',
+			authorId: '1212',
+			countAlreadyWatched: 1,
+			countAll: 5,
+		},
+		{
+			id: '3',
+			name: 'Советские фильмы',
+			description:
+				'Самые важные фильмы, снятые в СССР: авангардные шедевры Эйзенштейна, комедии Гайдая, экзистенциальные драмы Шепитько и многое другое',
+			author: 'Касьян Кристина',
+			authorId: '1313',
+			countAlreadyWatched: 1,
+			countAll: 10,
+		},
 		{
 			id: '4',
-			imgSrc: Poster,
-			name: 'Фильм 4 c очень-очень длинным названием',
-			score: '9',
-			isAlreadyWatched: false,
+			name: '100 великих фильмов XXI века',
+			description: '',
+			author: 'Касьян Кристина',
+			authorId: '1313',
+			countAlreadyWatched: 3,
+			countAll: 12,
 		},
-		{ id: '5', imgSrc: Poster, name: 'Фильм 5', score: '5.8', isAlreadyWatched: true },
-		{ id: '6', imgSrc: Poster, name: 'Фильм 6', score: '5.8', isAlreadyWatched: false },
+		{
+			id: '5',
+			name: 'Фильмы про космос',
+			description: 'Cписок лучших фильмов про космические путешествия',
+			author: 'Иван Иванов',
+			authorId: '1111',
+			countAlreadyWatched: 0,
+			countAll: 7,
+		},
 	];
 
-	let showModal = false;
+	let inputValue = $state('');
+
+	const filteredSuggestions = $derived(
+		suggestions.filter((suggestion) =>
+			suggestion.name.toLowerCase().includes(inputValue.toLowerCase()),
+		),
+	);
 </script>
 
 <svelte:head>
-	<title>Предложения</title>
+	<title>Подборки фильмов</title>
 </svelte:head>
 
-<h1 class="title">Предложи фильм</h1>
+<h1 class="title">Подборки фильмов</h1>
 <section class="suggest">
-	<h2 class="visually-hidden">Блок с поиском фильмов или телепередач</h2>
-	<p class="suggest__text">
-		Я буду очень признателен, если вы найдете время и предложите мне что-нибудь интересное для
-		просмотра
-	</p>
+	<h2 class="visually-hidden">Блок с подборками фильмов от пользователей</h2>
 	<div class="suggest__search">
-		<Input label="Поиск фильмов или телешоу">
+		<Input label="Поиск подборок с фильмами" bind:value={inputValue}>
 			{#snippet leftIcon()}
 				<SearchIcon />
 			{/snippet}
 		</Input>
 		<Button>Поиск</Button>
 	</div>
+	<p class="suggest__result">
+		{filteredSuggestions.length}
+		{getNoun(filteredSuggestions.length, 'Результат', 'Результата', 'Результатов')}
+	</p>
 	<ul class="cards">
-		{#each movies as movie}
+		{#each filteredSuggestions as suggestion}
 			<li class="cards__item">
-				<Card id={movie.id} name={movie.name} imgSrc={movie.imgSrc} score={movie.score}>
-					{#snippet bottomChildren()}
-						{#if movie.isAlreadyWatched}
-							<div class={'cards__item-text green-color'}>
-								<VideoTickIcon />
-								<p>Уже просмотрено</p>
-							</div>
-						{:else}
-							<button class="cards__item-text">
-								<LikeIcon />
-								<p>Предложить фильм</p>
-							</button>
-						{/if}
-					{/snippet}
-				</Card>
+				<a href={`/suggestion/${suggestion.id}`}>
+					<p class="item__name" title={suggestion.name}>{suggestion.name}</p>
+					<p class="item__count">
+						{`Просмотрено ${suggestion.countAlreadyWatched} из ${suggestion.countAll}`}
+					</p>
+					<p class="item__description" title={suggestion.description}>{suggestion.description}</p>
+					<p class="item__author">Автор: {suggestion.author}</p>
+				</a>
 			</li>
 		{/each}
 	</ul>
 </section>
 
-<section class="suggest-manually">
-	<p class="suggest-manually__text">Не нашли то, что искали?</p>
-	<Button onclick={() => (showModal = true)}>Предложить свой фильм</Button>
-</section>
-
-<Modal open={showModal} onClose={() => (showModal = false)}>
-	<p class="modal__title">Предложи что-нибудь для просмотра</p>
-
-	<div class="inputs_wrapper">
-		<Input label="Название">
-			{#snippet leftIcon()}
-				<VideoPlayIcon />
-			{/snippet}
-		</Input>
-		<Input label="Ссылка (если есть)">
-			{#snippet leftIcon()}
-				<LinkIcon />
-			{/snippet}
-		</Input>
-	</div>
-
-	<Button>Предложить</Button>
-</Modal>
-
 <style>
 	.title {
 		margin-top: 80px;
+		margin-bottom: 30px;
 		width: 100%;
 		color: var(--grey-50);
 		font: var(--type-heading-two);
 		text-align: left;
-	}
-
-	.suggest__text {
-		margin-top: 16px;
-		margin-bottom: 24px;
-		color: var(--grey-300);
-		font: var(--type-body-regular);
 	}
 
 	.suggest__search {
@@ -125,56 +122,62 @@
 
 	.cards {
 		display: grid;
-		grid-template-columns: repeat(auto-fill, 280px);
+		grid-template-columns: repeat(auto-fill, 290px);
 		justify-content: center;
 		gap: 16px 24px;
-		margin: 80px auto;
+		margin: 50px auto;
 		width: 100%;
-	}
-
-	.suggest-manually {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 24px;
-		margin-bottom: 160px;
-	}
-
-	.suggest-manually__text {
-		color: var(--grey-400);
-		font: var(--type-body-large);
 	}
 
 	.cards__item {
+		cursor: pointer;
+		border-radius: 12px;
+		background-color: var(--black-100);
+		padding: 16px;
 		width: 100%;
-	}
-
-	.modal__title {
-		margin-bottom: 40px;
-		color: var(--grey-100);
-		font: var(--type-heading-four);
-		text-align: center;
-	}
-
-	.cards__item-text {
-		display: flex;
-		align-items: center;
-		gap: 8px;
-		margin-bottom: 16px;
-		margin-left: 8px;
-		color: var(--primary-400);
-
-		p {
-			font: var(--type-link-regular);
+		text-decoration: none;
+		a {
+			text-decoration: none;
 		}
 	}
 
-	.inputs_wrapper {
-		color: var(--grey-600);
+	.item__name {
+		margin-bottom: 20px;
+		height: 48px;
+		font: var(--type-link-regular);
+		-webkit-line-clamp: 2;
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+		color: var(--grey-50);
+		text-decoration: none;
 	}
 
-	.green-color {
-		color: var(--success-400);
+	.item__description {
+		font: var(--type-body-regular);
+		-webkit-line-clamp: 4;
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		margin-bottom: 15px;
+		height: 77px;
+		overflow: hidden;
+		color: var(--grey-50);
+	}
+
+	.item__count {
+		margin-bottom: 15px;
+		color: var(--grey-400);
+		font: var(--type-caption);
+	}
+
+	.item__author {
+		color: var(--primary-400);
+		font: var(--type-body-extra-small);
+	}
+
+	.suggest__result {
+		color: var(--grey-50);
+		font: var(--type-link-regular);
 	}
 
 	@media (width <= 760px) {
@@ -188,8 +191,7 @@
 			width: auto;
 		}
 
-		.suggest__search :global(.button),
-		.suggest-manually :global(.button) {
+		.suggest__search :global(.button) {
 			width: 100%;
 		}
 	}

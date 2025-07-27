@@ -1,10 +1,18 @@
 <script lang="ts">
+	import Button from '$lib/components/Button.svelte';
+	import Input from '$lib/components/Input.svelte';
+	import Modal from '$lib/components/Modal.svelte';
+	import Textarea from '$lib/components/Textarea.svelte';
+	import VideoPlayIcon from '$lib/icons/VideoPlayIcon.svelte';
+
 	const folders = [
 		{ number: 93, text: 'Фильма' },
 		{ number: 91, text: 'Фильм' },
 		{ number: 90, text: 'Фильмов' },
 		{ number: 93, text: 'Фильма' },
 	];
+
+	let showModal = false;
 </script>
 
 <svelte:head>
@@ -25,11 +33,24 @@
 </section>
 <section class="quick-links">
 	<h2 class="quick-links__title">Быстрые ссылки</h2>
-	<ul class="quick-links__list">
-		<li class="quick-links__item">Предложения</li>
-		<li class="quick-links__item">Добавить</li>
-	</ul>
+	<div class="quick-links__list">
+		<button class="quick-links__item">Подборки</button>
+		<button class="quick-links__item" onclick={() => (showModal = true)}>Добавить</button>
+	</div>
 </section>
+
+<Modal open={showModal} onClose={() => (showModal = false)}>
+	<p class="modal__title">Новая подборка</p>
+	<div class="inputs_wrapper">
+		<Input label="Название">
+			{#snippet leftIcon()}
+				<VideoPlayIcon />
+			{/snippet}
+		</Input>
+		<Textarea label="Описание" />
+	</div>
+	<Button onclick={() => (showModal = false)}>Создать</Button>
+</Modal>
 
 <style>
 	.title {
@@ -100,6 +121,17 @@
 		min-height: 104px;
 		color: var(--primary-400);
 		font: var(--type-link-regular);
+	}
+
+	.modal__title {
+		margin-bottom: 40px;
+		color: var(--grey-100);
+		font: var(--type-heading-four);
+		text-align: center;
+	}
+
+	.inputs_wrapper {
+		color: var(--grey-600);
 	}
 
 	@media (width <= 760px) {
