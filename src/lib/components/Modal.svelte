@@ -105,19 +105,6 @@
 		overflow: hidden;
 	}
 
-	.header,
-	.footer {
-		display: flex;
-		align-items: center;
-		padding: 16px 24px;
-	}
-
-	.content {
-		flex-grow: 1;
-		padding: 24px;
-		overflow-y: auto;
-	}
-
 	.close-btn {
 		display: flex;
 		position: absolute;

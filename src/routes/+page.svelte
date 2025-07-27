@@ -2,6 +2,7 @@
 	import Button from '$lib/components/Button.svelte';
 	import Input from '$lib/components/Input.svelte';
 	import Modal from '$lib/components/Modal.svelte';
+	import SuggestionCard from '$lib/components/SuggestionCard.svelte';
 	import Textarea from '$lib/components/Textarea.svelte';
 	import VideoPlayIcon from '$lib/icons/VideoPlayIcon.svelte';
 
@@ -10,6 +11,28 @@
 		{ number: 91, text: 'Фильм' },
 		{ number: 90, text: 'Фильмов' },
 		{ number: 93, text: 'Фильма' },
+	];
+
+	const suggestions = [
+		{
+			id: '3',
+			name: 'Советские фильмы',
+			description:
+				'Самые важные фильмы, снятые в СССР: авангардные шедевры Эйзенштейна, комедии Гайдая, экзистенциальные драмы Шепитько и многое другое',
+			author: 'Касьян Кристина',
+			authorId: '1313',
+			countAlreadyWatched: 1,
+			countAll: 10,
+		},
+		{
+			id: '4',
+			name: '100 великих фильмов XXI века',
+			description: '',
+			author: 'Касьян Кристина',
+			authorId: '1313',
+			countAlreadyWatched: 3,
+			countAll: 12,
+		},
 	];
 
 	let showModal = false;
@@ -23,10 +46,9 @@
 <section class="welcome-section">
 	<h2 class="visually-hidden">Папки с подборками фильмов</h2>
 	<ul class="welcome-section__folders">
-		{#each folders as folder}
-			<li class="folder">
-				<p class="folder__number">{folder.number}</p>
-				<p class="folder__text">{folder.text}</p>
+		{#each suggestions as suggestion}
+			<li>
+				<SuggestionCard {...suggestion} />
 			</li>
 		{/each}
 	</ul>
@@ -34,7 +56,7 @@
 <section class="quick-links">
 	<h2 class="quick-links__title">Быстрые ссылки</h2>
 	<div class="quick-links__list">
-		<button class="quick-links__item">Подборки</button>
+		<a href="/suggestions" class="quick-links__item">Подборки</a>
 		<button class="quick-links__item" onclick={() => (showModal = true)}>Добавить</button>
 	</div>
 </section>
@@ -70,32 +92,13 @@
 		width: 100%;
 	}
 
-	.folder {
-		display: flex;
-		flex-direction: column;
+	.welcome-section__folders {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, 290px);
 		justify-content: center;
-		align-items: center;
-		gap: 8.5px;
-		cursor: pointer;
-		border-radius: 12px;
-		background-color: var(--grey-900);
-		padding: 40px 20px;
-		width: 282px;
-	}
-
-	.folder__number {
-		color: var(--grey-50);
-		font: var(--type-heading-three);
-	}
-
-	.folder__text {
+		gap: 16px 24px;
+		margin: 50px auto;
 		width: 100%;
-		overflow: hidden;
-		color: var(--grey-400);
-		font: var(--type-body-regular);
-		text-align: center;
-		text-overflow: ellipsis;
-		white-space: nowrap;
 	}
 
 	.quick-links__title {
@@ -121,6 +124,7 @@
 		min-height: 104px;
 		color: var(--primary-400);
 		font: var(--type-link-regular);
+		text-decoration: none;
 	}
 
 	.modal__title {

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Button from '$lib/components/Button.svelte';
-	import Card from '$lib/components/Card.svelte';
+	import MovieCard from '$lib/components/MovieCard.svelte';
 	import Input from '$lib/components/Input.svelte';
 	import Modal from '$lib/components/Modal.svelte';
 	import SearchIcon from '$lib/icons/SearchIcon.svelte';
@@ -50,7 +50,7 @@
 	<ul class="cards">
 		{#each movies as movie}
 			<li class="cards__item">
-				<Card id={movie.id} name={movie.name} imgSrc={movie.imgSrc} score={movie.score}>
+				<MovieCard id={movie.id} name={movie.name} imgSrc={movie.imgSrc} score={movie.score}>
 					{#snippet bottomChildren()}
 						{#if movie.isAlreadyWatched}
 							<div class={'cards__item-text green-color'}>
@@ -64,7 +64,7 @@
 							</button>
 						{/if}
 					{/snippet}
-				</Card>
+				</MovieCard>
 			</li>
 		{/each}
 	</ul>

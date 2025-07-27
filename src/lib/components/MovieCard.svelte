@@ -10,10 +10,10 @@
 		bottomChildren?: Snippet;
 	};
 
-	let { imgSrc, name, score, bottomChildren }: Props = $props();
+	let { id, imgSrc, name, score, bottomChildren }: Props = $props();
 </script>
 
-<div class="card">
+<a class="card" href={`/movie/${id}`}>
 	<div class="score-wrapper">
 		<Score {score} />
 	</div>
@@ -30,15 +30,17 @@
 	{#if bottomChildren}
 		{@render bottomChildren()}
 	{/if}
-</div>
+</a>
 
 <style>
 	.card {
+		display: block;
 		position: relative;
 		border-radius: 12px;
 		background-color: var(--black-100);
 		padding: 8px;
 		width: 282px;
+		text-decoration: none;
 	}
 
 	.score-wrapper {

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Button from '$lib/components/Button.svelte';
 	import Input from '$lib/components/Input.svelte';
+	import SuggestionCard from '$lib/components/SuggestionCard.svelte';
 	import SearchIcon from '$lib/icons/SearchIcon.svelte';
 	import { getNoun } from '$lib/utils/formatNames';
 
@@ -83,15 +84,8 @@
 	</p>
 	<ul class="cards">
 		{#each filteredSuggestions as suggestion}
-			<li class="cards__item">
-				<a href={`/suggestion/${suggestion.id}`}>
-					<p class="item__name" title={suggestion.name}>{suggestion.name}</p>
-					<p class="item__count">
-						{`Просмотрено ${suggestion.countAlreadyWatched} из ${suggestion.countAll}`}
-					</p>
-					<p class="item__description" title={suggestion.description}>{suggestion.description}</p>
-					<p class="item__author">Автор: {suggestion.author}</p>
-				</a>
+			<li>
+				<SuggestionCard {...suggestion} />
 			</li>
 		{/each}
 	</ul>
@@ -127,52 +121,6 @@
 		gap: 16px 24px;
 		margin: 50px auto;
 		width: 100%;
-	}
-
-	.cards__item {
-		cursor: pointer;
-		border-radius: 12px;
-		background-color: var(--black-100);
-		padding: 16px;
-		width: 100%;
-		text-decoration: none;
-		a {
-			text-decoration: none;
-		}
-	}
-
-	.item__name {
-		margin-bottom: 20px;
-		height: 48px;
-		font: var(--type-link-regular);
-		-webkit-line-clamp: 2;
-		display: -webkit-box;
-		-webkit-box-orient: vertical;
-		overflow: hidden;
-		color: var(--grey-50);
-		text-decoration: none;
-	}
-
-	.item__description {
-		font: var(--type-body-regular);
-		-webkit-line-clamp: 4;
-		display: -webkit-box;
-		-webkit-box-orient: vertical;
-		margin-bottom: 15px;
-		height: 77px;
-		overflow: hidden;
-		color: var(--grey-50);
-	}
-
-	.item__count {
-		margin-bottom: 15px;
-		color: var(--grey-400);
-		font: var(--type-caption);
-	}
-
-	.item__author {
-		color: var(--primary-400);
-		font: var(--type-body-extra-small);
 	}
 
 	.suggest__result {

@@ -4,7 +4,7 @@
 	import SearchIcon from '$lib/icons/SearchIcon.svelte';
 	import { getNoun } from '$lib/utils/formatNames';
 	import Poster from '$lib/images/poster.png';
-	import Card from '$lib/components/Card.svelte';
+	import MovieCard from '$lib/components/MovieCard.svelte';
 	import VideoTickIcon from '$lib/icons/VideoTick.svelte';
 
 	const movies = [
@@ -58,7 +58,7 @@
 	<ul class="cards">
 		{#each filteredMovies as movie}
 			<li class="cards__item">
-				<Card id={movie.id} name={movie.name} imgSrc={movie.imgSrc} score={movie.score}>
+				<MovieCard id={movie.id} name={movie.name} imgSrc={movie.imgSrc} score={movie.score}>
 					{#snippet bottomChildren()}
 						{#if movie.isAlreadyWatched}
 							<div class={'cards__item-text green-color'}>
@@ -67,7 +67,7 @@
 							</div>
 						{/if}
 					{/snippet}
-				</Card>
+				</MovieCard>
 			</li>
 		{/each}
 	</ul>
