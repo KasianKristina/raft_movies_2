@@ -116,7 +116,13 @@
 
 	@media (max-width: 640px) {
 		.modal__content {
+			padding: 20px;
 			width: 95%;
+		}
+
+		.modal__close-btn {
+			top: 5px;
+			right: 5px;
 		}
 	}
 </style>
