@@ -6,13 +6,6 @@
 	import Textarea from '$lib/components/Textarea.svelte';
 	import VideoPlayIcon from '$lib/icons/VideoPlayIcon.svelte';
 
-	const folders = [
-		{ number: 93, text: 'Фильма' },
-		{ number: 91, text: 'Фильм' },
-		{ number: 90, text: 'Фильмов' },
-		{ number: 93, text: 'Фильма' },
-	];
-
 	const suggestions = [
 		{
 			id: '3',

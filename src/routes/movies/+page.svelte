@@ -9,6 +9,7 @@
 	import LinkIcon from '$lib/icons/Link.svelte';
 	import LikeIcon from '$lib/icons/Like.svelte';
 	import Poster from '$lib/images/poster.png';
+	import AddIcon from '$lib/icons/Add.svg';
 
 	const movies = [
 		{ id: '1', imgSrc: Poster, name: 'Фильм 1', score: '8.1', isAlreadyWatched: false },
@@ -25,7 +26,30 @@
 		{ id: '6', imgSrc: Poster, name: 'Фильм 6', score: '5.8', isAlreadyWatched: false },
 	];
 
+	const suggestions = [
+		{
+			id: '3',
+			name: 'Советские фильмы',
+			description:
+				'Самые важные фильмы, снятые в СССР: авангардные шедевры Эйзенштейна, комедии Гайдая, экзистенциальные драмы Шепитько и многое другое',
+			author: 'Касьян Кристина',
+			authorId: '1313',
+			countAlreadyWatched: 1,
+			countAll: 10,
+		},
+		{
+			id: '4',
+			name: '100 великих фильмов XXI века',
+			description: '',
+			author: 'Касьян Кристина',
+			authorId: '1313',
+			countAlreadyWatched: 3,
+			countAll: 12,
+		},
+	];
+
 	let showModal = false;
+	let showModalWithSuggestions = false;
 </script>
 
 <svelte:head>
@@ -58,7 +82,13 @@
 								<p>Уже просмотрено</p>
 							</div>
 						{:else}
-							<button class="cards__item-text">
+							<button
+								class="cards__item-text"
+								onclick={(e) => {
+									e.preventDefault();
+									showModalWithSuggestions = true;
+								}}
+							>
 								<LikeIcon />
 								<p>Предложить фильм</p>
 							</button>
@@ -92,6 +122,16 @@
 	</div>
 
 	<Button>Предложить</Button>
+</Modal>
+
+<Modal open={showModalWithSuggestions} onClose={() => (showModalWithSuggestions = false)}>
+	<p class="modal__title">Добавить фильм в подборку</p>
+	<select class="select">
+		{#each suggestions as suggestion}
+			<option>{suggestion.name}</option>
+		{/each}
+	</select>
+	<Button onclick={() => (showModal = false)}>Добавить</Button>
 </Modal>
 
 <style>
@@ -175,6 +215,23 @@
 
 	.green-color {
 		color: var(--success-400);
+	}
+
+	.select {
+		-webkit-appearance: none;
+		-moz-appearance: none;
+		appearance: none;
+		margin-bottom: 40px;
+		border: 1px solid var(--grey-600);
+		border-radius: 12px;
+		background-image: url('$lib/icons/Add.svg');
+		background-position: right 10px center;
+		background-repeat: no-repeat;
+		background-color: transparent;
+		padding: 16px 12px;
+		width: 100%;
+		color: var(--grey-600);
+		font-size: 16px;
 	}
 
 	@media (width <= 760px) {

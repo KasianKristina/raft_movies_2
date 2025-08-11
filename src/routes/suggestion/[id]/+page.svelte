@@ -32,8 +32,6 @@
 		endOfVoting: 1754851935569,
 	};
 
-	const currentTimestamp = new Date().getTime();
-
 	let inputValue = $state('');
 
 	const filteredMovies = $derived(
@@ -50,11 +48,6 @@
 <section class="suggest">
 	<h2 class="visually-hidden">Блок с подборками фильмов от пользователей</h2>
 	<p class="description">{data.description}</p>
-	{#if data.beginningOfVoting <= currentTimestamp && data.endOfVoting >= currentTimestamp}
-		<p class="time">
-			{`Время голосования до ${new Date(data.endOfVoting).toLocaleDateString()}`}
-		</p>
-	{/if}
 	<div class="suggest__search">
 		<Input label="Поиск фильмов" bind:value={inputValue}>
 			{#snippet leftIcon()}
@@ -103,11 +96,6 @@
 	.description {
 		margin-bottom: 30px;
 		color: var(--grey-50);
-	}
-
-	.time {
-		margin-bottom: 30px;
-		color: var(--warning-400);
 	}
 
 	.suggest__search {
