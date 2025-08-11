@@ -1,6 +1,5 @@
-<!-- Modal.svelte -->
 <script lang="ts">
-	import { onMount, onDestroy, type Snippet } from 'svelte';
+	import type { Snippet } from 'svelte';
 	import CloseIcon from '$lib/icons/CloseIcon.svelte';
 
 	type Props = {
@@ -11,37 +10,27 @@
 		children: Snippet;
 	};
 
-	let { open, onClose, closeOnOverlayClick, closeOnEsc, children }: Props = $props();
+	let { open, onClose, closeOnOverlayClick = true, closeOnEsc = true, children }: Props = $props();
 
-	// Генерация уникальных ID для доступности
-	let modalId = `modal-${Math.random().toString(36).substr(2, 9)}`;
-	let titleId = `modal-title-${Math.random().toString(36).substr(2, 9)}`;
-
-	// Обработчики событий
-	const handleKeyDown = (e) => {
+	const handleKeyDown = (e: KeyboardEvent) => {
 		if (closeOnEsc && e.key === 'Escape') {
 			onClose();
 		}
 	};
 
-	const handleOverlayClick = (e) => {
+	const handleOverlayClick = (e: MouseEvent) => {
 		if (closeOnOverlayClick && e.target === e.currentTarget) {
 			onClose();
 		}
 	};
 
-	// Управление скроллом и событиями
-	onMount(() => {
-		if (open) {
-			document.body.style.overflow = 'hidden';
-			window.addEventListener('keydown', handleKeyDown);
+	const handleOverlayKeyDown = (e: KeyboardEvent) => {
+		if (e.key === 'Enter' || e.key === ' ') {
+			e.preventDefault();
+			const mouseEvent = new MouseEvent('click', { bubbles: true, cancelable: true });
+			e.currentTarget?.dispatchEvent(mouseEvent);
 		}
-	});
-
-	onDestroy(() => {
-		document.body.style.overflow = '';
-		window.removeEventListener('keydown', handleKeyDown);
-	});
+	};
 
 	$effect(() => {
 		if (open) {
@@ -60,24 +49,25 @@
 </script>
 
 {#if open}
-	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<div
-		class="overlay"
+		class="modal__overlay"
 		onclick={handleOverlayClick}
-		role="dialog"
-		aria-modal="true"
-		aria-labelledby={titleId}
-		tabindex="-1"
+		onkeydown={handleOverlayKeyDown}
+		tabindex="0"
+		role="button"
+		aria-label="Close modal by clicking outside"
 	>
-		<div class="modal" id={modalId}>
-			<button class="close-btn" onclick={onClose}><CloseIcon /></button>
+		<div class="modal__content" role="dialog" tabindex="-1">
+			<button class="modal__close-btn" onclick={onClose} aria-label="Close modal">
+				<CloseIcon />
+			</button>
 			{@render children()}
 		</div>
 	</div>
 {/if}
 
 <style>
-	.overlay {
+	.modal__overlay {
 		display: flex;
 		position: fixed;
 		top: 0;
@@ -91,7 +81,7 @@
 		background-color: rgba(0, 0, 0, 0.5);
 	}
 
-	.modal {
+	.modal__content {
 		display: flex;
 		position: relative;
 		flex-direction: column;
@@ -105,7 +95,7 @@
 		overflow: hidden;
 	}
 
-	.close-btn {
+	.modal__close-btn {
 		display: flex;
 		position: absolute;
 		top: 24px;
@@ -125,11 +115,8 @@
 	}
 
 	@media (max-width: 640px) {
-		.modal {
+		.modal__content {
 			width: 95%;
-		}
-		.content {
-			padding: 16px;
 		}
 	}
 </style>
