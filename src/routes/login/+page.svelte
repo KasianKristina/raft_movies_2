@@ -132,13 +132,10 @@
 		}
 	}
 
-	@media (width <= 525px) {
+	@media (width <= 768px) {
 		.auth-form__title {
-			font-size: 30px;
-		}
-
-		.auth-form__switcher {
-			flex-direction: column;
+			font: var(--type-heading-three);
+			text-align: center;
 		}
 	}
 </style>

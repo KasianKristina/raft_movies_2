@@ -6,7 +6,6 @@
 	import Poster from '$lib/images/poster.png';
 	import MovieCard from '$lib/components/MovieCard.svelte';
 	import VideoTickIcon from '$lib/icons/VideoTick.svelte';
-	import LikeIcon from '$lib/icons/Like.svelte';
 	import Toast from '$lib/components/Toast.svelte';
 
 	const movies = [
@@ -28,8 +27,6 @@
 		name: 'Советские фильмы',
 		description:
 			'Самые важные фильмы, снятые в СССР: авангардные шедевры Эйзенштейна, комедии Гайдая, экзистенциальные драмы Шепитько и многое другое',
-		beginningOfVoting: 1753642335569,
-		endOfVoting: 1754851935569,
 	};
 
 	let inputValue = $state('');
@@ -70,11 +67,6 @@
 								<VideoTickIcon />
 								<p>Уже просмотрено</p>
 							</div>
-						{:else}
-							<button class="cards__item-text">
-								<LikeIcon />
-								<p>Предложить фильм</p>
-							</button>
 						{/if}
 					{/snippet}
 				</MovieCard>
@@ -148,7 +140,6 @@
 		gap: 8px;
 		margin-bottom: 16px;
 		margin-left: 8px;
-		color: var(--warning-400);
 
 		p {
 			font: var(--type-link-regular);
@@ -159,7 +150,7 @@
 		color: var(--success-400);
 	}
 
-	@media (width <= 760px) {
+	@media (width <= 768px) {
 		.title {
 			font: var(--type-heading-three);
 			text-align: center;

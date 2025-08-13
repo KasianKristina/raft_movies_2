@@ -53,7 +53,7 @@
 		text-decoration: none;
 	}
 
-	@media (width <= 760px) {
+	@media (width <= 768px) {
 		.error-page__section {
 			text-align: center;
 		}

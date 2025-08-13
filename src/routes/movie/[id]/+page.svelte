@@ -24,6 +24,7 @@
 
 <h1 class="visually-hidden">Информация о фильме {data.name}</h1>
 <section class="header-section">
+	<h2 class="visually-hidden">Постер к фильму</h2>
 	<div class="header-section__image_wrapper">
 		<img
 			src={data.image_url}
@@ -174,19 +175,13 @@
 	.info-section__image {
 		aspect-ratio: 2/3;
 		width: 100%;
-		max-width: 414px;
+		max-width: 300px;
 		height: auto;
 		max-height: 621px;
 		object-fit: cover;
 	}
 
-	@media (width <= 1000px) {
-		.info-section__wrapper {
-			margin-left: 0;
-		}
-	}
-
-	@media (width <= 880px) {
+	@media (width <= 1080px) {
 		.info-section__wrapper {
 			flex-direction: column;
 			margin-top: 0;
@@ -201,10 +196,6 @@
 			transform: translateX(-50%);
 			padding: 20px;
 			width: 100%;
-
-			p {
-				font-size: 25px;
-			}
 		}
 
 		.header-section__image_wrapper {
@@ -219,6 +210,10 @@
 
 		.info-section__detail {
 			width: 100%;
+		}
+
+		.info-section__description {
+			font: var(--type-body-regular);
 		}
 	}
 </style>

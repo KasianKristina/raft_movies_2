@@ -101,6 +101,7 @@
 </section>
 
 <section class="suggest-manually">
+	<h2 class="visually-hidden">Предложить свой фильм</h2>
 	<p class="suggest-manually__text">Не нашли то, что искали?</p>
 	<Button onclick={() => (showModal = true)}>Предложить свой фильм</Button>
 </section>
@@ -234,7 +235,7 @@
 		font-size: 16px;
 	}
 
-	@media (width <= 760px) {
+	@media (width <= 768px) {
 		.title {
 			font: var(--type-heading-three);
 			text-align: center;

@@ -130,7 +130,7 @@
 		font: var(--type-link-regular);
 	}
 
-	@media (width <= 760px) {
+	@media (width <= 768px) {
 		.title {
 			font: var(--type-heading-three);
 			text-align: center;
