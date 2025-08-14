@@ -15,11 +15,12 @@
 		film_director: 'Мамору Хосода',
 		time: 1234567,
 		image_url: Poster,
+		backgroundImg_url: Poster,
 	};
 </script>
 
 <svelte:head>
-	<title>О фильме</title>
+	<title>{`О фильме ${data.name}`}</title>
 </svelte:head>
 
 <h1 class="visually-hidden">Информация о фильме {data.name}</h1>
@@ -27,7 +28,7 @@
 	<h2 class="visually-hidden">Постер к фильму</h2>
 	<div class="header-section__image_wrapper">
 		<img
-			src={data.image_url}
+			src={data.backgroundImg_url}
 			alt={`постер к фильму ${data.name}`}
 			width={1200}
 			height={480}

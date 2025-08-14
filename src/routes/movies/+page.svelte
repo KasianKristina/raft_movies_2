@@ -9,7 +9,7 @@
 	import LinkIcon from '$lib/icons/Link.svelte';
 	import LikeIcon from '$lib/icons/Like.svelte';
 	import Poster from '$lib/images/poster.png';
-	import AddIcon from '$lib/icons/Add.svg';
+	import { getNoun } from '$lib/utils/formatNames';
 
 	const movies = [
 		{ id: '1', imgSrc: Poster, name: 'Фильм 1', score: '8.1', isAlreadyWatched: false },
@@ -48,31 +48,43 @@
 		},
 	];
 
-	let showModal = false;
-	let showModalWithSuggestions = false;
+	let inputValue = $state('');
+	let showModal = $state(false);
+	let showModalWithSuggestions = $state(false);
+
+	const filteredMovies = $derived(
+		movies.filter((movie) => movie.name.toLowerCase().includes(inputValue.toLowerCase())),
+	);
 </script>
 
 <svelte:head>
-	<title>Предложения</title>
+	<title>Поиск фильмов</title>
 </svelte:head>
 
 <h1 class="title">Предложи фильм</h1>
-<section class="suggest">
+<section class="search-section">
 	<h2 class="visually-hidden">Блок с поиском фильмов или телепередач</h2>
-	<p class="suggest__text">
+	<p class="search-section__suggest-text">
 		Я буду очень признателен, если вы найдете время и предложите мне что-нибудь интересное для
 		просмотра
 	</p>
-	<div class="suggest__search">
-		<Input label="Поиск фильмов или телешоу">
+	<div class="search-section__input_wrapper">
+		<Input label="Поиск фильмов или телешоу" bind:value={inputValue}>
 			{#snippet leftIcon()}
 				<SearchIcon />
 			{/snippet}
 		</Input>
 		<Button>Поиск</Button>
 	</div>
+	<p class="search-section__result_string">
+		{filteredMovies.length}
+		{getNoun(filteredMovies.length, 'Результат', 'Результата', 'Результатов')}
+	</p>
+</section>
+<section>
+	<h2 class="visually-hidden">Результаты поиска фильмов</h2>
 	<ul class="cards">
-		{#each movies as movie}
+		{#each filteredMovies as movie}
 			<li class="cards__item">
 				<MovieCard id={movie.id} name={movie.name} imgSrc={movie.imgSrc} score={movie.score}>
 					{#snippet bottomChildren()}
@@ -109,7 +121,7 @@
 <Modal open={showModal} onClose={() => (showModal = false)}>
 	<p class="modal__title">Предложи что-нибудь для просмотра</p>
 
-	<div class="inputs_wrapper">
+	<div class="modal__inputs_wrapper">
 		<Input label="Название">
 			{#snippet leftIcon()}
 				<VideoPlayIcon />
@@ -127,7 +139,7 @@
 
 <Modal open={showModalWithSuggestions} onClose={() => (showModalWithSuggestions = false)}>
 	<p class="modal__title">Добавить фильм в подборку</p>
-	<select class="select">
+	<select class="modal__select">
 		{#each suggestions as suggestion}
 			<option>{suggestion.name}</option>
 		{/each}
@@ -144,14 +156,14 @@
 		text-align: left;
 	}
 
-	.suggest__text {
+	.search-section__suggest-text {
 		margin-top: 16px;
 		margin-bottom: 24px;
 		color: var(--grey-300);
 		font: var(--type-body-regular);
 	}
 
-	.suggest__search {
+	.search-section__input_wrapper {
 		display: flex;
 		align-items: start;
 		gap: 8px;
@@ -160,7 +172,12 @@
 		color: var(--grey-600);
 	}
 
-	.suggest__search :global(.button) {
+	.search-section__result_string {
+		color: var(--grey-50);
+		font: var(--type-link-regular);
+	}
+
+	.search-section__input_wrapper :global(.button) {
 		width: auto;
 	}
 
@@ -210,7 +227,7 @@
 		}
 	}
 
-	.inputs_wrapper {
+	.modal__inputs_wrapper {
 		color: var(--grey-600);
 	}
 
@@ -218,7 +235,7 @@
 		color: var(--success-400);
 	}
 
-	.select {
+	.modal__select {
 		-webkit-appearance: none;
 		-moz-appearance: none;
 		appearance: none;
@@ -241,14 +258,18 @@
 			text-align: center;
 		}
 
-		.suggest__search {
+		.search-section__input_wrapper {
 			flex-direction: column;
 			width: auto;
 		}
 
-		.suggest__search :global(.button),
+		.search-section__input_wrapper :global(.button),
 		.suggest-manually :global(.button) {
 			width: 100%;
+		}
+
+		.search-section__result_string {
+			padding-top: 25px;
 		}
 	}
 </style>

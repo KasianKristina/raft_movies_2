@@ -1,6 +1,10 @@
-<script>
+<script lang="ts">
 	import notFoundImage from '$lib/images/notFoundImage.avif';
 </script>
+
+<svelte:head>
+	<title>Страница не найдена</title>
+</svelte:head>
 
 <div class="error-page">
 	<h1 class="visually-hidden">Такая страница не найдена</h1>
@@ -53,11 +57,13 @@
 		text-decoration: none;
 	}
 
-	@media (width <= 768px) {
-		.error-page__section {
-			text-align: center;
-		}
+	.error-page__section {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
 
+	@media (width <= 768px) {
 		.error-page__heading {
 			font: var(--type-heading-three);
 		}

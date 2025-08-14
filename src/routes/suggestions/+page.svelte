@@ -144,5 +144,9 @@
 		.suggest__search :global(.button) {
 			width: 100%;
 		}
+
+		.suggest__result {
+			padding-top: 25px;
+		}
 	}
 </style>

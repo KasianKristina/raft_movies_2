@@ -6,7 +6,6 @@
 	import Poster from '$lib/images/poster.png';
 	import MovieCard from '$lib/components/MovieCard.svelte';
 	import VideoTickIcon from '$lib/icons/VideoTick.svelte';
-	import Toast from '$lib/components/Toast.svelte';
 
 	const movies = [
 		{ id: '1', imgSrc: Poster, name: 'Фильм 1', score: '8.1', isAlreadyWatched: false },
@@ -37,15 +36,14 @@
 </script>
 
 <svelte:head>
-	<title>Подборки фильмов</title>
+	<title>{`Подборка фильмов ${data.name}`}</title>
 </svelte:head>
 
 <h1 class="title">{data.name}</h1>
-<Toast message="test" />
-<section class="suggest">
+<section>
 	<h2 class="visually-hidden">Блок с подборками фильмов от пользователей</h2>
-	<p class="description">{data.description}</p>
-	<div class="suggest__search">
+	<p class="suggestion__description">{data.description}</p>
+	<div class="suggestion__search-cards">
 		<Input label="Поиск фильмов" bind:value={inputValue}>
 			{#snippet leftIcon()}
 				<SearchIcon />
@@ -53,11 +51,11 @@
 		</Input>
 		<Button>Поиск</Button>
 	</div>
-	<p class="suggest__result">
+	<p class="suggestion__result-string">
 		{filteredMovies.length}
 		{getNoun(filteredMovies.length, 'Результат', 'Результата', 'Результатов')}
 	</p>
-	<ul class="cards">
+	<ul class="suggestion__result_cards">
 		{#each filteredMovies as movie}
 			<li class="cards__item">
 				<MovieCard id={movie.id} name={movie.name} imgSrc={movie.imgSrc} score={movie.score}>
@@ -85,12 +83,12 @@
 		text-align: left;
 	}
 
-	.description {
+	.suggestion__description {
 		margin-bottom: 30px;
 		color: var(--grey-50);
 	}
 
-	.suggest__search {
+	.suggestion__search-cards {
 		display: flex;
 		align-items: start;
 		gap: 8px;
@@ -99,11 +97,11 @@
 		color: var(--grey-600);
 	}
 
-	.suggest__search :global(.button) {
+	.suggestion__search-cards :global(.button) {
 		width: auto;
 	}
 
-	.cards {
+	.suggestion__result_cards {
 		display: grid;
 		grid-template-columns: repeat(auto-fill, 290px);
 		justify-content: center;
@@ -112,16 +110,12 @@
 		width: 100%;
 	}
 
-	.suggest__result {
+	.suggestion__result-string {
 		color: var(--grey-50);
 		font: var(--type-link-regular);
 	}
 
-	.suggest__search :global(.button) {
-		width: auto;
-	}
-
-	.cards {
+	.suggestion__result_cards {
 		display: grid;
 		grid-template-columns: repeat(auto-fill, 280px);
 		justify-content: center;
@@ -156,12 +150,12 @@
 			text-align: center;
 		}
 
-		.suggest__search {
+		.suggestion__search-cards {
 			flex-direction: column;
 			width: auto;
 		}
 
-		.suggest__search :global(.button) {
+		.suggestion__search-cards :global(.button) {
 			width: 100%;
 		}
 	}

@@ -28,7 +28,7 @@
 		},
 	];
 
-	let showModal = false;
+	let showModal = $state(false);
 </script>
 
 <svelte:head>
