@@ -218,6 +218,8 @@
 
 	.cards__item-text {
 		display: flex;
+		position: absolute;
+		bottom: 0;
 		align-items: center;
 		gap: 8px;
 		margin-bottom: 16px;

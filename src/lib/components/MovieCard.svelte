@@ -50,7 +50,7 @@
 	}
 
 	.card__title {
-		margin: 24px 0 24px 8px;
+		margin: 24px 0 40px 8px;
 		overflow: hidden;
 		color: var(--grey-50);
 		font: var(--type-link-regular);

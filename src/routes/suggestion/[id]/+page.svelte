@@ -61,7 +61,7 @@
 				<MovieCard id={movie.id} name={movie.name} imgSrc={movie.imgSrc} score={movie.score}>
 					{#snippet bottomChildren()}
 						{#if movie.isAlreadyWatched}
-							<div class={'cards__item-text green-color'}>
+							<div class="cards__item-text">
 								<VideoTickIcon />
 								<p>Уже просмотрено</p>
 							</div>
@@ -130,18 +130,17 @@
 
 	.cards__item-text {
 		display: flex;
+		position: absolute;
+		bottom: 0;
 		align-items: center;
 		gap: 8px;
 		margin-bottom: 16px;
 		margin-left: 8px;
+		color: var(--success-400);
 
 		p {
 			font: var(--type-link-regular);
 		}
-	}
-
-	.green-color {
-		color: var(--success-400);
 	}
 
 	@media (width <= 768px) {
