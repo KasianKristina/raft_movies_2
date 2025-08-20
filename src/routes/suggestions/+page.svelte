@@ -4,6 +4,7 @@
 	import SuggestionCard from '$lib/components/SuggestionCard.svelte';
 	import SearchIcon from '$lib/icons/SearchIcon.svelte';
 	import { getNoun } from '$lib/utils/formatNames';
+	import { searchByWords } from '$lib/utils/search';
 
 	const suggestions = [
 		{
@@ -58,11 +59,7 @@
 
 	let inputValue = $state('');
 
-	const filteredSuggestions = $derived(
-		suggestions.filter((suggestion) =>
-			suggestion.name.toLowerCase().includes(inputValue.toLowerCase()),
-		),
-	);
+	const filteredSuggestions = $derived(searchByWords(suggestions, inputValue));
 </script>
 
 <svelte:head>

@@ -6,6 +6,7 @@
 	import Poster from '$lib/images/poster.png';
 	import MovieCard from '$lib/components/MovieCard.svelte';
 	import VideoTickIcon from '$lib/icons/VideoTick.svelte';
+	import { searchByWords } from '$lib/utils/search';
 
 	const movies = [
 		{ id: '1', imgSrc: Poster, name: 'Фильм 1', score: '8.1', isAlreadyWatched: false },
@@ -30,9 +31,7 @@
 
 	let inputValue = $state('');
 
-	const filteredMovies = $derived(
-		movies.filter((movie) => movie.name.toLowerCase().includes(inputValue.toLowerCase())),
-	);
+	const filteredMovies = $derived(searchByWords(movies, inputValue));
 </script>
 
 <svelte:head>

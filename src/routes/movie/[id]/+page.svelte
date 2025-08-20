@@ -62,23 +62,23 @@
 			</div>
 			<ul class="info-section__details">
 				<li class="info-section__detail">
-					<p class="info-section__detail-key">Жанр</p>
+					<h3 class="info-section__detail-key">Жанр</h3>
 					<p class="info-section__detail-value">{data.genres.join(', ')}</p>
 				</li>
 				<li class="info-section__detail">
-					<p class="info-section__detail-key">Год производства</p>
+					<h3 class="info-section__detail-key">Год производства</h3>
 					<p class="info-section__detail-value">{data.year_of_production}</p>
 				</li>
 				<li class="info-section__detail">
-					<p class="info-section__detail-key">Страна</p>
+					<h3 class="info-section__detail-key">Страна</h3>
 					<p class="info-section__detail-value">{data.country}</p>
 				</li>
 				<li class="info-section__detail">
-					<p class="info-section__detail-key">Режиссер</p>
+					<h3 class="info-section__detail-key">Режиссер</h3>
 					<p class="info-section__detail-value">{data.film_director}</p>
 				</li>
 				<li class="info-section__detail">
-					<p class="info-section__detail-key">Время</p>
+					<h3 class="info-section__detail-key">Время</h3>
 					<p class="info-section__detail-value">{data.time}</p>
 				</li>
 			</ul>
@@ -88,6 +88,7 @@
 
 <style>
 	.header-section {
+		position: relative;
 		margin-top: 40px;
 	}
 
@@ -109,8 +110,8 @@
 	.header-section__name-wrapper {
 		display: flex;
 		position: absolute;
-		bottom: 92px;
-		left: 174px;
+		bottom: -92px;
+		left: 62px;
 		flex-direction: column;
 		gap: 8px;
 		-webkit-backdrop-filter: blur(10px);

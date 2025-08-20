@@ -10,6 +10,7 @@
 	import LikeIcon from '$lib/icons/Like.svelte';
 	import Poster from '$lib/images/poster.png';
 	import { getNoun } from '$lib/utils/formatNames';
+	import { searchByWords } from '$lib/utils/search';
 
 	const movies = [
 		{ id: '1', imgSrc: Poster, name: 'Фильм 1', score: '8.1', isAlreadyWatched: false },
@@ -52,9 +53,7 @@
 	let showModal = $state(false);
 	let showModalWithSuggestions = $state(false);
 
-	const filteredMovies = $derived(
-		movies.filter((movie) => movie.name.toLowerCase().includes(inputValue.toLowerCase())),
-	);
+	const filteredMovies = $derived(searchByWords(movies, inputValue));
 </script>
 
 <svelte:head>
