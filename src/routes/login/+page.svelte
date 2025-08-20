@@ -49,13 +49,7 @@
 
 <h1 class="visually-hidden">Авторизаиця / регистрация</h1>
 <div class="page__container">
-	<img
-		src={LoginHumanImg}
-		alt="3D-модель мужчины в мультяшном стиле"
-		width={486}
-		height={560}
-		class="human-img"
-	/>
+	<img src={LoginHumanImg} alt="" width={486} height={560} class="human-img" />
 	<section class="auth-form">
 		<h2 class="auth-form__title">{formType === 'auth' ? 'Авторизация' : 'Регистрация'}</h2>
 		<div class="auth-form__inputs-wrapper">

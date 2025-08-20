@@ -8,13 +8,7 @@
 
 <div class="error-page">
 	<h1 class="visually-hidden">Такая страница не найдена</h1>
-	<img
-		src={notFoundImage}
-		alt="not found page"
-		class="error-page__image"
-		width="400"
-		height="320"
-	/>
+	<img src={notFoundImage} alt="" class="error-page__image" width="400" height="320" />
 	<section class="error-page__section">
 		<h2 class="error-page__heading">Заблудились?</h2>
 		<p class="error-page__description">Упс! Вы ищете что-то, чего на самом деле не существует</p>

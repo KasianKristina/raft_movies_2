@@ -20,7 +20,7 @@
 	<div class="card__image-wrapper">
 		<img
 			src={imgSrc}
-			alt={`постер к фильму ${name}`}
+			alt={`Перейти на страницу фильма ${name}`}
 			width={266}
 			height={400}
 			class="card__image"
