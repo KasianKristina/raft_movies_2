@@ -54,17 +54,19 @@
 	</div>
 </section>
 
-<Modal open={showModal} onClose={() => (showModal = false)}>
-	<p class="modal__title">Новая подборка</p>
-	<div class="inputs_wrapper">
-		<Input label="Название">
-			{#snippet leftIcon()}
-				<VideoPlayIcon />
-			{/snippet}
-		</Input>
-		<Textarea label="Описание" />
+<Modal bind:open={showModal}>
+	<div class="modal__wrapper">
+		<p class="modal__title">Новая подборка</p>
+		<div class="inputs__wrapper">
+			<Input label="Название">
+				{#snippet leftIcon()}
+					<VideoPlayIcon />
+				{/snippet}
+			</Input>
+			<Textarea label="Описание" />
+		</div>
+		<Button onclick={() => (showModal = false)}>Создать</Button>
 	</div>
-	<Button onclick={() => (showModal = false)}>Создать</Button>
 </Modal>
 
 <style>
@@ -120,6 +122,12 @@
 		text-decoration: none;
 	}
 
+	.modal__wrapper {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+	}
+
 	.modal__title {
 		margin-bottom: 40px;
 		color: var(--grey-100);
@@ -127,7 +135,7 @@
 		text-align: center;
 	}
 
-	.inputs_wrapper {
+	.inputs__wrapper {
 		color: var(--grey-600);
 	}
 

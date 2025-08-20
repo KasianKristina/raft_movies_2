@@ -118,33 +118,35 @@
 	<Button onclick={() => (showModal = true)}>Предложить свой фильм</Button>
 </section>
 
-<Modal open={showModal} onClose={() => (showModal = false)}>
-	<p class="modal__title">Предложи что-нибудь для просмотра</p>
-
-	<div class="modal__inputs_wrapper">
-		<Input label="Название">
-			{#snippet leftIcon()}
-				<VideoPlayIcon />
-			{/snippet}
-		</Input>
-		<Input label="Ссылка (если есть)">
-			{#snippet leftIcon()}
-				<LinkIcon />
-			{/snippet}
-		</Input>
+<Modal bind:open={showModal}>
+	<div class="modal__wrapper">
+		<p class="modal__title">Предложи что-нибудь для просмотра</p>
+		<div class="modal__inputs_wrapper">
+			<Input label="Название">
+				{#snippet leftIcon()}
+					<VideoPlayIcon />
+				{/snippet}
+			</Input>
+			<Input label="Ссылка (если есть)">
+				{#snippet leftIcon()}
+					<LinkIcon />
+				{/snippet}
+			</Input>
+		</div>
+		<Button>Предложить</Button>
 	</div>
-
-	<Button>Предложить</Button>
 </Modal>
 
-<Modal open={showModalWithSuggestions} onClose={() => (showModalWithSuggestions = false)}>
-	<p class="modal__title">Добавить фильм в подборку</p>
-	<select class="modal__select">
-		{#each suggestions as suggestion}
-			<option>{suggestion.name}</option>
-		{/each}
-	</select>
-	<Button onclick={() => (showModal = false)}>Добавить</Button>
+<Modal bind:open={showModalWithSuggestions}>
+	<div class="modal__wrapper">
+		<p class="modal__title">Добавить фильм в подборку</p>
+		<select class="modal__select">
+			{#each suggestions as suggestion}
+				<option>{suggestion.name}</option>
+			{/each}
+		</select>
+		<Button onclick={() => (showModal = false)}>Добавить</Button>
+	</div>
 </Modal>
 
 <style>
@@ -233,6 +235,12 @@
 
 	.green-color {
 		color: var(--success-400);
+	}
+
+	.modal__wrapper {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
 	}
 
 	.modal__select {
