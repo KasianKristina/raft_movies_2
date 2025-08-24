@@ -11,6 +11,10 @@
 	import Poster from '$lib/images/poster.png';
 	import { getNoun } from '$lib/utils/formatNames';
 	import { searchByWords } from '$lib/utils/search';
+	import type { PageData } from './$types';
+	import { superForm } from 'sveltekit-superforms';
+	import { zod } from 'sveltekit-superforms/adapters';
+	import { newSuggestionSchema } from '$lib/schemas/suggestion';
 
 	const movies = [
 		{ id: '1', imgSrc: Poster, name: 'Фильм 1', score: '8.1', isAlreadyWatched: false },
@@ -52,6 +56,11 @@
 	let inputValue = $state('');
 	let showModal = $state(false);
 	let showModalWithSuggestions = $state(false);
+	let { data } = $props<{ data: PageData }>();
+
+	const { form, errors, enhance } = superForm(data.form, {
+		validators: zod(newSuggestionSchema),
+	});
 
 	const filteredMovies = $derived(searchByWords(movies, inputValue));
 </script>
@@ -120,32 +129,44 @@
 <Modal bind:open={showModal}>
 	<div class="modal__wrapper">
 		<p class="modal__title">Предложи что-нибудь для просмотра</p>
-		<div class="modal__inputs_wrapper">
-			<Input label="Название">
+		<form class="modal__inputs_wrapper" method="POST" use:enhance>
+			<Input
+				label="Название"
+				type="string"
+				name="name"
+				bind:value={$form.name}
+				errorMessage={$errors.name?.[0] as string}
+			>
 				{#snippet leftIcon()}
 					<VideoPlayIcon />
 				{/snippet}
 			</Input>
-			<Input label="Ссылка (если есть)">
+			<Input
+				label="Ссылка (если есть)"
+				type="string"
+				name="link"
+				bind:value={$form.link}
+				errorMessage={$errors.link?.[0] as string}
+			>
 				{#snippet leftIcon()}
 					<LinkIcon />
 				{/snippet}
 			</Input>
-		</div>
-		<Button>Предложить</Button>
+			<Button type="submit">Предложить</Button>
+		</form>
 	</div>
 </Modal>
 
 <Modal bind:open={showModalWithSuggestions}>
-	<div class="modal__wrapper">
-		<p class="modal__title">Добавить фильм в подборку</p>
+	<p class="modal__title">Добавить фильм в подборку</p>
+	<form class="modal__wrapper" method="POST">
 		<select class="modal__select">
 			{#each suggestions as suggestion}
 				<option>{suggestion.name}</option>
 			{/each}
 		</select>
-		<Button onclick={() => (showModal = false)}>Добавить</Button>
-	</div>
+		<Button type="submit">Добавить</Button>
+	</form>
 </Modal>
 
 <style>
@@ -231,6 +252,10 @@
 	}
 
 	.modal__inputs_wrapper {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 20px;
 		color: var(--grey-600);
 	}
 

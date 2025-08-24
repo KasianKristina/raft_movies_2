@@ -5,6 +5,10 @@
 	import SuggestionCard from '$lib/components/SuggestionCard.svelte';
 	import Textarea from '$lib/components/Textarea.svelte';
 	import VideoPlayIcon from '$lib/icons/VideoPlayIcon.svelte';
+	import { superForm } from 'sveltekit-superforms';
+	import { zod } from 'sveltekit-superforms/adapters';
+	import { newSuggestionSchema } from '$lib/schemas/suggestion';
+	import type { PageData } from './$types';
 
 	const suggestions = [
 		{
@@ -29,6 +33,11 @@
 	];
 
 	let showModal = $state(false);
+	let { data } = $props<{ data: PageData }>();
+
+	const { form, errors, enhance } = superForm(data.form, {
+		validators: zod(newSuggestionSchema),
+	});
 </script>
 
 <svelte:head>
@@ -57,15 +66,21 @@
 <Modal bind:open={showModal}>
 	<div class="modal__wrapper">
 		<p class="modal__title">Новая подборка</p>
-		<div class="inputs__wrapper">
-			<Input label="Название">
+		<form class="inputs__wrapper" method="POST" use:enhance>
+			<Input
+				label="Название"
+				type="string"
+				name="name"
+				bind:value={$form.name}
+				errorMessage={$errors.name?.[0] as string}
+			>
 				{#snippet leftIcon()}
 					<VideoPlayIcon />
 				{/snippet}
 			</Input>
-			<Textarea label="Описание" />
-		</div>
-		<Button onclick={() => (showModal = false)}>Создать</Button>
+			<Textarea label="Описание" name="description" bind:value={$form.description} />
+			<Button type="submit" onclick={() => (showModal = false)}>Создать</Button>
+		</form>
 	</div>
 </Modal>
 
@@ -136,6 +151,10 @@
 	}
 
 	.inputs__wrapper {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		gap: 20px;
 		color: var(--grey-600);
 	}
 

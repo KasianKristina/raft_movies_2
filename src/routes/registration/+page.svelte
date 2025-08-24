@@ -11,11 +11,6 @@
 
 	const { form, errors, enhance } = superForm(data.form, {
 		validators: zod(registrationSchema),
-		onUpdated({ form }) {
-			if (form.data.email === '') {
-				form.errors.email = [];
-			}
-		},
 	});
 </script>
 
