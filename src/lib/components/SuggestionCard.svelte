@@ -1,4 +1,6 @@
 <script lang="ts">
+	import Tooltip from './Tooltip.svelte';
+
 	type Props = {
 		id: string;
 		name: string;
@@ -18,6 +20,15 @@
 		author,
 		isNeedDisplayAuthor = true,
 	}: Props = $props();
+
+	let descriptionElement: HTMLParagraphElement | null = $state(null);
+	let isTruncated = $state(false);
+
+	$effect(() => {
+		if (descriptionElement) {
+			isTruncated = descriptionElement.scrollHeight > descriptionElement.clientHeight;
+		}
+	});
 </script>
 
 <a class="item" href={`/suggestion/${id}`}>
@@ -27,7 +38,18 @@
 	<p class="item__count">
 		{`Просмотрено ${countAlreadyWatched} из ${countAll}`}
 	</p>
-	<p class="item__description" title={description}>{description ?? ''}</p>
+
+	{#if isTruncated}
+		<Tooltip text={description ?? ''}>
+			<p class="item__description" bind:this={descriptionElement}>
+				{description ?? ''}
+			</p>
+		</Tooltip>
+	{:else}
+		<p class="item__description" bind:this={descriptionElement}>
+			{description ?? ''}
+		</p>
+	{/if}
 
 	{#if isNeedDisplayAuthor}
 		<p class="item__author">Автор: {author}</p>
@@ -67,6 +89,7 @@
 		height: 77px;
 		overflow: hidden;
 		color: var(--grey-50);
+		text-align: left;
 	}
 
 	.item__count {
