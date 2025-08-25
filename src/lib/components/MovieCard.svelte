@@ -26,7 +26,7 @@
 			class="card__image"
 		/>
 	</div>
-	<p class="card__title" title={name}>{name}</p>
+	<p class="card__title">{name}</p>
 	{#if bottomChildren}
 		{@render bottomChildren()}
 	{/if}
@@ -40,6 +40,7 @@
 		background-color: var(--black-100);
 		padding: 8px;
 		width: 282px;
+		height: 100%;
 		text-decoration: none;
 	}
 
@@ -51,11 +52,8 @@
 
 	.card__title {
 		margin: 24px 0 40px 8px;
-		overflow: hidden;
 		color: var(--grey-50);
 		font: var(--type-link-regular);
-		text-overflow: ellipsis;
-		white-space: nowrap;
 	}
 
 	.card__image-wrapper {

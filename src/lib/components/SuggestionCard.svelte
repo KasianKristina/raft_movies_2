@@ -22,7 +22,7 @@
 
 <a class="item" href={`/suggestion/${id}`}>
 	<div class="item__name-wrapper">
-		<p class="item__name" title={name}>{name}</p>
+		<p class="item__name">{name}</p>
 	</div>
 	<p class="item__count">
 		{`Просмотрено ${countAlreadyWatched} из ${countAll}`}
@@ -42,6 +42,7 @@
 		background-color: var(--black-100);
 		padding: 16px;
 		width: 100%;
+		height: 100%;
 		text-decoration: none;
 	}
 
@@ -52,12 +53,8 @@
 	.item__name {
 		margin-bottom: 20px;
 		height: 40px;
-		font: var(--type-link-regular);
-		-webkit-line-clamp: 2;
-		display: -webkit-box;
-		-webkit-box-orient: vertical;
-		overflow: hidden;
 		color: var(--grey-50);
+		font: var(--type-link-regular);
 		text-decoration: none;
 	}
 
