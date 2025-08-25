@@ -3,45 +3,27 @@
 	import Input from '$lib/components/Input.svelte';
 	import SearchIcon from '$lib/icons/SearchIcon.svelte';
 	import { getNoun } from '$lib/utils/formatNames';
-	import Poster from '$lib/images/poster.png';
 	import MovieCard from '$lib/components/MovieCard.svelte';
 	import VideoTickIcon from '$lib/icons/VideoTick.svelte';
 	import { searchByWords } from '$lib/utils/search';
+	import type { MovieCardInterface } from '$lib/types/types';
+	import type { PageData } from './$types';
 
-	const movies = [
-		{ id: '1', imgSrc: Poster, name: 'Фильм 1', score: '8.1', isAlreadyWatched: false },
-		{ id: '2', imgSrc: Poster, name: 'Фильм 2', score: '5.8', isAlreadyWatched: false },
-		{ id: '3', name: 'Фильм 3', score: '4.4', isAlreadyWatched: true },
-		{
-			id: '4',
-			imgSrc: Poster,
-			name: 'Фильм 4 c очень-очень длинным названием',
-			score: '9',
-			isAlreadyWatched: false,
-		},
-		{ id: '5', imgSrc: Poster, name: 'Фильм 5', score: '5.8', isAlreadyWatched: true },
-		{ id: '6', imgSrc: Poster, name: 'Фильм 6', score: '5.8', isAlreadyWatched: false },
-	];
-
-	const data = {
-		name: 'Советские фильмы',
-		description:
-			'Самые важные фильмы, снятые в СССР: авангардные шедевры Эйзенштейна, комедии Гайдая, экзистенциальные драмы Шепитько и многое другое',
-	};
+	let { data } = $props<{ data: PageData }>();
 
 	let inputValue = $state('');
 
-	const filteredMovies = $derived(searchByWords(movies, inputValue));
+	const filteredMovies = $derived(searchByWords(data.movies as MovieCardInterface[], inputValue));
 </script>
 
 <svelte:head>
-	<title>{`Подборка фильмов ${data.name}`}</title>
+	<title>{`Подборка фильмов ${data.suggestion.name}`}</title>
 </svelte:head>
 
 <h1 class="title">{data.name}</h1>
 <section>
 	<h2 class="visually-hidden">Блок с подборками фильмов от пользователей</h2>
-	<p class="suggestion__description">{data.description}</p>
+	<p class="suggestion__description">{data.suggestion.description}</p>
 	<div class="suggestion__search-cards">
 		<Input label="Поиск фильмов" bind:value={inputValue}>
 			{#snippet leftIcon()}

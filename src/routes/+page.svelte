@@ -10,29 +10,8 @@
 	import { newSuggestionSchema } from '$lib/schemas/suggestion';
 	import type { PageData } from './$types';
 
-	const suggestions = [
-		{
-			id: '3',
-			name: 'Советские фильмы',
-			description:
-				'Самые важные фильмы, снятые в СССР: авангардные шедевры Эйзенштейна, комедии Гайдая, экзистенциальные драмы Шепитько и многое другое',
-			author: 'Касьян Кристина',
-			authorId: '1313',
-			countAlreadyWatched: 1,
-			countAll: 10,
-		},
-		{
-			id: '4',
-			name: '100 великих фильмов XXI века',
-			description: '',
-			author: 'Касьян Кристина',
-			authorId: '1313',
-			countAlreadyWatched: 3,
-			countAll: 12,
-		},
-	];
-
 	let showModal = $state(false);
+
 	let { data } = $props<{ data: PageData }>();
 
 	const { form, errors, enhance } = superForm(data.form, {
@@ -48,7 +27,7 @@
 <section class="welcome-section">
 	<h2 class="visually-hidden">Папки с подборками фильмов</h2>
 	<ul class="welcome-section__folders">
-		{#each suggestions as suggestion}
+		{#each data.suggestions as suggestion}
 			<li>
 				<SuggestionCard {...suggestion} />
 			</li>

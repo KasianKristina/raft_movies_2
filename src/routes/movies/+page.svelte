@@ -8,50 +8,13 @@
 	import VideoPlayIcon from '$lib/icons/VideoPlayIcon.svelte';
 	import LinkIcon from '$lib/icons/Link.svelte';
 	import LikeIcon from '$lib/icons/Like.svelte';
-	import Poster from '$lib/images/poster.png';
 	import { getNoun } from '$lib/utils/formatNames';
 	import { searchByWords } from '$lib/utils/search';
 	import type { PageData } from './$types';
 	import { superForm } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { newSuggestionSchema } from '$lib/schemas/suggestion';
-
-	const movies = [
-		{ id: '1', imgSrc: Poster, name: 'Фильм 1', score: '8.1', isAlreadyWatched: false },
-		{ id: '2', imgSrc: Poster, name: 'Фильм 2', score: '5.8', isAlreadyWatched: false },
-		{ id: '3', name: 'Фильм 3', score: '4.4', isAlreadyWatched: true },
-		{
-			id: '4',
-			imgSrc: Poster,
-			name: 'Фильм 4 c очень-очень длинным названием',
-			score: '9',
-			isAlreadyWatched: false,
-		},
-		{ id: '5', imgSrc: Poster, name: 'Фильм 5', score: '5.8', isAlreadyWatched: true },
-		{ id: '6', imgSrc: Poster, name: 'Фильм 6', score: '5.8', isAlreadyWatched: false },
-	];
-
-	const suggestions = [
-		{
-			id: '3',
-			name: 'Советские фильмы',
-			description:
-				'Самые важные фильмы, снятые в СССР: авангардные шедевры Эйзенштейна, комедии Гайдая, экзистенциальные драмы Шепитько и многое другое',
-			author: 'Касьян Кристина',
-			authorId: '1313',
-			countAlreadyWatched: 1,
-			countAll: 10,
-		},
-		{
-			id: '4',
-			name: '100 великих фильмов XXI века',
-			description: '',
-			author: 'Касьян Кристина',
-			authorId: '1313',
-			countAlreadyWatched: 3,
-			countAll: 12,
-		},
-	];
+	import type { MovieCardInterface } from '$lib/types/types';
 
 	let inputValue = $state('');
 	let showModal = $state(false);
@@ -62,7 +25,7 @@
 		validators: zod(newSuggestionSchema),
 	});
 
-	const filteredMovies = $derived(searchByWords(movies, inputValue));
+	const filteredMovies = $derived(searchByWords(data.movies as MovieCardInterface[], inputValue));
 </script>
 
 <svelte:head>
@@ -85,8 +48,8 @@
 		<Button>Поиск</Button>
 	</div>
 	<p class="search-section__result_string">
-		{filteredMovies.length}
-		{getNoun(filteredMovies.length, 'Результат', 'Результата', 'Результатов')}
+		{filteredMovies?.length}
+		{getNoun(filteredMovies?.length, 'Результат', 'Результата', 'Результатов')}
 	</p>
 </section>
 <section>
@@ -161,7 +124,7 @@
 	<p class="modal__title">Добавить фильм в подборку</p>
 	<form class="modal__wrapper" method="POST">
 		<select class="modal__select">
-			{#each suggestions as suggestion}
+			{#each data.suggestions as suggestion}
 				<option>{suggestion.name}</option>
 			{/each}
 		</select>

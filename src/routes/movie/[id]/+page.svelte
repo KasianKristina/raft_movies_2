@@ -1,35 +1,22 @@
 <script lang="ts">
 	import Breadcrumbs from '$lib/components/Breadcrumbs.svelte';
 	import Score from '$lib/components/Score.svelte';
-	import Poster from '$lib/images/poster.png';
+	import type { PageData } from './$types';
 
-	const data = {
-		name: 'Lost in space',
-		description:
-			'The mission to save Scarecrow takes an unexpected turn, throwing the Resolute into chaos. Judy hatches a plan to get a ship to Alpha Centauri.',
-		score: '8.1',
-		genres: ['Приключения', 'Фантастика'],
-		number_of_seasons: 1,
-		year_of_production: 2006,
-		country: 'Россия',
-		film_director: 'Мамору Хосода',
-		time: 1234567,
-		image_url: Poster,
-		backgroundImg_url: Poster,
-	};
+	let { data } = $props<{ data: PageData }>();
 </script>
 
 <svelte:head>
-	<title>{`О фильме ${data.name}`}</title>
+	<title>{`О фильме ${data.movie.name}`}</title>
 </svelte:head>
 
-<h1 class="visually-hidden">Информация о фильме {data.name}</h1>
+<h1 class="visually-hidden">Информация о фильме {data.movie.name}</h1>
 <section class="header-section">
 	<h2 class="visually-hidden">Постер к фильму</h2>
 	<div class="header-section__image_wrapper">
 		<img
-			src={data.backgroundImg_url}
-			alt={`постер к фильму ${data.name}`}
+			src={data.movie.backgroundImgSrc}
+			alt={`постер к фильму ${data.movie.name}`}
 			width={1200}
 			height={480}
 			class="header-section__image"
@@ -49,37 +36,37 @@
 	<h2 class="visually-hidden">О фильме</h2>
 	<div class="info-section__wrapper">
 		<img
-			src={data.image_url}
-			alt={`постер к фильму ${data.name}`}
+			src={data.movie.imgSrc}
+			alt={`постер к фильму ${data.movie.name}`}
 			width={480}
 			height={720}
 			class="info-section__image"
 		/>
 		<div>
-			<p class="info-section__description">{data.description}</p>
+			<p class="info-section__description">{data.movie.description}</p>
 			<div class="info-section__score">
 				<Score score={data.score} />
 			</div>
 			<ul class="info-section__details">
 				<li class="info-section__detail">
 					<h3 class="info-section__detail-key">Жанр</h3>
-					<p class="info-section__detail-value">{data.genres.join(', ')}</p>
+					<p class="info-section__detail-value">{data.movie.genres.join(', ')}</p>
 				</li>
 				<li class="info-section__detail">
 					<h3 class="info-section__detail-key">Год производства</h3>
-					<p class="info-section__detail-value">{data.year_of_production}</p>
+					<p class="info-section__detail-value">{data.movie.year_of_production}</p>
 				</li>
 				<li class="info-section__detail">
 					<h3 class="info-section__detail-key">Страна</h3>
-					<p class="info-section__detail-value">{data.country}</p>
+					<p class="info-section__detail-value">{data.movie.country}</p>
 				</li>
 				<li class="info-section__detail">
 					<h3 class="info-section__detail-key">Режиссер</h3>
-					<p class="info-section__detail-value">{data.film_director}</p>
+					<p class="info-section__detail-value">{data.movie.film_director}</p>
 				</li>
 				<li class="info-section__detail">
 					<h3 class="info-section__detail-key">Время</h3>
-					<p class="info-section__detail-value">{data.time}</p>
+					<p class="info-section__detail-value">{data.movie.time}</p>
 				</li>
 			</ul>
 		</div>
