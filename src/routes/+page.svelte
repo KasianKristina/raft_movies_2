@@ -6,17 +6,13 @@
 	import Textarea from '$lib/components/Textarea.svelte';
 	import VideoPlayIcon from '$lib/icons/VideoPlayIcon.svelte';
 	import { superForm } from 'sveltekit-superforms';
-	import { zod } from 'sveltekit-superforms/adapters';
-	import { newSuggestionSchema } from '$lib/schemas/suggestion';
 	import type { PageData } from './$types';
 
 	let showModal = $state(false);
 
 	let { data } = $props<{ data: PageData }>();
 
-	const { form, errors, enhance } = superForm(data.form, {
-		validators: zod(newSuggestionSchema),
-	});
+	const { form, errors, enhance } = superForm(data.form);
 </script>
 
 <svelte:head>

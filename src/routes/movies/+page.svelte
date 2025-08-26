@@ -12,8 +12,6 @@
 	import { searchByWords } from '$lib/utils/search';
 	import type { PageData } from './$types';
 	import { superForm } from 'sveltekit-superforms';
-	import { zod } from 'sveltekit-superforms/adapters';
-	import { newSuggestionSchema } from '$lib/schemas/suggestion';
 	import type { MovieCardInterface } from '$lib/types/types';
 
 	let inputValue = $state('');
@@ -21,9 +19,7 @@
 	let showModalWithSuggestions = $state(false);
 	let { data } = $props<{ data: PageData }>();
 
-	const { form, errors, enhance } = superForm(data.form, {
-		validators: zod(newSuggestionSchema),
-	});
+	const { form, errors, enhance } = superForm(data.form);
 
 	const filteredMovies = $derived(searchByWords(data.movies as MovieCardInterface[], inputValue));
 </script>
@@ -60,7 +56,7 @@
 				<MovieCard id={movie.id} name={movie.name} imgSrc={movie.imgSrc} score={movie.score}>
 					{#snippet bottomChildren()}
 						{#if movie.isAlreadyWatched}
-							<div class={'cards__item-text green-color'}>
+							<div class="cards__item-text green-color">
 								<VideoTickIcon />
 								<p>Уже просмотрено</p>
 							</div>

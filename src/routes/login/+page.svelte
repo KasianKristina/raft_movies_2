@@ -1,15 +1,11 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import { superForm } from 'sveltekit-superforms';
-	import { zod } from 'sveltekit-superforms/adapters';
-	import { loginSchema } from '$lib/schemas/auth';
 	import AuthForm from '$lib/components/AuthForm.svelte';
 
 	let { data } = $props<{ data: PageData }>();
 
-	const { form, errors, enhance } = superForm(data.form, {
-		validators: zod(loginSchema),
-	});
+	const { form, errors, enhance } = superForm(data.form);
 </script>
 
 <svelte:head>

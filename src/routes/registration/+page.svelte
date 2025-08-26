@@ -1,17 +1,13 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import { superForm } from 'sveltekit-superforms';
-	import { zod } from 'sveltekit-superforms/adapters';
-	import { registrationSchema } from '$lib/schemas/auth';
 	import AuthForm from '$lib/components/AuthForm.svelte';
 	import Input from '$lib/components/Input.svelte';
 	import StarIcon from '$lib/icons/Star.svelte';
 
 	let { data } = $props<{ data: PageData }>();
 
-	const { form, errors, enhance } = superForm(data.form, {
-		validators: zod(registrationSchema),
-	});
+	const { form, errors, enhance } = superForm(data.form);
 </script>
 
 <svelte:head>
@@ -30,9 +26,9 @@
 	<Input
 		label="Имя"
 		type="string"
-		name="name"
-		bind:value={$form.name}
-		errorMessage={$errors.name?.[0] as string}
+		name="firstName"
+		bind:value={$form.firstName}
+		errorMessage={$errors.firstName?.[0] as string}
 		required
 	>
 		{#snippet leftIcon()}
@@ -42,9 +38,9 @@
 	<Input
 		label="Фамилия"
 		type="string"
-		name="surname"
-		bind:value={$form.surname}
-		errorMessage={$errors.surname?.[0] as string}
+		name="lastName"
+		bind:value={$form.lastName}
+		errorMessage={$errors.lastName?.[0] as string}
 		required
 	>
 		{#snippet leftIcon()}

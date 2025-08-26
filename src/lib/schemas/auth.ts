@@ -7,11 +7,11 @@ export const registrationSchema = z.object({
 		.min(6, 'Пароль должен содержать минимум 6 символов')
 		.regex(/[A-Z]/, 'Пароль должен содержать хотя бы одну заглавную букву')
 		.regex(/\d/, 'Пароль должен содержать хотя бы одну цифру'),
-	name: z
+	firstName: z
 		.string()
 		.min(1, 'Имя обязательно')
 		.regex(/^[a-zA-Zа-яА-Я]+$/, 'Имя может содержать только буквы'),
-	surname: z.string().min(1, 'Фамилия обязательна'),
+	lastName: z.string().min(1, 'Фамилия обязательна'),
 });
 
 export const loginSchema = z.object({
