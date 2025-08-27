@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type { Attachment } from 'svelte/attachments';
 	import Tooltip from './Tooltip.svelte';
 
 	type Props = {
@@ -21,14 +22,15 @@
 		isNeedDisplayAuthor = true,
 	}: Props = $props();
 
-	let descriptionElement: HTMLParagraphElement | null = $state(null);
 	let isTruncated = $state(false);
 
-	$effect(() => {
-		if (descriptionElement) {
-			isTruncated = descriptionElement.scrollHeight > descriptionElement.clientHeight;
-		}
-	});
+	const truncated: Attachment = (element) => {
+		$effect(() => {
+			if (element) {
+				isTruncated = element.scrollHeight > element.clientHeight;
+			}
+		});
+	};
 </script>
 
 <a class="item" href={`/suggestion/${id}`}>
@@ -39,16 +41,18 @@
 		{`Просмотрено ${countAlreadyWatched} из ${countAll}`}
 	</p>
 
-	{#if isTruncated}
-		<Tooltip text={description ?? ''}>
-			<p class="item__description" bind:this={descriptionElement}>
-				{description ?? ''}
-			</p>
-		</Tooltip>
-	{:else}
-		<p class="item__description" bind:this={descriptionElement}>
+	{#snippet suggestionDescription()}
+		<p class="item__description" {@attach truncated}>
 			{description ?? ''}
 		</p>
+	{/snippet}
+
+	{#if isTruncated}
+		<Tooltip text={description ?? ''}>
+			{@render suggestionDescription()}
+		</Tooltip>
+	{:else}
+		{@render suggestionDescription()}
 	{/if}
 
 	{#if isNeedDisplayAuthor}

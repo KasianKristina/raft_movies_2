@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import { fade } from 'svelte/transition';
 	type Props = {
 		text?: string;
 		children: Snippet;
@@ -9,7 +10,8 @@
 	let show = $state(false);
 </script>
 
-<button
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<div
 	class="container"
 	onmouseenter={() => {
 		show = true;
@@ -20,11 +22,11 @@
 >
 	{@render children()}
 	{#if show}
-		<div class="tooltip">
+		<div class="tooltip" transition:fade={{ duration: 200 }}>
 			{text}
 		</div>
 	{/if}
-</button>
+</div>
 
 <style>
 	.container {

@@ -61,7 +61,7 @@
 		width: 90%;
 		max-width: 600px;
 		max-height: 90vh;
-		overflow-y: scroll;
+		overflow-y: auto;
 	}
 
 	.modal::backdrop {
