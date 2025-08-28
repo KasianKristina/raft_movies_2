@@ -18,13 +18,7 @@
 		<Score {score} />
 	</div>
 	<div class="card__image-wrapper">
-		<img
-			src={imgSrc}
-			alt={`Перейти на страницу фильма ${name}`}
-			width={266}
-			height={400}
-			class="card__image"
-		/>
+		<img src={imgSrc} alt="" width={266} height={400} class="card__image" />
 	</div>
 	<p class="card__title">{name}</p>
 	{#if bottomChildren}
