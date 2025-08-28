@@ -1,10 +1,18 @@
 <script lang="ts">
-	const folders = [
-		{ number: 93, text: 'Фильма' },
-		{ number: 91, text: 'Фильм' },
-		{ number: 90, text: 'Фильмов' },
-		{ number: 93, text: 'Фильма' },
-	];
+	import Button from '$lib/components/Button.svelte';
+	import Input from '$lib/components/Input.svelte';
+	import Modal from '$lib/components/Modal.svelte';
+	import SuggestionCard from '$lib/components/SuggestionCard.svelte';
+	import Textarea from '$lib/components/Textarea.svelte';
+	import VideoPlayIcon from '$lib/icons/VideoPlayIcon.svelte';
+	import { superForm } from 'sveltekit-superforms';
+	import type { PageData } from './$types';
+
+	let showModal = $state(false);
+
+	let { data } = $props<{ data: PageData }>();
+
+	const { form, errors, enhance } = superForm(data.form);
 </script>
 
 <svelte:head>
@@ -15,21 +23,41 @@
 <section class="welcome-section">
 	<h2 class="visually-hidden">Папки с подборками фильмов</h2>
 	<ul class="welcome-section__folders">
-		{#each folders as folder}
-			<li class="folder">
-				<p class="folder__number">{folder.number}</p>
-				<p class="folder__text">{folder.text}</p>
+		{#each data.suggestions as suggestion}
+			<li>
+				<SuggestionCard {...suggestion} />
 			</li>
 		{/each}
 	</ul>
 </section>
 <section class="quick-links">
 	<h2 class="quick-links__title">Быстрые ссылки</h2>
-	<ul class="quick-links__list">
-		<li class="quick-links__item">Предложения</li>
-		<li class="quick-links__item">Добавить</li>
-	</ul>
+	<div class="quick-links__list">
+		<a href="/suggestions" class="quick-links__item">Подборки</a>
+		<button class="quick-links__item" onclick={() => (showModal = true)}>Добавить</button>
+	</div>
 </section>
+
+<Modal bind:open={showModal}>
+	<div class="modal__wrapper">
+		<p class="modal__title">Новая подборка</p>
+		<form class="inputs__wrapper" method="POST" use:enhance>
+			<Input
+				label="Название"
+				type="string"
+				name="name"
+				bind:value={$form.name}
+				errorMessage={$errors.name?.[0] as string}
+			>
+				{#snippet leftIcon()}
+					<VideoPlayIcon />
+				{/snippet}
+			</Input>
+			<Textarea label="Описание" name="description" bind:value={$form.description} />
+			<Button type="submit" onclick={() => (showModal = false)}>Создать</Button>
+		</form>
+	</div>
+</Modal>
 
 <style>
 	.title {
@@ -49,32 +77,13 @@
 		width: 100%;
 	}
 
-	.folder {
-		display: flex;
-		flex-direction: column;
+	.welcome-section__folders {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, 290px);
 		justify-content: center;
-		align-items: center;
-		gap: 8.5px;
-		cursor: pointer;
-		border-radius: 12px;
-		background-color: var(--grey-900);
-		padding: 40px 20px;
-		width: 282px;
-	}
-
-	.folder__number {
-		color: var(--grey-50);
-		font: var(--type-heading-three);
-	}
-
-	.folder__text {
+		gap: 16px 24px;
+		margin: 50px auto;
 		width: 100%;
-		overflow: hidden;
-		color: var(--grey-400);
-		font: var(--type-body-regular);
-		text-align: center;
-		text-overflow: ellipsis;
-		white-space: nowrap;
 	}
 
 	.quick-links__title {
@@ -100,9 +109,31 @@
 		min-height: 104px;
 		color: var(--primary-400);
 		font: var(--type-link-regular);
+		text-decoration: none;
 	}
 
-	@media (width <= 760px) {
+	.modal__wrapper {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+	}
+
+	.modal__title {
+		margin-bottom: 40px;
+		color: var(--grey-100);
+		font: var(--type-heading-four);
+		text-align: center;
+	}
+
+	.inputs__wrapper {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		gap: 20px;
+		color: var(--grey-600);
+	}
+
+	@media (width <= 768px) {
 		.title {
 			font: var(--type-heading-three);
 			text-align: center;

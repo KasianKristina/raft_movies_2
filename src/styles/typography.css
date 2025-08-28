@@ -22,7 +22,8 @@
 
 	/* Weights */
 	--weight-regular: 400;
-	--weight-medium: 600;
+	--weight-semibold: 600;
+	--weight-medium: 500;
 	--weight-bold: 700;
 
 	/* letter-spacing */
@@ -37,11 +38,16 @@
 		var(--font-primary);
 	--type-caption: var(--weight-regular) var(--size-body-sm) / var(--leading-ultra-dense)
 		var(--font-primary);
-	--type-link-regular: var(--weight-regular) var(--size-body) / var(--leading-dense)
+	--type-link-regular: var(--weight-semibold) var(--size-body) / var(--leading-dense)
 		var(--font-primary);
 	--type-heading-two: var(--weight-medium) var(--size-heading-lg) / var(--heading-line-loose)
 		var(--font-primary);
 	--type-heading-three: var(--weight-medium) var(--size-heading-ml) / var(--leading-spacious)
 		var(--font-primary);
 	--type-heading-five: var(--weight-bold) var(--size-heading-sm) / 1.2 var(--font-primary);
+	--type-body-large: var(--weight-regular) var(--size-heading-sm) / 1.2 var(--font-primary);
+	--type-heading-four: var(--weight-bold) var(--size-heading-md) / 1.2 var(--font-primary);
+	--type-body-extra-small: var(--weight-regular) var(--size-label) / var(--leading-dense)
+		var(--font-primary);
+	--type-heading-one: var(--weight-semibold) var(--size-display) / 1.2 var(--font-primary);
 }

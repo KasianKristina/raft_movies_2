@@ -8,8 +8,8 @@
 	--color-bg-0: rgb(202 216 228);
 	--color-bg-1: hsl(209deg 36% 86%);
 	--color-bg-2: hsl(224deg 44% 95%);
-	--color-theme-1: #ff3e00;
-	--color-theme-2: #4075a6;
+	--color-theme-1: var(--primary-300);
+	--color-theme-2: var(--grey-500);
 	--color-text: rgb(0 0 0 / 70%);
 	--column-width: 42rem;
 	--column-margin-top: 4rem;
@@ -34,9 +34,9 @@ html {
 
 body {
 	margin: 0;
+	background-color: var(--primary-900);
 	min-width: 375px;
 	min-height: 100vh;
-	background-color: var(--primary-900);
 }
 
 body,

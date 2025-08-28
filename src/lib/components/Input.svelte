@@ -87,6 +87,26 @@
 			outline: none;
 			color: white;
 		}
+
+		&:-webkit-autofill,
+		&:-webkit-autofill:hover,
+		&:-webkit-autofill:focus,
+		&:-webkit-autofill:active {
+			-webkit-background-clip: text;
+			-webkit-text-fill-color: var(--white-400);
+		}
+
+		&:autofill {
+			background-color: transparent !important;
+			color: var(--white-400) !important;
+		}
+
+		&:invalid {
+			box-shadow: none;
+		}
+		&:user-invalid {
+			box-shadow: none;
+		}
 	}
 
 	.input__field:focus-within {
