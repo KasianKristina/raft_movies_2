@@ -15,8 +15,6 @@ export const load = async () => {
 			rating: movie.rating ? Number(movie.rating) : null,
 		}));
 
-		console.log(serializableMovies);
-
 		return {
 			form,
 			movies: serializableMovies,
