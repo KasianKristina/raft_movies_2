@@ -29,3 +29,11 @@ export interface MovieInterface extends BaseMovie {
 	time: number;
 	backgroundImgSrc: string;
 }
+
+export interface AuthorInterface {
+	id: string;
+	email: string;
+	password: string;
+	first_name: string;
+	last_name: string;
+}

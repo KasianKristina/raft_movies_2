@@ -13,26 +13,36 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model AuthSession {
+  id        String   @id
+  userId    Int
+  expiresAt DateTime
+
+  user      User     @relation(references: [id], fields: [userId], onDelete: Cascade)
+}
+
 model User {
   id        Int      @id @default(autoincrement())
   email     String   @unique
   password  String
   first_name  String
-  second_name String
+  last_name String
   
   views      MovieView[]
   suggestions Suggestion[]
+  sessions AuthSession[]
 }
 
 model Movie {
   id        Int      @id @default(autoincrement())
   name     String
-  rating   Decimal? @db.Decimal(3, 1)
+  rating   Float?
   img_src  String?
   description  String?
+  genres    String[]
   number_of_seasons  Int?
   year_of_production  Int?
-  country String?
+  countries String[]
   film_director String?
   duration  Int?
   background_img_src String?
