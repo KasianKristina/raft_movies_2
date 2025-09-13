@@ -1,4 +1,3 @@
-import type { AuthorInterface } from '$lib/types/types';
 import type { Auth, Session, User } from 'lucia';
 
 declare global {

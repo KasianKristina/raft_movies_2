@@ -12,7 +12,6 @@ export const handle: Handle = async ({ event, resolve }) => {
 	const { session, user } = await lucia.validateSession(sessionId);
 
 	if (session && session.fresh) {
-		// обновляем cookie, если нужно
 		const sessionCookie = lucia.createSessionCookie(session.id);
 		event.cookies.set(sessionCookie.name, sessionCookie.value, {
 			path: '/',

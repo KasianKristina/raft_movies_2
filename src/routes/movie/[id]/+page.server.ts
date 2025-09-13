@@ -1,13 +1,14 @@
 import type { PageServerLoad } from './$types';
 import { prisma } from '$lib/server/prisma';
 import { error } from '@sveltejs/kit';
+import { AppError, ValidationError } from '$lib/errors/errors';
 
 export const load: PageServerLoad = async ({ params }) => {
 	try {
 		const movieId = parseInt(params.id);
 
 		if (isNaN(movieId)) {
-			throw error(400, 'Invalid movie ID');
+			throw new ValidationError('INVALID_ID', 'id');
 		}
 
 		const movie = await prisma.movie.findUnique({
@@ -15,23 +16,15 @@ export const load: PageServerLoad = async ({ params }) => {
 		});
 
 		if (!movie) {
-			throw error(404, 'Movie not found');
+			throw new AppError('NOT_FOUND');
 		}
 
-		const serializableMovie = {
-			...movie,
-			rating: movie.rating ? Number(movie.rating) : null,
-			genres: [],
-		};
-
-		return {
-			movie: serializableMovie,
-		};
+		return { movie };
 	} catch (err) {
 		console.error('Error loading movie:', err);
 
-		if (err instanceof Error && 'status' in err) {
-			throw err;
+		if (err instanceof AppError && 'status' in err) {
+			throw error(404, err.message);
 		}
 
 		throw error(500, 'Failed to load movie');

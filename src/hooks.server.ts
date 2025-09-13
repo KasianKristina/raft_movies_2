@@ -1,30 +1,63 @@
 import { lucia } from '$lib/server/auth';
-import type { Handle } from '@sveltejs/kit';
+import { redirect, type Handle } from '@sveltejs/kit';
+import { sequence } from '@sveltejs/kit/hooks';
 
-export const handle: Handle = async ({ event, resolve }) => {
-	const sessionId = event.cookies.get(lucia.sessionCookieName);
-	if (!sessionId) {
-		event.locals.user = null;
-		event.locals.session = null;
+const authHandle: Handle = async ({ event, resolve }) => {
+	try {
+		const sessionId = event.cookies.get(lucia.sessionCookieName);
+		if (!sessionId) {
+			event.locals.user = null;
+			event.locals.session = null;
+			return resolve(event);
+		}
+
+		const { session, user } = await lucia.validateSession(sessionId);
+		if (session && session.fresh) {
+			const sessionCookie = lucia.createSessionCookie(session.id);
+			event.cookies.set(sessionCookie.name, sessionCookie.value, {
+				path: '.',
+				...sessionCookie.attributes,
+			});
+		}
+		if (!session) {
+			const sessionCookie = lucia.createBlankSessionCookie();
+			event.cookies.set(sessionCookie.name, sessionCookie.value, {
+				path: '.',
+				...sessionCookie.attributes,
+			});
+		}
+
+		event.locals.user = user;
+		event.locals.session = session;
+
 		return resolve(event);
-	}
-
-	const { session, user } = await lucia.validateSession(sessionId);
-	if (session && session.fresh) {
-		const sessionCookie = lucia.createSessionCookie(session.id);
-		event.cookies.set(sessionCookie.name, sessionCookie.value, {
-			path: '.',
-			...sessionCookie.attributes,
-		});
-	}
-	if (!session) {
+	} catch (error) {
+		console.error('Auth hook error:', error);
 		const sessionCookie = lucia.createBlankSessionCookie();
 		event.cookies.set(sessionCookie.name, sessionCookie.value, {
 			path: '.',
 			...sessionCookie.attributes,
 		});
+		event.locals.user = null;
+		event.locals.session = null;
+
+		return resolve(event);
 	}
-	event.locals.user = user;
-	event.locals.session = session;
+};
+
+const protectionHandle: Handle = async ({ event, resolve }) => {
+	const protectedRoutes = ['/movie', '/movies', '/suggestion', '/suggestions', '/'];
+	const authRoutes = ['/login', '/registration'];
+
+	if (!event.locals.user && protectedRoutes.some((route) => event.url.pathname.startsWith(route))) {
+		throw redirect(302, `/login?redirectTo=${event.url.pathname}`);
+	}
+
+	if (event.locals.user && authRoutes.some((route) => event.url.pathname.startsWith(route))) {
+		throw redirect(302, '/');
+	}
+
 	return resolve(event);
 };
+
+export const handle = sequence(authHandle, protectionHandle);

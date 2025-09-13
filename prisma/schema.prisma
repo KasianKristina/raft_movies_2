@@ -14,15 +14,15 @@ datasource db {
 }
 
 model AuthSession {
-  id        String   @id
-  userId    Int
-  expiresAt DateTime
+  id         String   @id @default(cuid())
+  user_id    String
+  expires_at DateTime
 
-  user      User     @relation(references: [id], fields: [userId], onDelete: Cascade)
+  user      User     @relation(references: [id], fields: [user_id], onDelete: Cascade)
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   email     String   @unique
   password  String
   first_name  String
@@ -56,7 +56,7 @@ model MovieView {
   rating    Float?     
   
   user   User   @relation(fields: [user_id], references: [id])
-  user_id Int
+  user_id String
   movie  Movie  @relation(fields: [movie_id], references: [id])
   movie_id Int
 
@@ -69,5 +69,5 @@ model Suggestion {
   description String
   
   author   User   @relation(fields: [author_id], references: [id])
-  author_id Int
+  author_id String
 }

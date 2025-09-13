@@ -20,6 +20,12 @@ export const lucia = new Lucia(adapter, {
 			last_name: attributes.last_name,
 		};
 	},
+	// transformDatabaseUser: (userData) => {
+	// 	return {
+	// 		id: userData.id,
+	// 		email: userData.email,
+	// 	};
+	// },
 });
 
 declare module 'lucia' {

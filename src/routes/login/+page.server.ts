@@ -1,18 +1,26 @@
 import { loginSchema } from '$lib/schemas/auth';
 import { prisma } from '$lib/server/prisma';
-import { fail, superValidate, setError } from 'sveltekit-superforms';
+import { fail, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
-import type { Actions } from './$types';
+import type { Actions, PageServerLoad } from './$types';
 import { verify } from '@node-rs/argon2';
 import { lucia } from '$lib/server/auth';
+import { redirect } from '@sveltejs/kit';
+import { delay } from '$lib/utils/delay';
+import { AuthError } from '$lib/errors/errors';
+import { createErrorResponse } from '$lib/errors';
 
-export const load = async () => {
+export const load: PageServerLoad = async ({ locals }) => {
+	if (locals.user) {
+		throw redirect(302, '/');
+	}
+
 	const form = await superValidate(zod(loginSchema));
 	return { form };
 };
 
 export const actions: Actions = {
-	default: async ({ request, locals }) => {
+	default: async ({ request, locals, cookies }) => {
 		const form = await superValidate(request, zod(loginSchema));
 
 		if (!form.valid) {
@@ -27,7 +35,8 @@ export const actions: Actions = {
 			});
 
 			if (!user) {
-				return setError(form, 'email', 'Неверный email или пароль');
+				await delay(1000);
+				throw new AuthError('INVALID_CREDENTIALS');
 			}
 
 			const isValid = await verify(user.password, password, {
@@ -38,22 +47,36 @@ export const actions: Actions = {
 			});
 
 			if (!isValid) {
-				return setError(form, 'email', 'Неверный email или пароль');
+				await delay(1000);
+				throw new AuthError('INVALID_CREDENTIALS');
 			}
 
-			const session = await lucia.createSession(user.id.toString(), {});
+			await lucia.invalidateUserSessions(user.id);
+
+			const session = await lucia.createSession(user.id, {});
 			const sessionCookie = lucia.createSessionCookie(session.id);
-			//event.cookies.set(sessionCookie.name, sessionCookie.value, {
-			//	path: ".",
-			//	...sessionCookie.attributes
-			//});
 
-			//locals.auth.setSession(session);
+			cookies.set(sessionCookie.name, sessionCookie.value, {
+				path: '.',
+				...sessionCookie.attributes,
+			});
 
-			return { form };
-		} catch (err: any) {
-			console.log(err);
-			return setError(form, 'email', 'Ошибка при входе');
+			locals.auth.setSession(session);
+
+			throw redirect(302, '/');
+		} catch (error: unknown) {
+			console.log('Login error:', error);
+
+			if (error instanceof Error && 'status' in error && error.status === 302) {
+				throw error;
+			}
+
+			const errorResponse = createErrorResponse(error);
+
+			return fail(errorResponse.code === 'INVALID_CREDENTIALS' ? 400 : 500, {
+				form,
+				error: errorResponse,
+			});
 		}
 	},
 };
