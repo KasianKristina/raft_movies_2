@@ -49,6 +49,7 @@ model Movie {
   link String?
   
   views MovieView[]
+  suggestions SuggestionMovie[]
 }
 
 model MovieView {
@@ -71,4 +72,15 @@ model Suggestion {
   
   author   User   @relation(fields: [author_id], references: [id])
   author_id String
+  movies SuggestionMovie[]
+}
+
+model SuggestionMovie {
+  id            Int         @id @default(autoincrement())
+  suggestion    Suggestion  @relation(fields: [suggestion_id], references: [id])
+  suggestion_id Int
+  movie         Movie       @relation(fields: [movie_id], references: [id])
+  movie_id      Int
+
+  @@unique([suggestion_id, movie_id])
 }
