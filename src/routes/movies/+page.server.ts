@@ -3,8 +3,9 @@ import { fail, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { prisma } from '$lib/server/prisma';
 import { createErrorResponse } from '$lib/errors/index.js';
-import { AppError, AuthError } from '$lib/errors/errors';
+import { AuthError } from '$lib/errors/errors';
 import { error, type Actions } from '@sveltejs/kit';
+import { getSuccessMessage } from '$lib/utils/successMessages.js';
 
 export const load = async ({ locals }) => {
 	if (!locals.user) {
@@ -56,7 +57,7 @@ export const actions: Actions = {
 			return {
 				form,
 				success: {
-					message: 'Фильм успешно добавлен',
+					message: getSuccessMessage('MOVIE_CREATED'),
 					code: 'MOVIE_CREATED',
 				},
 			};

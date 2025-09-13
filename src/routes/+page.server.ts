@@ -3,9 +3,10 @@ import { fail, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { prisma } from '$lib/server/prisma';
 import type { PageServerLoad } from './$types';
-import { redirect, type Actions, error } from '@sveltejs/kit';
+import { redirect, type Actions } from '@sveltejs/kit';
 import { AppError, AuthError } from '$lib/errors/errors';
 import { createErrorResponse } from '$lib/errors';
+import { getSuccessMessage } from '$lib/utils/successMessages';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	try {
@@ -55,8 +56,8 @@ export const actions: Actions = {
 			return {
 				form,
 				success: {
-					message: 'Предложение успешно создано',
-					code: 'SUGGESTION_CREATED',
+					message: getSuccessMessage('SUGGESTION_CREATED'),
+					code: 'MOVIE_CREATED',
 				},
 			};
 		} catch (error: unknown) {

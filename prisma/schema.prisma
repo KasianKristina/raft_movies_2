@@ -46,6 +46,7 @@ model Movie {
   film_director String?
   duration  Int?
   background_img_src String?
+  link String?
   
   views MovieView[]
 }
