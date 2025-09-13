@@ -48,13 +48,14 @@ const authHandle: Handle = async ({ event, resolve }) => {
 const protectionHandle: Handle = async ({ event, resolve }) => {
 	const protectedRoutes = ['/movie', '/movies', '/suggestion', '/suggestions', '/'];
 	const authRoutes = ['/login', '/registration'];
+	const currentPath = event.url.pathname;
 
-	if (!event.locals.user && protectedRoutes.some((route) => event.url.pathname.startsWith(route))) {
-		throw redirect(302, `/login?redirectTo=${event.url.pathname}`);
+	if (authRoutes.some((route) => currentPath.startsWith(route))) {
+		return resolve(event);
 	}
 
-	if (event.locals.user && authRoutes.some((route) => event.url.pathname.startsWith(route))) {
-		throw redirect(302, '/');
+	if (!event.locals.user && protectedRoutes.some((route) => currentPath.startsWith(route))) {
+		throw redirect(302, `/login?redirectTo=${currentPath}`);
 	}
 
 	return resolve(event);

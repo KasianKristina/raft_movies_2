@@ -13,14 +13,16 @@
 
 	let inputValue = $state('');
 
-	const filteredMovies = $derived(searchByWords(data.movies as MovieCardInterface[], inputValue));
+	const filteredMovies = $derived(
+		searchByWords(data.suggestion.movies as MovieCardInterface[], inputValue),
+	);
 </script>
 
 <svelte:head>
 	<title>{`Подборка фильмов ${data.suggestion.name}`}</title>
 </svelte:head>
 
-<h1 class="title">{data.name}</h1>
+<h1 class="title">{data.suggestion.name}</h1>
 <section>
 	<h2 class="visually-hidden">Блок с подборками фильмов от пользователей</h2>
 	<p class="suggestion__description">{data.suggestion.description}</p>

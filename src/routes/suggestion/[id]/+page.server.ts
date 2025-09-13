@@ -14,16 +14,16 @@ export const load: PageServerLoad = async ({ params }) => {
 
 		const suggestion = await prisma.suggestion.findUnique({
 			where: { id: suggestionId },
+			include: {
+				movies: true,
+			},
 		});
 
 		if (!suggestion) {
 			throw new AppError('NOT_FOUND');
 		}
 
-		return {
-			suggestion: suggestion,
-			movies: [],
-		};
+		return { suggestion };
 	} catch (err: unknown) {
 		console.error('Error loading suggestion:', err);
 

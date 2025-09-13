@@ -15,7 +15,7 @@
 	<h2 class="visually-hidden">Постер к фильму</h2>
 	<div class="header-section__image_wrapper">
 		<img
-			src={data.movie.backgroundImgSrc}
+			src={data.movie.background_img_src}
 			alt={`постер к фильму ${data.movie.name}`}
 			width={1200}
 			height={480}
@@ -36,7 +36,7 @@
 	<h2 class="visually-hidden">О фильме</h2>
 	<div class="info-section__wrapper">
 		<img
-			src={data.movie.imgSrc}
+			src={data.movie.img_src}
 			alt={`постер к фильму ${data.movie.name}`}
 			width={480}
 			height={720}
