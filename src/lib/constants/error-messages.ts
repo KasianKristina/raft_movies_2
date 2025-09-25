@@ -13,6 +13,8 @@ export const ERROR_MESSAGES = {
 		PASSWORDS_DONT_MATCH: 'Пароли не совпадают',
 		EMAIL_EXISTS: 'Этот email уже занят',
 		INVALID_ID: 'Неверный идентификатор',
+		MOVIE_ALREADY_IN_SUGGESTION: 'Этот фильм уже добавлен в выбранную подборку',
+		SUGGESTION_REQUIRED: 'Необходимо выбрать подборку',
 	},
 
 	COMMON: {

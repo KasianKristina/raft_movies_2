@@ -15,7 +15,18 @@ export const load: PageServerLoad = async ({ params }) => {
 		const suggestion = await prisma.suggestion.findUnique({
 			where: { id: suggestionId },
 			include: {
-				movies: true,
+				movies: {
+					include: {
+						movie: {
+							select: {
+								id: true,
+								name: true,
+								rating: true,
+								views: true,
+							},
+						},
+					},
+				},
 			},
 		});
 

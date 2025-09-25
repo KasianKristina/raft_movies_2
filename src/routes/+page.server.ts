@@ -20,6 +20,9 @@ export const load: PageServerLoad = async ({ locals }) => {
 			where: {
 				author_id: locals.user.id,
 			},
+			include: {
+				author: true,
+			},
 		});
 
 		return { form, suggestions };

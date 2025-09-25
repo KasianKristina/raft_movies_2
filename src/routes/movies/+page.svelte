@@ -17,11 +17,35 @@
 	let inputValue = $state('');
 	let showModal = $state(false);
 	let showModalWithSuggestions = $state(false);
+	let selectedMovieId: null | string = $state(null);
 	let { data } = $props<{ data: PageData }>();
 
-	const { form, errors, enhance } = superForm(data.form);
-
 	const filteredMovies = $derived(searchByWords(data.movies as MovieCardInterface[], inputValue));
+
+	const {
+		form: createMovieForm,
+		errors: createMovieErrors,
+		enhance: createMovieEnhance,
+	} = superForm(data.createMovieForm, {
+		onUpdated({ form }) {
+			if (form.valid) {
+				showModal = false;
+			}
+		},
+	});
+
+	const {
+		form: addToSuggestionForm,
+		errors: addToSuggestionErrors,
+		enhance: addToSuggestionEnhance,
+	} = superForm(data.addToSuggestionForm, {
+		onUpdated({ form }) {
+			if (form.valid) {
+				showModalWithSuggestions = false;
+				selectedMovieId = null;
+			}
+		},
+	});
 </script>
 
 <svelte:head>
@@ -66,6 +90,7 @@
 								onclick={(e) => {
 									e.preventDefault();
 									showModalWithSuggestions = true;
+									selectedMovieId = movie.id;
 								}}
 							>
 								<LikeIcon />
@@ -88,13 +113,13 @@
 <Modal bind:open={showModal}>
 	<div class="modal__wrapper">
 		<p class="modal__title">Предложи что-нибудь для просмотра</p>
-		<form class="modal__inputs_wrapper" method="POST" use:enhance>
+		<form class="modal__inputs_wrapper" method="POST" action="?/createMovie" use:createMovieEnhance>
 			<Input
 				label="Название"
 				type="string"
 				name="name"
-				bind:value={$form.name}
-				errorMessage={$errors.name?.[0] as string}
+				bind:value={$createMovieForm.name}
+				errorMessage={$createMovieErrors.name?.[0] as string}
 			>
 				{#snippet leftIcon()}
 					<VideoPlayIcon />
@@ -104,8 +129,8 @@
 				label="Ссылка (если есть)"
 				type="string"
 				name="link"
-				bind:value={$form.link}
-				errorMessage={$errors.link?.[0] as string}
+				bind:value={$createMovieForm.link}
+				errorMessage={$createMovieErrors.link?.[0] as string}
 			>
 				{#snippet leftIcon()}
 					<LinkIcon />
@@ -118,10 +143,11 @@
 
 <Modal bind:open={showModalWithSuggestions}>
 	<p class="modal__title">Добавить фильм в подборку</p>
-	<form class="modal__wrapper" method="POST">
-		<select class="modal__select">
+	<form class="modal__wrapper" method="POST" action="?/addToSuggestion" use:addToSuggestionEnhance>
+		<input type="hidden" name="movie_id" value={selectedMovieId} />
+		<select class="modal__select" name="suggestion_id">
 			{#each data.suggestions as suggestion}
-				<option>{suggestion.name}</option>
+				<option value={suggestion.id}>{suggestion.name}</option>
 			{/each}
 		</select>
 		<Button type="submit">Добавить</Button>

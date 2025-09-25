@@ -8,17 +8,17 @@
 		countAlreadyWatched: number;
 		countAll: number;
 		description?: string;
-		author: string;
+		authorName: string;
 		isNeedDisplayAuthor?: boolean;
 	};
 
 	let {
 		id,
 		name,
-		countAlreadyWatched,
-		countAll,
+		countAlreadyWatched = 0,
+		countAll = 0,
 		description,
-		author,
+		authorName,
 		isNeedDisplayAuthor = true,
 	}: Props = $props();
 
@@ -56,7 +56,7 @@
 	{/if}
 
 	{#if isNeedDisplayAuthor}
-		<p class="item__author">Автор: {author}</p>
+		<p class="item__author">Автор: {authorName}</p>
 	{/if}
 </a>
 

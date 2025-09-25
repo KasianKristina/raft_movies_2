@@ -11,7 +11,7 @@ const adapter = new PrismaAdapter(client.authSession, client.user);
 export const lucia = new Lucia(adapter, {
 	sessionCookie: {
 		attributes: {
-			secure: !dev,
+			secure: dev,
 		},
 	},
 	getUserAttributes: (attributes) => {
@@ -21,6 +21,18 @@ export const lucia = new Lucia(adapter, {
 		};
 	},
 });
+
+export const handleAuthRequest = (event: any) => {
+	return {
+		validate: async () => {
+			const sessionId = event.cookies.get(lucia.sessionCookieName);
+			if (!sessionId) return null;
+
+			const { session, user } = await lucia.validateSession(sessionId);
+			return { session, user };
+		},
+	};
+};
 
 declare module 'lucia' {
 	interface Register {

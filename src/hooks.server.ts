@@ -1,9 +1,11 @@
-import { lucia } from '$lib/server/auth';
+import { handleAuthRequest, lucia } from '$lib/server/auth';
 import { redirect, type Handle } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
 
 const authHandle: Handle = async ({ event, resolve }) => {
 	try {
+		event.locals.auth = handleAuthRequest(event);
+
 		const sessionId = event.cookies.get(lucia.sessionCookieName);
 		if (!sessionId) {
 			event.locals.user = null;

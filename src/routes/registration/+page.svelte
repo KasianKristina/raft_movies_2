@@ -7,6 +7,8 @@
 
 	let { data } = $props<{ data: PageData }>();
 
+	console.log('DATA', data);
+
 	const { form, errors, enhance } = superForm(data.form);
 </script>
 

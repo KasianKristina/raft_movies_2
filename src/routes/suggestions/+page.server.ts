@@ -4,7 +4,11 @@ import { createErrorResponse } from '$lib/errors';
 
 export const load: PageServerLoad = async () => {
 	try {
-		const suggestions = await prisma.suggestion.findMany();
+		const suggestions = await prisma.suggestion.findMany({
+			include: {
+				author: true,
+			},
+		});
 
 		return { suggestions };
 	} catch (error) {

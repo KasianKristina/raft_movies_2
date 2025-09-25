@@ -39,7 +39,10 @@
 	<ul class="cards">
 		{#each filteredSuggestions as suggestion}
 			<li>
-				<SuggestionCard {...suggestion} />
+				<SuggestionCard
+					{...suggestion}
+					authorName={`${suggestion.author.first_name} ${suggestion.author.last_name}`}
+				/>
 			</li>
 		{/each}
 	</ul>

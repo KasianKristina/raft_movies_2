@@ -57,12 +57,7 @@ export const actions: Actions = {
 				},
 			});
 
-			await locals.auth.createKey({
-				userId: user.id.toString(),
-				providerId: 'email',
-				providerUserId: email,
-				password: passwordHash,
-			});
+			console.log('locals', locals);
 
 			const session = await lucia.createSession(user.id, {});
 			const sessionCookie = lucia.createSessionCookie(session.id);
@@ -71,8 +66,6 @@ export const actions: Actions = {
 				path: '.',
 				...sessionCookie.attributes,
 			});
-
-			locals.auth.setSession(session);
 
 			throw redirect(302, '/');
 		} catch (error: unknown) {

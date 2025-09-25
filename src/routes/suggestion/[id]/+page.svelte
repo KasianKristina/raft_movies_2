@@ -14,7 +14,13 @@
 	let inputValue = $state('');
 
 	const filteredMovies = $derived(
-		searchByWords(data.suggestion.movies as MovieCardInterface[], inputValue),
+		searchByWords(
+			data.suggestion.movies.map((item) => ({
+				...item.movie,
+				isAlreadyWatched: item.movie.views > 0,
+			})) as MovieCardInterface[],
+			inputValue,
+		),
 	);
 </script>
 

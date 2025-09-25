@@ -2,6 +2,7 @@ export const SUCCESS_MESSAGES = {
 	MOVIE_CREATED: 'Фильм успешно добавлен',
 	MOVIE_UPDATED: 'Фильм успешно обновлен',
 	MOVIE_DELETED: 'Фильм успешно удален',
+	MOVIE_ADDED_TO_SUGGESTION: 'Фильм успешно добавлен в подборку',
 	SUGGESTION_CREATED: 'Предложение успешно создано',
 	SUGGESTION_UPDATED: 'Предложение успешно обновлено',
 	SUGGESTION_DELETED: 'Предложение успешно удалено',

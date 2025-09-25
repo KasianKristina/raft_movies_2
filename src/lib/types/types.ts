@@ -13,8 +13,7 @@ export interface SuggestionInterface {
 	id: string;
 	name: string;
 	description: string;
-	author: string;
-	authorId: string;
+	author: AuthorInterface;
 	countAlreadyWatched: number;
 	countAll: number;
 }

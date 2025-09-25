@@ -61,12 +61,8 @@ export const actions: Actions = {
 				...sessionCookie.attributes,
 			});
 
-			locals.auth.setSession(session);
-
 			throw redirect(302, '/');
 		} catch (error: unknown) {
-			console.log('Login error:', error);
-
 			if (error instanceof Error && 'status' in error && error.status === 302) {
 				throw error;
 			}

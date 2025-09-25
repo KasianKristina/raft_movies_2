@@ -15,10 +15,10 @@ datasource db {
 
 model AuthSession {
   id         String   @id @default(cuid())
-  user_id    String
-  expires_at DateTime
+  userId    String  @map("user_id")
+  expiresAt DateTime  @map("expires_at")
 
-  user      User     @relation(references: [id], fields: [user_id], onDelete: Cascade)
+  user      User     @relation(references: [id], fields: [userId], onDelete: Cascade)
 }
 
 model User {

@@ -12,6 +12,8 @@
 
 	let { data } = $props<{ data: PageData }>();
 
+	console.log('data.suggestions', data.suggestions);
+
 	const { form, errors, enhance } = superForm(data.form);
 </script>
 
@@ -25,7 +27,10 @@
 	<ul class="welcome-section__folders">
 		{#each data.suggestions as suggestion}
 			<li>
-				<SuggestionCard {...suggestion} />
+				<SuggestionCard
+					{...suggestion}
+					authorName={`${suggestion.author.first_name} ${suggestion.author.last_name}`}
+				/>
 			</li>
 		{/each}
 	</ul>
