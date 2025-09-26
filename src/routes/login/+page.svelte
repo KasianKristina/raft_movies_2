@@ -3,7 +3,9 @@
 	import { superForm } from 'sveltekit-superforms';
 	import AuthForm from '$lib/components/AuthForm.svelte';
 
-	let { data } = $props<{ data: PageData }>();
+	let { data } = $props<{
+		data: PageData;
+	}>();
 
 	const { form, errors, enhance } = superForm(data.form);
 </script>

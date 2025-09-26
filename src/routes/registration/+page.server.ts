@@ -6,14 +6,13 @@ import { zod } from 'sveltekit-superforms/adapters';
 import type { PageServerLoad } from './$types';
 import { redirect, type Actions } from '@sveltejs/kit';
 import { delay } from '$lib/utils/delay';
-import { ValidationError } from '$lib/errors/errors';
 import { lucia } from '$lib/server/auth';
 import { ERROR_MESSAGES } from '$lib/constants/error-messages';
 import { createErrorResponse } from '$lib/errors';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	if (locals.user) {
-		throw redirect(302, '/');
+		redirect(302, '/');
 	}
 
 	const form = await superValidate(zod(registrationSchema));
@@ -30,25 +29,35 @@ export const actions: Actions = {
 
 		const { email, password, firstName, lastName } = form.data;
 
+		const existingUser = await prisma.user.findUnique({
+			where: { email },
+			select: { id: true },
+		});
+
+		if (existingUser) {
+			await delay(1000);
+			return setError(form, 'email', ERROR_MESSAGES.VALIDATION.EMAIL_EXISTS);
+		}
+
+		let passwordHash;
 		try {
-			const existingUser = await prisma.user.findUnique({
-				where: { email },
-				select: { id: true },
-			});
-
-			if (existingUser) {
-				await delay(1000);
-				throw new ValidationError('EMAIL_EXISTS', 'email');
-			}
-
-			const passwordHash = await hash(password, {
+			passwordHash = await hash(password, {
 				memoryCost: 19456,
 				timeCost: 2,
 				outputLen: 32,
 				parallelism: 1,
 			});
+		} catch (error) {
+			console.error('Password hashing error:', error);
+			return fail(500, {
+				form,
+				error: createErrorResponse(new Error('PASSWORD_HASHING_FAILED')),
+			});
+		}
 
-			const user = await prisma.user.create({
+		let user;
+		try {
+			user = await prisma.user.create({
 				data: {
 					email,
 					password: passwordHash,
@@ -56,7 +65,24 @@ export const actions: Actions = {
 					last_name: lastName,
 				},
 			});
+		} catch (error: unknown) {
+			console.error('User creation error:', error);
 
+			if (typeof error === 'object' && error !== null && 'code' in error) {
+				const prismaError = error as { code: string; meta?: any };
+				if (prismaError.code === 'P2002' && prismaError.meta?.target?.includes('email')) {
+					await delay(1000);
+					return setError(form, 'email', ERROR_MESSAGES.VALIDATION.EMAIL_EXISTS);
+				}
+			}
+
+			return fail(500, {
+				form,
+				error: createErrorResponse(new Error('USER_CREATION_FAILED')),
+			});
+		}
+
+		try {
 			const session = await lucia.createSession(user.id, {});
 			const sessionCookie = lucia.createSessionCookie(session.id);
 
@@ -64,30 +90,11 @@ export const actions: Actions = {
 				path: '.',
 				...sessionCookie.attributes,
 			});
-
-			throw redirect(302, '/');
-		} catch (error: unknown) {
-			console.error('Registration error:', error);
-
-			if (error instanceof Error && 'status' in error && error.status === 302) {
-				throw error;
-			}
-
-			if (typeof error === 'object' && error !== null && 'code' in error) {
-				const prismaError = error as { code: string; meta?: any };
-
-				if (prismaError.code === 'P2002' && prismaError.meta?.target?.includes('email')) {
-					await delay(1000);
-					return setError(form, 'email', ERROR_MESSAGES.VALIDATION.EMAIL_EXISTS);
-				}
-			}
-
-			const errorResponse = createErrorResponse(error);
-
-			return fail(500, {
-				form,
-				error: errorResponse,
-			});
+		} catch (error) {
+			console.error('Session creation error:', error);
+			redirect(302, '/login');
 		}
+
+		redirect(302, '/');
 	},
 };

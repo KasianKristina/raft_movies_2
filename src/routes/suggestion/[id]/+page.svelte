@@ -6,7 +6,7 @@
 	import MovieCard from '$lib/components/MovieCard.svelte';
 	import VideoTickIcon from '$lib/icons/VideoTick.svelte';
 	import { searchByWords } from '$lib/utils/search';
-	import type { MovieCardInterface } from '$lib/types/types';
+	import type { MovieCardInterface, SuggestionMovieViews } from '$lib/types/types';
 	import type { PageData } from './$types';
 
 	let { data } = $props<{ data: PageData }>();
@@ -15,9 +15,9 @@
 
 	const filteredMovies = $derived(
 		searchByWords(
-			data.suggestion.movies.map((item) => ({
+			data.suggestion.movies.map((item: SuggestionMovieViews) => ({
 				...item.movie,
-				isAlreadyWatched: item.movie.views > 0,
+				isAlreadyWatched: false,
 			})) as MovieCardInterface[],
 			inputValue,
 		),
@@ -47,7 +47,7 @@
 	<ul class="suggestion__result_cards">
 		{#each filteredMovies as movie}
 			<li class="cards__item">
-				<MovieCard id={movie.id} name={movie.name} imgSrc={movie.imgSrc} score={movie.score}>
+				<MovieCard id={movie.id} name={movie.name} imgSrc={movie.imgSrc} score={movie.rating}>
 					{#snippet bottomChildren()}
 						{#if movie.isAlreadyWatched}
 							<div class="cards__item-text">

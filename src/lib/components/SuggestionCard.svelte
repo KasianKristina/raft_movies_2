@@ -5,8 +5,8 @@
 	type Props = {
 		id: string;
 		name: string;
-		countAlreadyWatched: number;
-		countAll: number;
+		countAlreadyWatched?: number;
+		countAll?: number;
 		description?: string;
 		authorName: string;
 		isNeedDisplayAuthor?: boolean;

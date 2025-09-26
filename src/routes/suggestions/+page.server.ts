@@ -7,6 +7,7 @@ export const load: PageServerLoad = async () => {
 		const suggestions = await prisma.suggestion.findMany({
 			include: {
 				author: true,
+				movies: true,
 			},
 		});
 

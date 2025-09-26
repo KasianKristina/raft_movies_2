@@ -1,14 +1,14 @@
 import { loginSchema } from '$lib/schemas/auth';
 import { prisma } from '$lib/server/prisma';
-import { fail, superValidate } from 'sveltekit-superforms';
+import { fail, setError, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import type { Actions, PageServerLoad } from './$types';
 import { verify } from '@node-rs/argon2';
 import { lucia } from '$lib/server/auth';
 import { redirect } from '@sveltejs/kit';
 import { delay } from '$lib/utils/delay';
-import { AuthError } from '$lib/errors/errors';
 import { createErrorResponse } from '$lib/errors';
+import { ERROR_MESSAGES } from '$lib/constants/error-messages';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	if (locals.user) {
@@ -35,10 +35,7 @@ export const actions: Actions = {
 
 		if (!user) {
 			await delay(1000);
-			return fail(400, {
-				form,
-				error: createErrorResponse(new AuthError('INVALID_CREDENTIALS')),
-			});
+			return setError(form, 'email', ERROR_MESSAGES.AUTH.INVALID_CREDENTIALS);
 		}
 
 		const isValid = await verify(user.password, password, {
@@ -50,10 +47,7 @@ export const actions: Actions = {
 
 		if (!isValid) {
 			await delay(1000);
-			return fail(400, {
-				form,
-				error: createErrorResponse(new AuthError('INVALID_CREDENTIALS')),
-			});
+			return setError(form, 'email', ERROR_MESSAGES.AUTH.INVALID_CREDENTIALS);
 		}
 
 		try {

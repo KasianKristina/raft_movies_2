@@ -77,7 +77,7 @@
 	<ul class="cards">
 		{#each filteredMovies as movie}
 			<li class="cards__item">
-				<MovieCard id={movie.id} name={movie.name} imgSrc={movie.imgSrc} score={movie.score}>
+				<MovieCard id={movie.id} name={movie.name} imgSrc={movie.imgSrc} score={movie.rating}>
 					{#snippet bottomChildren()}
 						{#if movie.isAlreadyWatched}
 							<div class="cards__item-text green-color">

@@ -1,7 +1,7 @@
 interface BaseMovie {
 	id: string;
 	name: string;
-	score: string;
+	rating: string;
 	imgSrc?: string;
 }
 
@@ -14,8 +14,7 @@ export interface SuggestionInterface {
 	name: string;
 	description: string;
 	author: AuthorInterface;
-	countAlreadyWatched: number;
-	countAll: number;
+	movies: BaseMovie[];
 }
 
 export interface MovieInterface extends BaseMovie {
@@ -35,4 +34,11 @@ export interface AuthorInterface {
 	password: string;
 	first_name: string;
 	last_name: string;
+}
+
+export interface SuggestionMovieViews {
+	id: number;
+	movie_id: number;
+	suggestion_id: number;
+	movie: BaseMovie;
 }
