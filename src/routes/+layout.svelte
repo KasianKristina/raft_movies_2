@@ -2,14 +2,16 @@
 	import Header from '$lib/components/Header.svelte';
 	import '../app.css';
 
-	let { children } = $props();
+	let { children, data } = $props();
 </script>
 
 <svelte:head>
 	<meta name="description" content="Raft movies app" />
 </svelte:head>
 
-<Header />
+{#if data.user}
+	<Header />
+{/if}
 <main>
 	{@render children()}
 </main>

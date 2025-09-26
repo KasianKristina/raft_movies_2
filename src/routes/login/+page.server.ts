@@ -12,7 +12,7 @@ import { createErrorResponse } from '$lib/errors';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	if (locals.user) {
-		throw redirect(302, '/');
+		return redirect(302, '/');
 	}
 
 	const form = await superValidate(zod(loginSchema));
@@ -20,7 +20,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 };
 
 export const actions: Actions = {
-	default: async ({ request, locals, cookies }) => {
+	default: async ({ request, cookies }) => {
 		const form = await superValidate(request, zod(loginSchema));
 
 		if (!form.valid) {
@@ -29,30 +29,35 @@ export const actions: Actions = {
 
 		const { email, password } = form.data;
 
+		const user = await prisma.user.findUnique({
+			where: { email },
+		});
+
+		if (!user) {
+			await delay(1000);
+			return fail(400, {
+				form,
+				error: createErrorResponse(new AuthError('INVALID_CREDENTIALS')),
+			});
+		}
+
+		const isValid = await verify(user.password, password, {
+			memoryCost: 19456,
+			timeCost: 2,
+			outputLen: 32,
+			parallelism: 1,
+		});
+
+		if (!isValid) {
+			await delay(1000);
+			return fail(400, {
+				form,
+				error: createErrorResponse(new AuthError('INVALID_CREDENTIALS')),
+			});
+		}
+
 		try {
-			const user = await prisma.user.findUnique({
-				where: { email },
-			});
-
-			if (!user) {
-				await delay(1000);
-				throw new AuthError('INVALID_CREDENTIALS');
-			}
-
-			const isValid = await verify(user.password, password, {
-				memoryCost: 19456,
-				timeCost: 2,
-				outputLen: 32,
-				parallelism: 1,
-			});
-
-			if (!isValid) {
-				await delay(1000);
-				throw new AuthError('INVALID_CREDENTIALS');
-			}
-
 			await lucia.invalidateUserSessions(user.id);
-
 			const session = await lucia.createSession(user.id, {});
 			const sessionCookie = lucia.createSessionCookie(session.id);
 
@@ -60,19 +65,14 @@ export const actions: Actions = {
 				path: '.',
 				...sessionCookie.attributes,
 			});
-
-			throw redirect(302, '/');
-		} catch (error: unknown) {
-			if (error instanceof Error && 'status' in error && error.status === 302) {
-				throw error;
-			}
-
-			const errorResponse = createErrorResponse(error);
-
-			return fail(errorResponse.code === 'INVALID_CREDENTIALS' ? 400 : 500, {
+		} catch (error) {
+			console.error('Session creation error:', error);
+			return fail(500, {
 				form,
-				error: errorResponse,
+				error: createErrorResponse(new Error('SESSION_CREATION_FAILED')),
 			});
 		}
+
+		redirect(302, '/');
 	},
 };

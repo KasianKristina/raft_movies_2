@@ -1,14 +1,16 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
+	import { enhance } from '$app/forms';
 	import { page } from '$app/state';
 	import CloseIcon from '$lib/icons/CloseIcon.svelte';
 	import LogoIcon from '$lib/icons/Logo.svelte';
+	import LogoutIcon from '$lib/icons/LogoutIcon.svelte';
 	import MenuIcon from '$lib/icons/MenuIcon.svelte';
 
 	const menuItems = [
 		{ pathName: '/', pageName: 'Главная' },
 		{ pathName: '/movies', pageName: 'Фильмы' },
-		{ pathName: '/suggestions', pageName: 'Предложения' },
+		{ pathName: '/suggestions', pageName: 'Подборки' },
 	];
 
 	let showMenu = $state(false);
@@ -64,6 +66,13 @@
 					>
 				</li>
 			{/each}
+			<li class="header__menu-item">
+				<form method="POST" action="/logout" use:enhance>
+					<button class="header__menu-link header__menu-link_logout" type="submit"
+						><LogoutIcon /> Выйти</button
+					>
+				</form>
+			</li>
 		</ul>
 	</nav>
 </header>
@@ -131,6 +140,13 @@
 	.header__toggle :global(svg) {
 		width: 30px;
 		height: 30px;
+	}
+
+	.header__menu-link_logout {
+		display: flex;
+		align-items: center;
+		gap: 4px;
+		color: var(--grey-300);
 	}
 
 	@media (hover: hover) {

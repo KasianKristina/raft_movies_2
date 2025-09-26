@@ -12,8 +12,6 @@
 
 	let { data } = $props<{ data: PageData }>();
 
-	console.log('data.suggestions', data.suggestions);
-
 	const { form, errors, enhance } = superForm(data.form);
 </script>
 

@@ -57,8 +57,6 @@ export const actions: Actions = {
 				},
 			});
 
-			console.log('locals', locals);
-
 			const session = await lucia.createSession(user.id, {});
 			const sessionCookie = lucia.createSessionCookie(session.id);
 
