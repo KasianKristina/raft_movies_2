@@ -10,8 +10,6 @@
 
 	let { data } = $props<{ data: PageData }>();
 
-	console.log('data', data);
-
 	let inputValue = $state('');
 
 	const filteredSuggestions = $derived(
