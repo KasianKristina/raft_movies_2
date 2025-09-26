@@ -22,9 +22,9 @@ export interface MovieInterface extends BaseMovie {
 	genres: string[];
 	number_of_seasons: number;
 	year_of_production: number;
-	country: string;
+	countries: string[];
 	film_director: string;
-	time: number;
+	duration: number;
 	backgroundImgSrc: string;
 }
 

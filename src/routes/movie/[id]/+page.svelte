@@ -58,7 +58,7 @@
 				</li>
 				<li class="info-section__detail">
 					<h3 class="info-section__detail-key">Страна</h3>
-					<p class="info-section__detail-value">{data.movie.country}</p>
+					<p class="info-section__detail-value">{data.movie.countries.join(', ')}</p>
 				</li>
 				<li class="info-section__detail">
 					<h3 class="info-section__detail-key">Режиссер</h3>
@@ -66,7 +66,9 @@
 				</li>
 				<li class="info-section__detail">
 					<h3 class="info-section__detail-key">Время</h3>
-					<p class="info-section__detail-value">{data.movie.time}</p>
+					{#if data.movie.duration}
+						<p class="info-section__detail-value">{data.movie.duration} мин</p>
+					{/if}
 				</li>
 			</ul>
 		</div>
