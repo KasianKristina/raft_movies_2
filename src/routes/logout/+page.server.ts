@@ -1,6 +1,6 @@
-import { lucia } from '$lib/server/auth';
 import { redirect } from '@sveltejs/kit';
 import type { Actions } from '../$types';
+import { prisma } from '$lib/server/prisma';
 
 export const actions: Actions = {
 	default: async ({ locals, cookies }) => {
@@ -8,12 +8,21 @@ export const actions: Actions = {
 			throw redirect(302, '/login');
 		}
 
-		await lucia.invalidateSession(locals.session.id);
+		const sessionToken = cookies.get('session');
 
-		const sessionCookie = lucia.createBlankSessionCookie();
-		cookies.set(sessionCookie.name, sessionCookie.value, {
-			path: '.',
-			...sessionCookie.attributes,
+		if (sessionToken) {
+			await prisma.authSession.deleteMany({
+				where: {
+					token: sessionToken,
+				},
+			});
+		}
+
+		cookies.set('session', '', {
+			path: '/',
+			httpOnly: true,
+			sameSite: 'lax',
+			maxAge: 0,
 		});
 
 		throw redirect(302, '/login');

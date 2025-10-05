@@ -6,9 +6,9 @@ import { zod } from 'sveltekit-superforms/adapters';
 import type { PageServerLoad } from './$types';
 import { redirect, type Actions } from '@sveltejs/kit';
 import { delay } from '$lib/utils/delay';
-import { lucia } from '$lib/server/auth';
 import { ERROR_MESSAGES } from '$lib/constants/error-messages';
 import { createErrorResponse } from '$lib/errors';
+import { generateRandomString, isWithinExpiration } from '$lib/utils/auth';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	if (locals.user) {
@@ -83,16 +83,31 @@ export const actions: Actions = {
 		}
 
 		try {
-			const session = await lucia.createSession(user.id, {});
-			const sessionCookie = lucia.createSessionCookie(session.id);
+			const sessionToken = generateRandomString(64);
 
-			cookies.set(sessionCookie.name, sessionCookie.value, {
-				path: '.',
-				...sessionCookie.attributes,
+			const expiresAt = new Date();
+			expiresAt.setDate(expiresAt.getDate() + 30);
+
+			await prisma.authSession.create({
+				data: {
+					token: sessionToken,
+					userId: user.id,
+					expiresAt: expiresAt,
+				},
+			});
+
+			cookies.set('session', sessionToken, {
+				path: '/',
+				httpOnly: true,
+				sameSite: 'lax',
+				expires: expiresAt,
 			});
 		} catch (error) {
 			console.error('Session creation error:', error);
-			redirect(302, '/login');
+			return fail(500, {
+				form,
+				error: createErrorResponse(new Error('SESSION_CREATION_FAILED')),
+			});
 		}
 
 		redirect(302, '/');

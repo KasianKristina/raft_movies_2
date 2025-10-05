@@ -1,50 +1,41 @@
-import { handleAuthRequest, lucia } from '$lib/server/auth';
 import { redirect, type Handle } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
+import { prisma } from '$lib/server/prisma';
+import { isWithinExpiration } from '$lib/utils/auth';
 
 const authHandle: Handle = async ({ event, resolve }) => {
-	try {
-		event.locals.auth = handleAuthRequest(event);
+	const sessionToken = event.cookies.get('session');
 
-		const sessionId = event.cookies.get(lucia.sessionCookieName);
-		if (!sessionId) {
+	if (sessionToken) {
+		try {
+			const session = await prisma.authSession.findUnique({
+				where: { token: sessionToken },
+				include: { user: true },
+			});
+
+			if (session && isWithinExpiration(session.expiresAt)) {
+				event.locals.user = session.user;
+				event.locals.session = session;
+			} else {
+				if (session) {
+					await prisma.authSession.deleteMany({ where: { token: sessionToken } });
+				}
+				event.cookies.delete('session', { path: '/' });
+				event.locals.user = null;
+				event.locals.session = null;
+			}
+		} catch (error) {
+			console.error('Session validation error:', error);
+			event.cookies.delete('session', { path: '/' });
 			event.locals.user = null;
 			event.locals.session = null;
-			return resolve(event);
 		}
-
-		const { session, user } = await lucia.validateSession(sessionId);
-		if (session && session.fresh) {
-			const sessionCookie = lucia.createSessionCookie(session.id);
-			event.cookies.set(sessionCookie.name, sessionCookie.value, {
-				path: '.',
-				...sessionCookie.attributes,
-			});
-		}
-		if (!session) {
-			const sessionCookie = lucia.createBlankSessionCookie();
-			event.cookies.set(sessionCookie.name, sessionCookie.value, {
-				path: '.',
-				...sessionCookie.attributes,
-			});
-		}
-
-		event.locals.user = user;
-		event.locals.session = session;
-
-		return resolve(event);
-	} catch (error) {
-		console.error('Auth hook error:', error);
-		const sessionCookie = lucia.createBlankSessionCookie();
-		event.cookies.set(sessionCookie.name, sessionCookie.value, {
-			path: '.',
-			...sessionCookie.attributes,
-		});
+	} else {
 		event.locals.user = null;
 		event.locals.session = null;
-
-		return resolve(event);
 	}
+
+	return await resolve(event);
 };
 
 const protectionHandle: Handle = async ({ event, resolve }) => {

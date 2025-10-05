@@ -15,6 +15,7 @@ datasource db {
 
 model AuthSession {
   id         String   @id @default(cuid())
+  token     String   @unique
   userId    String  @map("user_id")
   expiresAt DateTime  @map("expires_at")
 

@@ -4,11 +4,11 @@ import { fail, setError, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import type { Actions, PageServerLoad } from './$types';
 import { verify } from '@node-rs/argon2';
-import { lucia } from '$lib/server/auth';
 import { redirect } from '@sveltejs/kit';
 import { delay } from '$lib/utils/delay';
 import { createErrorResponse } from '$lib/errors';
 import { ERROR_MESSAGES } from '$lib/constants/error-messages';
+import { generateRandomString } from '$lib/utils/auth';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	if (locals.user) {
@@ -51,13 +51,28 @@ export const actions: Actions = {
 		}
 
 		try {
-			await lucia.invalidateUserSessions(user.id);
-			const session = await lucia.createSession(user.id, {});
-			const sessionCookie = lucia.createSessionCookie(session.id);
+			await prisma.authSession.deleteMany({
+				where: { userId: user.id },
+			});
 
-			cookies.set(sessionCookie.name, sessionCookie.value, {
-				path: '.',
-				...sessionCookie.attributes,
+			const sessionToken = generateRandomString(64);
+
+			const expiresAt = new Date();
+			expiresAt.setDate(expiresAt.getDate() + 30);
+
+			await prisma.authSession.create({
+				data: {
+					token: sessionToken,
+					userId: user.id,
+					expiresAt: expiresAt,
+				},
+			});
+
+			cookies.set('session', sessionToken, {
+				path: '/',
+				httpOnly: true,
+				sameSite: 'lax',
+				expires: expiresAt,
 			});
 		} catch (error) {
 			console.error('Session creation error:', error);
@@ -67,6 +82,6 @@ export const actions: Actions = {
 			});
 		}
 
-		redirect(302, '/');
+		redirect(303, '/');
 	},
 };
