@@ -10,8 +10,5 @@ export interface SuggestionInterface extends Suggestion {
 }
 
 export interface SuggestionMovieViews extends SuggestionMovie {
-	id: number;
-	movie_id: number;
-	suggestion_id: number;
 	movie: Movie;
 }

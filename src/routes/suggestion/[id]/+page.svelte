@@ -6,7 +6,7 @@
 	import MovieCard from '$lib/components/MovieCard.svelte';
 	import VideoTickIcon from '$lib/icons/VideoTick.svelte';
 	import { searchByWords } from '$lib/utils/search';
-	import type { MovieCardInterface } from '$lib/types/types';
+	import type { MovieCardInterface, SuggestionMovieViews } from '$lib/types/types';
 	import type { PageData } from './$types';
 	import type { SuggestionMovie } from '@prisma/client';
 
@@ -16,7 +16,7 @@
 
 	const filteredMovies = $derived(
 		searchByWords(
-			data.suggestion.movies.map((item: SuggestionMovie) => ({
+			data.suggestion.movies.map((item: SuggestionMovieViews) => ({
 				...item.movie,
 				isAlreadyWatched: false,
 			})) as MovieCardInterface[],
@@ -48,7 +48,7 @@
 	<ul class="suggestion__result_cards">
 		{#each filteredMovies as movie}
 			<li class="cards__item">
-				<MovieCard id={movie.id} name={movie.name} imgSrc={movie.imgSrc} score={movie.rating}>
+				<MovieCard id={movie.id} name={movie.name} imgSrc={movie.img_src} score={movie.rating}>
 					{#snippet bottomChildren()}
 						{#if movie.isAlreadyWatched}
 							<div class="cards__item-text">
