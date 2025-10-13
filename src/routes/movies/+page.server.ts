@@ -48,14 +48,14 @@ export const actions: Actions = {
 			if (error instanceof AppError) {
 				switch (error.code) {
 					case 'DUPLICATE_MOVIE_ERROR':
-						return message(form, error.message, { status: 400 });
+						return message(form, { status: 400, text: error.message });
 					case 'CREATE_ERROR_MOVIE':
 					default:
-						return message(form, error.message, { status: 500 });
+						return message(form, { status: 500, text: error.message });
 				}
 			}
 
-			return message(form, 'Failed to create movie', { status: 500 });
+			return message(form, { status: 500, text: 'Failed to create movie' });
 		}
 	},
 
@@ -85,10 +85,10 @@ export const actions: Actions = {
 			console.error('Error in addToSuggestion action:', error);
 
 			if (error instanceof ValidationError && error.code === 'MOVIE_ALREADY_IN_SUGGESTION') {
-				return message(form, error.message, { status: 400 });
+				return message(form, { status: 400, text: error.message });
 			}
 
-			return message(form, 'Failed to add movie to suggestion', { status: 500 });
+			return message(form, { status: 500, text: 'Failed to add movie to suggestion' });
 		}
 	},
 };

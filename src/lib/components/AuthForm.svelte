@@ -9,6 +9,7 @@
 	import type { LoginSchema, RegistrationSchema } from '$lib/schemas/auth';
 	import type { SuperFormData, SuperFormErrors } from 'sveltekit-superforms/client';
 	import type { Snippet } from 'svelte';
+	import type { Writable } from 'svelte/store';
 
 	let { title, buttonText, switcherText, switcherHref, form, errors, message, enhance, children } =
 		$props<{
@@ -18,7 +19,7 @@
 			switcherHref: string;
 			form: SuperFormData<LoginSchema | RegistrationSchema>;
 			errors: SuperFormErrors<LoginSchema | RegistrationSchema>;
-			message?: any;
+			message?: Writable<App.Superforms.Message | undefined>;
 			enhance: (form: HTMLFormElement) => void;
 			children?: Snippet;
 		}>();

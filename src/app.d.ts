@@ -7,6 +7,13 @@ declare global {
 			auth: Auth;
 			session: Session | null;
 		}
+
+		namespace Superforms {
+			type Message = {
+				status: number;
+				text: string;
+			};
+		}
 	}
 }
 
