@@ -7,7 +7,7 @@
 
 	let { data } = $props<{ data: PageData }>();
 
-	const { form, errors, enhance } = superForm(data.form);
+	const { form, errors, enhance, message } = superForm(data.form);
 </script>
 
 <svelte:head>
@@ -20,6 +20,7 @@
 	switcherText="Уже зарегистрированы?"
 	switcherHref="/login"
 	{form}
+	{message}
 	{errors}
 	{enhance}
 >

@@ -1,14 +1,11 @@
 import { registrationSchema } from '$lib/schemas/auth';
-import { prisma } from '$lib/server/prisma';
-import { hash } from '@node-rs/argon2';
-import { fail, superValidate, setError } from 'sveltekit-superforms';
+import { fail, superValidate, setError, message } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import type { PageServerLoad } from './$types';
 import { redirect, type Actions } from '@sveltejs/kit';
-import { delay } from '$lib/utils/delay';
 import { ERROR_MESSAGES } from '$lib/constants/error-messages';
-import { createErrorResponse } from '$lib/errors';
-import { generateRandomString, isWithinExpiration } from '$lib/utils/auth';
+import { AuthService } from '$lib/services/authService';
+import { SessionService } from '$lib/services/sessionService';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	if (locals.user) {
@@ -20,7 +17,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 };
 
 export const actions: Actions = {
-	default: async ({ request, locals, cookies }) => {
+	default: async ({ request, cookies }) => {
 		const form = await superValidate(request, zod(registrationSchema));
 
 		if (!form.valid) {
@@ -29,85 +26,15 @@ export const actions: Actions = {
 
 		const { email, password, firstName, lastName } = form.data;
 
-		const existingUser = await prisma.user.findUnique({
-			where: { email },
-			select: { id: true },
-		});
-
-		if (existingUser) {
-			await delay(1000);
-			return setError(form, 'email', ERROR_MESSAGES.VALIDATION.EMAIL_EXISTS);
-		}
-
-		let passwordHash;
 		try {
-			passwordHash = await hash(password, {
-				memoryCost: 19456,
-				timeCost: 2,
-				outputLen: 32,
-				parallelism: 1,
-			});
-		} catch (error) {
-			console.error('Password hashing error:', error);
-			return fail(500, {
-				form,
-				error: createErrorResponse(new Error('PASSWORD_HASHING_FAILED')),
-			});
-		}
+			const user = await AuthService.registerUser(email, password, firstName, lastName);
 
-		let user;
-		try {
-			user = await prisma.user.create({
-				data: {
-					email,
-					password: passwordHash,
-					first_name: firstName,
-					last_name: lastName,
-				},
-			});
-		} catch (error: unknown) {
-			console.error('User creation error:', error);
-
-			if (typeof error === 'object' && error !== null && 'code' in error) {
-				const prismaError = error as { code: string; meta?: any };
-				if (prismaError.code === 'P2002' && prismaError.meta?.target?.includes('email')) {
-					await delay(1000);
-					return setError(form, 'email', ERROR_MESSAGES.VALIDATION.EMAIL_EXISTS);
-				}
+			await SessionService.createUserSession(user.id, cookies);
+		} catch (error: any) {
+			if (error.message === ERROR_MESSAGES.VALIDATION.EMAIL_EXISTS) {
+				return setError(form, 'email', error.message);
 			}
-
-			return fail(500, {
-				form,
-				error: createErrorResponse(new Error('USER_CREATION_FAILED')),
-			});
-		}
-
-		try {
-			const sessionToken = generateRandomString(64);
-
-			const expiresAt = new Date();
-			expiresAt.setDate(expiresAt.getDate() + 30);
-
-			await prisma.authSession.create({
-				data: {
-					token: sessionToken,
-					userId: user.id,
-					expiresAt: expiresAt,
-				},
-			});
-
-			cookies.set('session', sessionToken, {
-				path: '/',
-				httpOnly: true,
-				sameSite: 'lax',
-				expires: expiresAt,
-			});
-		} catch (error) {
-			console.error('Session creation error:', error);
-			return fail(500, {
-				form,
-				error: createErrorResponse(new Error('SESSION_CREATION_FAILED')),
-			});
+			return message(form, 'Registration failed. Please try again.', { status: 500 });
 		}
 
 		redirect(302, '/');

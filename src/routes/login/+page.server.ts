@@ -1,14 +1,11 @@
 import { loginSchema } from '$lib/schemas/auth';
-import { prisma } from '$lib/server/prisma';
-import { fail, setError, superValidate } from 'sveltekit-superforms';
+import { fail, message, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import type { Actions, PageServerLoad } from './$types';
-import { verify } from '@node-rs/argon2';
 import { redirect } from '@sveltejs/kit';
-import { delay } from '$lib/utils/delay';
-import { createErrorResponse } from '$lib/errors';
-import { ERROR_MESSAGES } from '$lib/constants/error-messages';
-import { generateRandomString } from '$lib/utils/auth';
+import { AuthService } from '$lib/services/authService';
+import { SessionService } from '$lib/services/sessionService';
+import { AuthError } from '$lib/errors/errors';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	if (locals.user) {
@@ -27,61 +24,29 @@ export const actions: Actions = {
 			return fail(400, { form });
 		}
 
-		const { email, password } = form.data;
-
-		const user = await prisma.user.findUnique({
-			where: { email },
-		});
-
-		if (!user) {
-			await delay(1000);
-			return setError(form, 'email', ERROR_MESSAGES.AUTH.INVALID_CREDENTIALS);
-		}
-
-		const isValid = await verify(user.password, password, {
-			memoryCost: 19456,
-			timeCost: 2,
-			outputLen: 32,
-			parallelism: 1,
-		});
-
-		if (!isValid) {
-			await delay(1000);
-			return setError(form, 'email', ERROR_MESSAGES.AUTH.INVALID_CREDENTIALS);
-		}
-
 		try {
-			await prisma.authSession.deleteMany({
-				where: { userId: user.id },
-			});
+			const { email, password } = form.data;
 
-			const sessionToken = generateRandomString(64);
+			const user = await AuthService.loginUser(email, password);
 
-			const expiresAt = new Date();
-			expiresAt.setDate(expiresAt.getDate() + 30);
+			await SessionService.createUserSession(user.id, cookies);
 
-			await prisma.authSession.create({
-				data: {
-					token: sessionToken,
-					userId: user.id,
-					expiresAt: expiresAt,
-				},
-			});
+			redirect(303, '/');
+		} catch (error: unknown) {
+			console.error('Login error:', error);
 
-			cookies.set('session', sessionToken, {
-				path: '/',
-				httpOnly: true,
-				sameSite: 'lax',
-				expires: expiresAt,
-			});
-		} catch (error) {
-			console.error('Session creation error:', error);
-			return fail(500, {
-				form,
-				error: createErrorResponse(new Error('SESSION_CREATION_FAILED')),
-			});
+			if (error instanceof AuthError) {
+				switch (error.code) {
+					case 'INVALID_CREDENTIALS':
+						return message(form, error.message, { status: 400 });
+					case 'SESSION_CREATION_FAILED':
+						return message(form, error.message, { status: 500 });
+					default:
+						return message(form, 'Login failed', { status: 500 });
+				}
+			}
+
+			return message(form, 'An unexpected error occurred', { status: 500 });
 		}
-
-		redirect(303, '/');
 	},
 };

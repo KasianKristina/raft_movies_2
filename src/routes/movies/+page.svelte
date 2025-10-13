@@ -18,7 +18,7 @@
 	let showModal = $state(false);
 	let showModalWithSuggestions = $state(false);
 	let selectedMovieId: null | string = $state(null);
-	let { data } = $props<{ data: PageData }>();
+	let { data, message } = $props<{ data: PageData }>();
 
 	const filteredMovies = $derived(searchByWords(data.movies as MovieCardInterface[], inputValue));
 
@@ -59,6 +59,11 @@
 		Я буду очень признателен, если вы найдете время и предложите мне что-нибудь интересное для
 		просмотра
 	</p>
+
+	{#if $message}
+		<div class="message">{$message}</div>
+	{/if}
+
 	<div class="search-section__input_wrapper">
 		<Input label="Поиск фильмов или телешоу" bind:value={inputValue}>
 			{#snippet leftIcon()}
@@ -77,7 +82,7 @@
 	<ul class="cards">
 		{#each filteredMovies as movie}
 			<li class="cards__item">
-				<MovieCard id={movie.id} name={movie.name} imgSrc={movie.imgSrc} score={movie.rating}>
+				<MovieCard id={movie.id} name={movie.name} imgSrc={movie.img_src} score={movie.rating}>
 					{#snippet bottomChildren()}
 						{#if movie.isAlreadyWatched}
 							<div class="cards__item-text green-color">

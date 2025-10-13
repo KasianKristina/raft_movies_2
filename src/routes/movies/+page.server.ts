@@ -1,12 +1,12 @@
 import { newMovieSchema } from '$lib/schemas/movie';
-import { fail, superValidate } from 'sveltekit-superforms';
+import { fail, message, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
-import { prisma } from '$lib/server/prisma';
-import { createErrorResponse } from '$lib/errors/index.js';
-import { AuthError, ValidationError } from '$lib/errors/errors';
-import { error, type Actions } from '@sveltejs/kit';
+import { AppError, AuthError, ValidationError } from '$lib/errors/errors';
+import { type Actions } from '@sveltejs/kit';
 import { getSuccessMessage } from '$lib/utils/successMessages.js';
 import { addToSuggestionSchema } from '$lib/schemas/suggestion';
+import { SuggestionService } from '$lib/services/suggestionService';
+import { MovieService } from '$lib/services/movieService';
 
 export const load = async ({ locals }) => {
 	if (!locals.user) {
@@ -16,59 +16,46 @@ export const load = async ({ locals }) => {
 	const createMovieForm = await superValidate(zod(newMovieSchema));
 	const addToSuggestionForm = await superValidate(zod(addToSuggestionSchema));
 
-	try {
-		const movies = await prisma.movie.findMany();
-		const suggestions = await prisma.suggestion.findMany({
-			where: {
-				author_id: locals.user.id,
-			},
-		});
+	const movies = MovieService.getAllMovies();
+	const suggestions = SuggestionService.getSuggestionsByAuthorId(locals.user.id);
 
-		return {
-			createMovieForm,
-			addToSuggestionForm,
-			movies: movies,
-			suggestions: suggestions,
-		};
-	} catch (err: unknown) {
-		console.error('Error loading movies:', err);
-
-		return {
-			createMovieForm,
-			addToSuggestionForm,
-			movies: [],
-			suggestions: [],
-			error: createErrorResponse(error),
-		};
-	}
+	return {
+		createMovieForm,
+		addToSuggestionForm,
+		movies: movies,
+		suggestions: suggestions,
+	};
 };
 
 export const actions: Actions = {
-	createMovie: async () => {
-		const form = await superValidate(zod(newMovieSchema));
-		try {
-			if (!form.valid) {
-				return fail(400, { form });
-			}
+	createMovie: async ({ request }) => {
+		const form = await superValidate(request, zod(newMovieSchema));
 
-			await prisma.movie.create({
-				data: {
-					name: form.data.name,
-					link: form.data.link,
-				},
-			});
+		if (!form.valid) {
+			return fail(400, { form });
+		}
+
+		try {
+			await MovieService.createMovie(form.data.name, form.data.link);
 
 			return {
 				form,
-				success: {
-					message: getSuccessMessage('MOVIE_CREATED'),
-					code: 'MOVIE_CREATED',
-				},
+				message: getSuccessMessage('MOVIE_CREATED'),
 			};
 		} catch (error: unknown) {
-			console.error('Error creating movie:', error);
-			const errorResponse = createErrorResponse(error);
-			return fail(500, { form, error: errorResponse });
+			console.error('Error in createMovie action:', error);
+
+			if (error instanceof AppError) {
+				switch (error.code) {
+					case 'DUPLICATE_MOVIE_ERROR':
+						return message(form, error.message, { status: 400 });
+					case 'CREATE_ERROR_MOVIE':
+					default:
+						return message(form, error.message, { status: 500 });
+				}
+			}
+
+			return message(form, 'Failed to create movie', { status: 500 });
 		}
 	},
 
@@ -76,41 +63,32 @@ export const actions: Actions = {
 		const form = await superValidate(request, zod(addToSuggestionSchema));
 
 		try {
-			if (!form.data.suggestion_id) {
-				throw new ValidationError('SUGGESTION_REQUIRED');
+			if (!form.valid) {
+				return fail(400, { form });
 			}
 
-			const existing = await prisma.suggestionMovie.findUnique({
-				where: {
-					suggestion_id_movie_id: {
-						suggestion_id: form.data.suggestion_id,
-						movie_id: form.data.movie_id,
-					},
-				},
-			});
+			const suggestionId = String(form.data.suggestion_id);
+			const movieId = String(form.data.movie_id);
 
+			const existing = await MovieService.findMovieInSuggestion(suggestionId, movieId);
 			if (existing) {
 				throw new ValidationError('MOVIE_ALREADY_IN_SUGGESTION');
 			}
 
-			await prisma.suggestionMovie.create({
-				data: {
-					suggestion_id: form.data.suggestion_id,
-					movie_id: form.data.movie_id,
-				},
-			});
+			await MovieService.addMovieToSuggestion(suggestionId, movieId);
 
 			return {
 				form,
-				success: {
-					message: getSuccessMessage('MOVIE_ADDED_TO_SUGGESTION'),
-					code: 'MOVIE_ADDED_TO_SUGGESTION',
-				},
+				message: getSuccessMessage('MOVIE_ADDED_TO_SUGGESTION'),
 			};
 		} catch (error: unknown) {
-			console.error('Error adding movie to suggestion:', error);
-			const errorResponse = createErrorResponse(error);
-			return fail(500, { form, error: errorResponse });
+			console.error('Error in addToSuggestion action:', error);
+
+			if (error instanceof ValidationError && error.code === 'MOVIE_ALREADY_IN_SUGGESTION') {
+				return message(form, error.message, { status: 400 });
+			}
+
+			return message(form, 'Failed to add movie to suggestion', { status: 500 });
 		}
 	},
 };

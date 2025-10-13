@@ -7,7 +7,7 @@
 		data: PageData;
 	}>();
 
-	const { form, errors, enhance } = superForm(data.form);
+	const { form, errors, enhance, message } = superForm(data.form);
 </script>
 
 <svelte:head>
@@ -21,5 +21,6 @@
 	switcherHref="/registration"
 	{form}
 	{errors}
+	{message}
 	{enhance}
 />

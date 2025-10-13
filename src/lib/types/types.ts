@@ -1,44 +1,17 @@
-interface BaseMovie {
-	id: string;
-	name: string;
-	rating: string;
-	imgSrc?: string;
-}
+import type { Movie, Suggestion, SuggestionMovie, User } from '@prisma/client';
 
-export interface MovieCardInterface extends BaseMovie {
+export interface MovieCardInterface extends Movie {
 	isAlreadyWatched: boolean;
 }
 
-export interface SuggestionInterface {
-	id: string;
-	name: string;
-	description: string;
-	author: AuthorInterface;
-	movies: BaseMovie[];
+export interface SuggestionInterface extends Suggestion {
+	movies: Movie[];
+	author: User;
 }
 
-export interface MovieInterface extends BaseMovie {
-	description: string;
-	genres: string[];
-	number_of_seasons: number;
-	year_of_production: number;
-	countries: string[];
-	film_director: string;
-	duration: number;
-	backgroundImgSrc: string;
-}
-
-export interface AuthorInterface {
-	id: string;
-	email: string;
-	password: string;
-	first_name: string;
-	last_name: string;
-}
-
-export interface SuggestionMovieViews {
+export interface SuggestionMovieViews extends SuggestionMovie {
 	id: number;
 	movie_id: number;
 	suggestion_id: number;
-	movie: BaseMovie;
+	movie: Movie;
 }

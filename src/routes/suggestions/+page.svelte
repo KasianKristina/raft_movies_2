@@ -3,10 +3,10 @@
 	import Input from '$lib/components/Input.svelte';
 	import SuggestionCard from '$lib/components/SuggestionCard.svelte';
 	import SearchIcon from '$lib/icons/SearchIcon.svelte';
-	import type { SuggestionInterface } from '$lib/types/types';
 	import { getNoun } from '$lib/utils/formatNames';
 	import { searchByWords } from '$lib/utils/search';
 	import type { PageData } from './$types';
+	import type { SuggestionInterface } from '$lib/types/types';
 
 	let { data } = $props<{ data: PageData }>();
 

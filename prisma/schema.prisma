@@ -35,7 +35,7 @@ model User {
 }
 
 model Movie {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   name     String
   rating   Float?
   img_src  String?
@@ -54,20 +54,20 @@ model Movie {
 }
 
 model MovieView {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(cuid())
   is_watched   Boolean  @default(false)
   rating    Float?     
   
   user   User   @relation(fields: [user_id], references: [id])
   user_id String
   movie  Movie  @relation(fields: [movie_id], references: [id])
-  movie_id Int
+  movie_id String
 
   @@unique([user_id, movie_id])
 }
 
 model Suggestion {
-  id        Int      @id @default(autoincrement())
+  id          String   @id @default(cuid())
   name     String
   description String
   
@@ -77,11 +77,11 @@ model Suggestion {
 }
 
 model SuggestionMovie {
-  id            Int         @id @default(autoincrement())
+  id            String       @id @default(cuid())
   suggestion    Suggestion  @relation(fields: [suggestion_id], references: [id])
-  suggestion_id Int
+  suggestion_id String
   movie         Movie       @relation(fields: [movie_id], references: [id])
-  movie_id      Int
+  movie_id      String
 
   @@unique([suggestion_id, movie_id])
 }

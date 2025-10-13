@@ -4,6 +4,8 @@ export const ERROR_MESSAGES = {
 		UNAUTHORIZED: 'Необходима авторизация',
 		INTERNAL_ERROR: 'Ошибка при входе',
 		REGISTRATION_FAILED: 'Ошибка при регистрации',
+		PASSWORD_HASHING_FAILED: 'Не удалось хэшировать пароль',
+		SESSION_CREATION_FAILED: 'Не удалось создать сессию',
 	},
 
 	VALIDATION: {
@@ -14,6 +16,7 @@ export const ERROR_MESSAGES = {
 		EMAIL_EXISTS: 'Этот email уже занят',
 		INVALID_ID: 'Неверный идентификатор',
 		MOVIE_ALREADY_IN_SUGGESTION: 'Этот фильм уже добавлен в выбранную подборку',
+		MOVIE_WITH_SAME_NAME_ALREADY_EXISTS: 'Фильм с таким названием уже существует',
 		SUGGESTION_REQUIRED: 'Необходимо выбрать подборку',
 	},
 
@@ -22,6 +25,9 @@ export const ERROR_MESSAGES = {
 		SERVER_ERROR: 'Внутренняя ошибка сервера',
 		NETWORK_ERROR: 'Ошибка сети',
 		LOAD_FAILED: 'Не удалось загрузить данные',
+		CREATE_ERROR_SUGGESTION: 'Не удалось создать подборку',
+		CREATE_ERROR_MOVIE: 'Не удалось создать фильм',
+		DUPLICATE_MOVIE_ERROR: 'Фильм с таким названием уже есть',
 	},
 } as const;
 
