@@ -32,7 +32,7 @@
 		"prettier": "3.6.1",
 		"prettier-plugin-css-order": "2.1.2",
 		"prettier-plugin-svelte": "3.4.0",
-		"prisma": "^6.16.3",
+		"prisma": "6.17.1",
 		"svelte": "5.34.8",
 		"svelte-check": "4.2.2",
 		"sveltekit-superforms": "2.27.1",
@@ -42,6 +42,6 @@
 		"zod": "3.25.76"
 	},
 	"dependencies": {
-		"@prisma/client": "^6.16.3"
+		"@prisma/client": "6.17.1"
 	}
 }
