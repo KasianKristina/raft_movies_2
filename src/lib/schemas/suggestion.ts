@@ -6,6 +6,6 @@ export const newSuggestionSchema = z.object({
 });
 
 export const addToSuggestionSchema = z.object({
-	suggestion_id: z.number().int().positive(),
-	movie_id: z.number().int().positive(),
+	suggestion_id: z.string().min(1, 'Suggestion ID обязательно'),
+	movie_id: z.string().min(1, 'Movie ID обязательно'),
 });

@@ -16,8 +16,8 @@ export const load = async ({ locals }) => {
 	const createMovieForm = await superValidate(zod(newMovieSchema));
 	const addToSuggestionForm = await superValidate(zod(addToSuggestionSchema));
 
-	const movies = MovieService.getAllMovies();
-	const suggestions = SuggestionService.getSuggestionsByAuthorId(locals.user.id);
+	const movies = await MovieService.getAllMovies();
+	const suggestions = await SuggestionService.getSuggestionsByAuthorId(locals.user.id);
 
 	return {
 		createMovieForm,
