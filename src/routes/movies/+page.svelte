@@ -12,7 +12,7 @@
 	import { searchByWords } from '$lib/utils/search';
 	import type { PageData } from './$types';
 	import { superForm } from 'sveltekit-superforms';
-	import type { MovieCardInterface } from '$lib/types/types';
+	import type { MovieCardType } from '$lib/types/types';
 
 	let inputValue = $state('');
 	let showModal = $state(false);
@@ -20,7 +20,7 @@
 	let selectedMovieId: null | string = $state(null);
 	let { data, message } = $props<{ data: PageData }>();
 
-	const filteredMovies = $derived(searchByWords(data.movies as MovieCardInterface[], inputValue));
+	const filteredMovies = $derived(searchByWords(data.movies as MovieCardType[], inputValue));
 
 	const {
 		form: createMovieForm,
@@ -34,11 +34,7 @@
 		},
 	});
 
-	const {
-		form: addToSuggestionForm,
-		errors: addToSuggestionErrors,
-		enhance: addToSuggestionEnhance,
-	} = superForm(data.addToSuggestionForm, {
+	const { enhance: addToSuggestionEnhance } = superForm(data.addToSuggestionForm, {
 		onUpdated({ form }) {
 			if (form.valid) {
 				showModalWithSuggestions = false;

@@ -6,14 +6,14 @@
 	import { getNoun } from '$lib/utils/formatNames';
 	import { searchByWords } from '$lib/utils/search';
 	import type { PageData } from './$types';
-	import type { SuggestionInterface } from '$lib/types/types';
+	import type { SuggestionWithDetailsType } from '$lib/types/types';
 
 	let { data } = $props<{ data: PageData }>();
 
 	let inputValue = $state('');
 
 	const filteredSuggestions = $derived(
-		searchByWords(data.suggestions as SuggestionInterface[], inputValue),
+		searchByWords(data.suggestions as SuggestionWithDetailsType[], inputValue),
 	);
 </script>
 

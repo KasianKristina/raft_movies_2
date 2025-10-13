@@ -1,14 +1,14 @@
 import type { Movie, Suggestion, SuggestionMovie, User } from '@prisma/client';
 
-export interface MovieCardInterface extends Movie {
+export type MovieCardType = Movie & {
 	isAlreadyWatched: boolean;
-}
+};
 
-export interface SuggestionInterface extends Suggestion {
+export type SuggestionWithDetailsType = Suggestion & {
 	movies: Movie[];
 	author: User;
-}
+};
 
-export interface SuggestionMovieViews extends SuggestionMovie {
+export type SuggestionMovieViewsType = SuggestionMovie & {
 	movie: Movie;
-}
+};
