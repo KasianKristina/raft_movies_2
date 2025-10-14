@@ -6,7 +6,7 @@
 		children: Snippet;
 	};
 
-	let { text = '', children }: Props = $props();
+	const { text = '', children }: Props = $props();
 	let show = $state(false);
 </script>
 

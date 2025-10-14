@@ -51,7 +51,7 @@ export class AuthService {
 	private static async hashPassword(password: string) {
 		try {
 			return await hash(password, ARGON2_CONFIG);
-		} catch (error) {
+		} catch {
 			throw new AuthError('PASSWORD_HASHING_FAILED');
 		}
 	}

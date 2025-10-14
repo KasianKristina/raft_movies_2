@@ -12,7 +12,7 @@
 		isNeedDisplayAuthor?: boolean;
 	};
 
-	let {
+	const {
 		id,
 		name,
 		countAlreadyWatched = 0,
@@ -85,9 +85,9 @@
 	}
 
 	.item__description {
-		font: var(--type-body-regular);
-		-webkit-line-clamp: 4;
 		display: -webkit-box;
+		-webkit-line-clamp: 4;
+		font: var(--type-body-regular);
 		-webkit-box-orient: vertical;
 		margin-bottom: 15px;
 		height: 77px;

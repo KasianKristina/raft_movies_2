@@ -5,7 +5,7 @@
 	import Input from '$lib/components/Input.svelte';
 	import StarIcon from '$lib/icons/Star.svelte';
 
-	let { data } = $props<{ data: PageData }>();
+	const { data } = $props<{ data: PageData }>();
 
 	const { form, errors, enhance, message } = superForm(data.form);
 </script>

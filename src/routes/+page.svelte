@@ -10,7 +10,7 @@
 
 	let showModal = $state(false);
 
-	let { data } = $props<{ data: PageData }>();
+	const { data } = $props<{ data: PageData }>();
 
 	const { form, errors, enhance } = superForm(data.form);
 </script>
@@ -23,7 +23,7 @@
 <section class="welcome-section">
 	<h2 class="visually-hidden">Папки с подборками фильмов</h2>
 	<ul class="welcome-section__folders">
-		{#each data.suggestions as suggestion}
+		{#each data.suggestions as suggestion (suggestion.id)}
 			<li>
 				<SuggestionCard
 					{...suggestion}

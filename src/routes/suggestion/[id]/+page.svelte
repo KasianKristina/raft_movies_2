@@ -45,7 +45,7 @@
 		{getNoun(filteredMovies.length, 'Результат', 'Результата', 'Результатов')}
 	</p>
 	<ul class="suggestion__result_cards">
-		{#each filteredMovies as movie}
+		{#each filteredMovies as movie (movie.id)}
 			<li class="cards__item">
 				<MovieCard id={movie.id} name={movie.name} imgSrc={movie.img_src} score={movie.rating}>
 					{#snippet bottomChildren()}

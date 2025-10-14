@@ -30,8 +30,8 @@ export const actions: Actions = {
 			const user = await AuthService.registerUser(email, password, firstName, lastName);
 
 			await SessionService.createUserSession(user.id, cookies);
-		} catch (error: any) {
-			if (error.message === ERROR_MESSAGES.VALIDATION.EMAIL_EXISTS) {
+		} catch (error: unknown) {
+			if (error instanceof Error && error.message === ERROR_MESSAGES.VALIDATION.EMAIL_EXISTS) {
 				return setError(form, 'email', error.message);
 			}
 			return message(form, { status: 500, text: 'Registration failed. Please try again.' });

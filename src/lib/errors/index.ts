@@ -19,7 +19,6 @@ export const createErrorResponse = (error: unknown) => {
 			success: false,
 			code: error.code,
 			message: error.message,
-			field: error.field,
 		};
 	}
 

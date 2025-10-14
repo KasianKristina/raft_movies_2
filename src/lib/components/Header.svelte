@@ -52,10 +52,10 @@
 
 	<nav class="header__nav" class:header__mobile={showMenu}>
 		<ul class="header__menu-list">
-			{#each menuItems as menuItem}
+			{#each menuItems as menuItem (menuItem.pathName)}
 				<li
 					class="header__menu-item"
-					aria-current={page.url.pathname === menuItem.pathName ? 'page' : undefined}
+					aria-current={page.url.pathname === menuItem.pathName ? 'page' : null}
 				>
 					<a
 						class="header__menu-link"

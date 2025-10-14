@@ -11,18 +11,27 @@
 	import type { Snippet } from 'svelte';
 	import type { Writable } from 'svelte/store';
 
-	let { title, buttonText, switcherText, switcherHref, form, errors, message, enhance, children } =
-		$props<{
-			title: string;
-			buttonText: string;
-			switcherText: string;
-			switcherHref: string;
-			form: SuperFormData<LoginSchema | RegistrationSchema>;
-			errors: SuperFormErrors<LoginSchema | RegistrationSchema>;
-			message?: Writable<App.Superforms.Message | undefined>;
-			enhance: (form: HTMLFormElement) => void;
-			children?: Snippet;
-		}>();
+	const {
+		title,
+		buttonText,
+		switcherText,
+		switcherHref,
+		form,
+		errors,
+		message,
+		enhance,
+		children,
+	} = $props<{
+		title: string;
+		buttonText: string;
+		switcherText: string;
+		switcherHref: string;
+		form: SuperFormData<LoginSchema | RegistrationSchema>;
+		errors: SuperFormErrors<LoginSchema | RegistrationSchema>;
+		message?: Writable<App.Superforms.Message | undefined>;
+		enhance: () => void;
+		children?: Snippet;
+	}>();
 
 	let hidePassword = $state(true);
 

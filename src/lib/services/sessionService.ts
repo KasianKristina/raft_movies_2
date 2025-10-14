@@ -29,7 +29,7 @@ export class SessionService {
 			});
 
 			return sessionToken;
-		} catch (error) {
+		} catch {
 			throw new AuthError('SESSION_CREATION_FAILED');
 		}
 	}

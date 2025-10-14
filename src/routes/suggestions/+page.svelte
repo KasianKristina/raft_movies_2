@@ -8,7 +8,7 @@
 	import type { PageData } from './$types';
 	import type { SuggestionWithDetailsType } from '$lib/types/types';
 
-	let { data } = $props<{ data: PageData }>();
+	const { data } = $props<{ data: PageData }>();
 
 	let inputValue = $state('');
 
@@ -37,7 +37,7 @@
 		{getNoun(filteredSuggestions.length, 'Результат', 'Результата', 'Результатов')}
 	</p>
 	<ul class="cards">
-		{#each filteredSuggestions as suggestion}
+		{#each filteredSuggestions as suggestion (suggestion.id)}
 			<li>
 				<SuggestionCard
 					{...suggestion}

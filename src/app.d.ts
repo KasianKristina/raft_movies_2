@@ -1,11 +1,10 @@
-import type { Auth, Session, User } from 'lucia';
+import type { AuthSession, User } from '@prisma/client';
 
 declare global {
 	namespace App {
 		interface Locals {
 			user: User | null;
-			auth: Auth;
-			session: Session | null;
+			session: AuthSession | null;
 		}
 
 		namespace Superforms {

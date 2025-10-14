@@ -18,7 +18,7 @@
 	let showModal = $state(false);
 	let showModalWithSuggestions = $state(false);
 	let selectedMovieId: null | string = $state(null);
-	let { data, message } = $props<{ data: PageData }>();
+	const { data } = $props<{ data: PageData }>();
 
 	const filteredMovies = $derived(searchByWords(data.movies as MovieCardType[], inputValue));
 
@@ -56,10 +56,6 @@
 		просмотра
 	</p>
 
-	{#if $message}
-		<div class="message">{$message}</div>
-	{/if}
-
 	<div class="search-section__input_wrapper">
 		<Input label="Поиск фильмов или телешоу" bind:value={inputValue}>
 			{#snippet leftIcon()}
@@ -76,7 +72,7 @@
 <section>
 	<h2 class="visually-hidden">Результаты поиска фильмов</h2>
 	<ul class="cards">
-		{#each filteredMovies as movie}
+		{#each filteredMovies as movie (movie.id)}
 			<li class="cards__item">
 				<MovieCard id={movie.id} name={movie.name} imgSrc={movie.img_src} score={movie.rating}>
 					{#snippet bottomChildren()}
@@ -147,7 +143,7 @@
 	<form class="modal__wrapper" method="POST" action="?/addToSuggestion" use:addToSuggestionEnhance>
 		<input type="hidden" name="movie_id" value={selectedMovieId} />
 		<select class="modal__select" name="suggestion_id">
-			{#each data.suggestions as suggestion}
+			{#each data.suggestions as suggestion (suggestion.id)}
 				<option value={suggestion.id}>{suggestion.name}</option>
 			{/each}
 		</select>

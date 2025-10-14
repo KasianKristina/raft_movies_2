@@ -10,7 +10,7 @@
 		bottomChildren?: Snippet;
 	};
 
-	let { id, imgSrc, name, score, bottomChildren }: Props = $props();
+	const { id, imgSrc, name, score, bottomChildren }: Props = $props();
 </script>
 
 <a class="card" href={`/movie/${id}`}>

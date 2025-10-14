@@ -1,6 +1,6 @@
-import type { MovieCardInterface, SuggestionInterface } from '$lib/types/types';
+import type { MovieCardType, SuggestionWithDetailsType } from '$lib/types/types';
 
-export const searchByWords = <T extends MovieCardInterface | SuggestionInterface>(
+export const searchByWords = <T extends MovieCardType | SuggestionWithDetailsType>(
 	items: T[],
 	searchText: string,
 ): T[] => {

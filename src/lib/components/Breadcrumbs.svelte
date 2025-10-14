@@ -3,11 +3,11 @@
 		breadcrumbs: { link: string; text: string }[];
 	};
 
-	let { breadcrumbs }: Props = $props();
+	const { breadcrumbs }: Props = $props();
 </script>
 
 <ul class="breadcrumbs">
-	{#each breadcrumbs as crumb, i}
+	{#each breadcrumbs as crumb, i (i)}
 		<li>
 			<a href={crumb.link} class="crumb">{crumb.text}</a>
 			{#if i !== breadcrumbs.length - 1}
