@@ -29,7 +29,7 @@
 		form: SuperFormData<LoginSchema | RegistrationSchema>;
 		errors: SuperFormErrors<LoginSchema | RegistrationSchema>;
 		message?: Writable<App.Superforms.Message | undefined>;
-		enhance: () => void;
+		enhance: (form: HTMLFormElement) => void;
 		children?: Snippet;
 	}>();
 
@@ -94,7 +94,7 @@
 			</div>
 
 			{#if $message}
-				<div class="auth-form__message">{$message}</div>
+				<div class="auth-form__message">{$message.text}</div>
 			{/if}
 
 			<Button type="submit">{buttonText}</Button>
