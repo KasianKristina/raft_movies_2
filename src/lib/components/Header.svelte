@@ -7,6 +7,12 @@
 	import LogoutIcon from '$lib/icons/LogoutIcon.svelte';
 	import MenuIcon from '$lib/icons/MenuIcon.svelte';
 
+	type Props = {
+		userName: string;
+	};
+
+	const { userName }: Props = $props();
+
 	const menuItems = [
 		{ pathName: '/', pageName: 'Главная' },
 		{ pathName: '/movies', pageName: 'Фильмы' },
@@ -38,8 +44,9 @@
 <svelte:window bind:innerWidth={size} />
 <header class="header">
 	<div class="header__logo-container">
-		<a href="/">
+		<a href="/" class="header__logo-link">
 			<LogoIcon />
+			<p>{userName}</p>
 		</a>
 		<button type="button" onclick={toggleNavbar} class="header__toggle">
 			{#if showMenu}
@@ -95,6 +102,12 @@
 		width: 100%;
 	}
 
+	.header__logo-link {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+	}
+
 	.header__nav {
 		display: flex;
 		justify-content: center;
@@ -116,6 +129,7 @@
 	.header__menu-item {
 		position: relative;
 		height: 100%;
+		text-wrap: nowrap;
 	}
 
 	.header__menu-link {

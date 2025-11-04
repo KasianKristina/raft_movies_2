@@ -25,7 +25,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 			},
 		});
 
-		return { form, suggestions };
+		return { form, suggestions, user: locals.user };
 	} catch (error: unknown) {
 		if (error instanceof AuthError) {
 			throw redirect(302, '/login?redirectTo=/suggestions');

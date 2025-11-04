@@ -19,7 +19,7 @@
 	<title>Главная</title>
 </svelte:head>
 
-<h1 class="title">Добро пожаловать</h1>
+<h1 class="title">{`Добро пожаловать, ${data.user.first_name} ${data.user.last_name}`}</h1>
 <section class="welcome-section">
 	<h2 class="visually-hidden">Папки с подборками фильмов</h2>
 	<ul class="welcome-section__folders">

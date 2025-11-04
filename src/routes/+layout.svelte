@@ -10,7 +10,7 @@
 </svelte:head>
 
 {#if data.user}
-	<Header />
+	<Header userName={`${data.user.first_name} ${data.user.last_name}`} />
 {/if}
 <main>
 	{@render children()}
