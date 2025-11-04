@@ -34,7 +34,7 @@ export const actions: Actions = {
 			if (error instanceof Error && error.message === ERROR_MESSAGES.VALIDATION.EMAIL_EXISTS) {
 				return setError(form, 'email', error.message);
 			}
-			return message(form, { status: 500, text: 'Registration failed. Please try again.' });
+			return message(form, { text: 'Registration failed. Please try again.' }, { status: 500 });
 		}
 
 		redirect(302, '/');

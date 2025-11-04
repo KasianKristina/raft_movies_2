@@ -9,7 +9,6 @@ declare global {
 
 		namespace Superforms {
 			type Message = {
-				status: number;
 				text: string;
 			};
 		}

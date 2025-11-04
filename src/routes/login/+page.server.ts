@@ -38,15 +38,15 @@ export const actions: Actions = {
 			if (error instanceof AuthError) {
 				switch (error.code) {
 					case 'INVALID_CREDENTIALS':
-						return message(form, { status: 400, text: error.message });
+						return message(form, { text: error.message }, { status: 400 });
 					case 'SESSION_CREATION_FAILED':
-						return message(form, { status: 500, text: error.message });
+						return message(form, { text: error.message }, { status: 500 });
 					default:
-						return message(form, { status: 500, text: 'Login failed' });
+						return message(form, { text: 'Login failed' }, { status: 500 });
 				}
 			}
 
-			return message(form, { status: 500, text: 'An unexpected error occurred' });
+			return message(form, { text: 'An unexpected error occurred' }, { status: 500 });
 		}
 	},
 };
