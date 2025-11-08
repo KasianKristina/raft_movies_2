@@ -11,17 +11,7 @@
 	import type { Snippet } from 'svelte';
 	import type { Writable } from 'svelte/store';
 
-	const {
-		title,
-		buttonText,
-		switcherText,
-		switcherHref,
-		form,
-		errors,
-		message,
-		enhance,
-		children,
-	} = $props<{
+	type Props = {
 		title: string;
 		buttonText: string;
 		switcherText: string;
@@ -31,7 +21,19 @@
 		message?: Writable<App.Superforms.Message | undefined>;
 		enhance: (form: HTMLFormElement) => void;
 		children?: Snippet;
-	}>();
+	};
+
+	let {
+		title,
+		buttonText,
+		switcherText,
+		switcherHref,
+		form,
+		errors,
+		message,
+		enhance,
+		children,
+	}: Props = $props();
 
 	let hidePassword = $state(true);
 

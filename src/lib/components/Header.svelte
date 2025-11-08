@@ -11,7 +11,7 @@
 		userName: string;
 	};
 
-	const { userName }: Props = $props();
+	let { userName }: Props = $props();
 
 	const menuItems = [
 		{ pathName: '/', pageName: 'Главная' },

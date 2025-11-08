@@ -5,7 +5,7 @@
 		score: number | null;
 	};
 
-	const { score }: Props = $props();
+	let { score }: Props = $props();
 </script>
 
 {#if score}

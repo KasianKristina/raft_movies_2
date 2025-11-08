@@ -3,7 +3,7 @@
 		breadcrumbs: { link: string; text: string }[];
 	};
 
-	const { breadcrumbs }: Props = $props();
+	let { breadcrumbs }: Props = $props();
 </script>
 
 <ul class="breadcrumbs">

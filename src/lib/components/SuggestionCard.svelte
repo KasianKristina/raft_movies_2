@@ -12,7 +12,7 @@
 		isNeedDisplayAuthor?: boolean;
 	};
 
-	const {
+	let {
 		id,
 		name,
 		countAlreadyWatched = 0,
