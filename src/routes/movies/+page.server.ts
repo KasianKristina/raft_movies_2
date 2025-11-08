@@ -24,6 +24,7 @@ export const load = async ({ locals }) => {
 		addToSuggestionForm,
 		movies: movies,
 		suggestions: suggestions,
+		user: locals.user,
 	};
 };
 

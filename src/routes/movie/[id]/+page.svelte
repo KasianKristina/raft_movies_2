@@ -3,20 +3,20 @@
 	import Score from '$lib/components/Score.svelte';
 	import type { PageData } from './$types';
 
-	const { data } = $props<{ data: PageData }>();
+	let { movie }: { movie: PageData['movie'] } = $props();
 </script>
 
 <svelte:head>
-	<title>{`О фильме ${data.movie.name}`}</title>
+	<title>{`О фильме ${movie.name}`}</title>
 </svelte:head>
 
-<h1 class="visually-hidden">Информация о фильме {data.movie.name}</h1>
+<h1 class="visually-hidden">Информация о фильме {movie.name}</h1>
 <section class="header-section">
 	<h2 class="visually-hidden">Постер к фильму</h2>
 	<div class="header-section__image_wrapper">
 		<img
-			src={data.movie.background_img_src}
-			alt={`постер к фильму ${data.movie.name}`}
+			src={movie.background_img_src}
+			alt={`постер к фильму ${movie.name}`}
 			width={1200}
 			height={480}
 			class="header-section__image"
@@ -26,48 +26,48 @@
 		<Breadcrumbs
 			breadcrumbs={[
 				{ text: 'suggestions', link: '/suggestions' },
-				{ text: 'Movie', link: '/movie/1' },
+				{ text: movie.name, link: `/movie/${movie.id}` },
 			]}
 		/>
-		<p>{data.name}</p>
+		<p>{movie.name}</p>
 	</div>
 </section>
 <section class="info-section">
 	<h2 class="visually-hidden">О фильме</h2>
 	<div class="info-section__wrapper">
 		<img
-			src={data.movie.img_src}
-			alt={`постер к фильму ${data.movie.name}`}
+			src={movie.img_src}
+			alt={`постер к фильму ${movie.name}`}
 			width={480}
 			height={720}
 			class="info-section__image"
 		/>
 		<div>
-			<p class="info-section__description">{data.movie.description}</p>
+			<p class="info-section__description">{movie.description}</p>
 			<div class="info-section__score">
-				<Score score={data.score} />
+				<Score score={movie.rating} />
 			</div>
 			<ul class="info-section__details">
 				<li class="info-section__detail">
 					<h3 class="info-section__detail-key">Жанр</h3>
-					<p class="info-section__detail-value">{data.movie.genres.join(', ')}</p>
+					<p class="info-section__detail-value">{movie.genres.join(', ')}</p>
 				</li>
 				<li class="info-section__detail">
 					<h3 class="info-section__detail-key">Год производства</h3>
-					<p class="info-section__detail-value">{data.movie.year_of_production}</p>
+					<p class="info-section__detail-value">{movie.year_of_production}</p>
 				</li>
 				<li class="info-section__detail">
 					<h3 class="info-section__detail-key">Страна</h3>
-					<p class="info-section__detail-value">{data.movie.countries.join(', ')}</p>
+					<p class="info-section__detail-value">{movie.countries.join(', ')}</p>
 				</li>
 				<li class="info-section__detail">
 					<h3 class="info-section__detail-key">Режиссер</h3>
-					<p class="info-section__detail-value">{data.movie.film_director}</p>
+					<p class="info-section__detail-value">{movie.film_director}</p>
 				</li>
 				<li class="info-section__detail">
 					<h3 class="info-section__detail-key">Время</h3>
-					{#if data.movie.duration}
-						<p class="info-section__detail-value">{data.movie.duration} мин</p>
+					{#if movie.duration}
+						<p class="info-section__detail-value">{movie.duration} мин</p>
 					{/if}
 				</li>
 			</ul>

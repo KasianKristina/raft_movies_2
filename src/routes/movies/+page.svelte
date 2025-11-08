@@ -12,21 +12,27 @@
 	import { searchByWords } from '$lib/utils/search';
 	import type { PageData } from './$types';
 	import { superForm } from 'sveltekit-superforms';
-	import type { MovieCardType } from '$lib/types/types';
 
 	let inputValue = $state('');
 	let showModal = $state(false);
 	let showModalWithSuggestions = $state(false);
 	let selectedMovieId: null | string = $state(null);
-	const { data } = $props<{ data: PageData }>();
+	let { data }: { data: PageData } = $props();
+	const {
+		movies,
+		createMovieForm: createMovieFormData,
+		addToSuggestionForm,
+		suggestions,
+		user,
+	} = data;
 
-	const filteredMovies = $derived(searchByWords(data.movies as MovieCardType[], inputValue));
+	const filteredMovies = $derived(searchByWords(movies, inputValue));
 
 	const {
 		form: createMovieForm,
 		errors: createMovieErrors,
 		enhance: createMovieEnhance,
-	} = superForm(data.createMovieForm, {
+	} = superForm(createMovieFormData, {
 		onUpdated({ form }) {
 			if (form.valid) {
 				showModal = false;
@@ -34,7 +40,7 @@
 		},
 	});
 
-	const { enhance: addToSuggestionEnhance } = superForm(data.addToSuggestionForm, {
+	const { enhance: addToSuggestionEnhance } = superForm(addToSuggestionForm, {
 		onUpdated({ form }) {
 			if (form.valid) {
 				showModalWithSuggestions = false;
@@ -76,7 +82,7 @@
 			<li class="cards__item">
 				<MovieCard id={movie.id} name={movie.name} imgSrc={movie.img_src} score={movie.rating}>
 					{#snippet bottomChildren()}
-						{#if movie.isAlreadyWatched}
+						{#if movie.views.find((view) => view.user_id === user?.id)?.is_watched}
 							<div class="cards__item-text green-color">
 								<VideoTickIcon />
 								<p>Уже просмотрено</p>
@@ -143,7 +149,7 @@
 	<form class="modal__wrapper" method="POST" action="?/addToSuggestion" use:addToSuggestionEnhance>
 		<input type="hidden" name="movie_id" value={selectedMovieId} />
 		<select class="modal__select" name="suggestion_id">
-			{#each data.suggestions as suggestion (suggestion.id)}
+			{#each suggestions as suggestion (suggestion.id)}
 				<option value={suggestion.id}>{suggestion.name}</option>
 			{/each}
 		</select>

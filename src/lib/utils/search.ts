@@ -1,9 +1,4 @@
-import type { MovieCardType, SuggestionWithDetailsType } from '$lib/types/types';
-
-export const searchByWords = <T extends MovieCardType | SuggestionWithDetailsType>(
-	items: T[],
-	searchText: string,
-): T[] => {
+export const searchByWords = <T extends { name: string }>(items: T[], searchText: string): T[] => {
 	const searchTerms = searchText
 		.toLowerCase()
 		.trim()

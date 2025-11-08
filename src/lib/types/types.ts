@@ -1,6 +1,6 @@
 import type { Movie, Suggestion, SuggestionMovie, User } from '@prisma/client';
 
-export type MovieCardType = Pick<Movie, 'name' | 'id' | 'rating' | 'img_src'> & {
+export type MovieCardType = Pick<Movie, 'name' | 'id' | 'rating'> & {
 	isAlreadyWatched: boolean;
 };
 

@@ -6,15 +6,12 @@
 	import { getNoun } from '$lib/utils/formatNames';
 	import { searchByWords } from '$lib/utils/search';
 	import type { PageData } from './$types';
-	import type { SuggestionWithDetailsType } from '$lib/types/types';
 
-	const { data } = $props<{ data: PageData }>();
+	let { suggestions }: { suggestions: PageData['suggestions'] } = $props();
 
 	let inputValue = $state('');
 
-	const filteredSuggestions = $derived(
-		searchByWords(data.suggestions as SuggestionWithDetailsType[], inputValue),
-	);
+	const filteredSuggestions = $derived(searchByWords(suggestions, inputValue));
 </script>
 
 <svelte:head>

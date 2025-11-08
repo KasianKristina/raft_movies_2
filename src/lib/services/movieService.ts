@@ -4,7 +4,16 @@ import { prisma } from '$lib/server/prisma';
 export class MovieService {
 	static async getAllMovies() {
 		try {
-			return await prisma.movie.findMany();
+			return await prisma.movie.findMany({
+				include: {
+					views: {
+						select: {
+							is_watched: true,
+							user_id: true,
+						},
+					},
+				},
+			});
 		} catch (error) {
 			console.error('[MovieService] Failed to fetch movies:', error);
 			throw new AppError('LOAD_FAILED');

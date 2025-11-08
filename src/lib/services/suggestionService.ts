@@ -61,6 +61,7 @@ export class SuggestionService {
 									name: true,
 									rating: true,
 									views: true,
+									img_src: true,
 								},
 							},
 						},

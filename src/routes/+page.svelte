@@ -10,20 +10,21 @@
 
 	let showModal = $state(false);
 
-	const { data } = $props<{ data: PageData }>();
+	let { data }: { data: PageData } = $props();
+	const { form: formData, user, suggestions } = data;
 
-	const { form, errors, enhance } = superForm(data.form);
+	const { form, errors, enhance } = superForm(formData);
 </script>
 
 <svelte:head>
 	<title>Главная</title>
 </svelte:head>
 
-<h1 class="title">{`Добро пожаловать, ${data.user.first_name} ${data.user.last_name}`}</h1>
+<h1 class="title">{`Добро пожаловать, ${user.first_name} ${user.last_name}`}</h1>
 <section class="welcome-section">
 	<h2 class="visually-hidden">Папки с подборками фильмов</h2>
 	<ul class="welcome-section__folders">
-		{#each data.suggestions as suggestion (suggestion.id)}
+		{#each suggestions as suggestion (suggestion.id)}
 			<li>
 				<SuggestionCard
 					{...suggestion}
