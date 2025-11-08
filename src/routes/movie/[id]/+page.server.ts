@@ -1,7 +1,8 @@
 import type { PageServerLoad } from './$types';
-import { MovieService } from '$lib/services/movieService';
+import { getMovieById } from '$lib/server/services/movieService';
+import type { MovieWithViewsType } from '$lib/types/types';
 
 export const load: PageServerLoad = async ({ params }) => {
-	const movie = await MovieService.getMovieById(params.id);
+	const movie: MovieWithViewsType = await getMovieById(params.id);
 	return { movie };
 };

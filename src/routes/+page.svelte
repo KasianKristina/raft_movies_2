@@ -7,13 +7,16 @@
 	import VideoPlayIcon from '$lib/icons/VideoPlayIcon.svelte';
 	import { superForm } from 'sveltekit-superforms';
 	import type { PageData } from './$types';
+	import { invalidateAll } from '$app/navigation';
 
 	let showModal = $state(false);
 
 	let { data }: { data: PageData } = $props();
-	const { form: formData, user, suggestions } = data;
+	let { form: formData, user, suggestions } = data;
 
-	const { form, errors, enhance } = superForm(formData);
+	let suggestionsList = $state(suggestions);
+
+	let { form, errors, enhance } = superForm(formData);
 </script>
 
 <svelte:head>
@@ -24,7 +27,7 @@
 <section class="welcome-section">
 	<h2 class="visually-hidden">Папки с подборками фильмов</h2>
 	<ul class="welcome-section__folders">
-		{#each suggestions as suggestion (suggestion.id)}
+		{#each suggestionsList as suggestion (suggestion.id)}
 			<li>
 				<SuggestionCard
 					{...suggestion}

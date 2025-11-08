@@ -1,17 +1,14 @@
-import { loginSchema } from '$lib/schemas/auth';
+import { redirect } from '@sveltejs/kit';
+import type { Actions, PageServerLoad } from './$types';
 import { fail, message, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
-import type { Actions, PageServerLoad } from './$types';
-import { redirect } from '@sveltejs/kit';
-import { AuthService } from '$lib/services/authService';
-import { SessionService } from '$lib/services/sessionService';
+import { loginSchema } from '$lib/schemas/auth';
+import { loginUser } from '$lib/server/services/authService';
+import { createSession } from '$lib/server/services/sessionService';
 import { AuthError } from '$lib/errors/errors';
 
 export const load: PageServerLoad = async ({ locals }) => {
-	if (locals.user) {
-		return redirect(302, '/');
-	}
-
+	if (locals.user) throw redirect(302, '/');
 	const form = await superValidate(zod(loginSchema));
 	return { form };
 };
@@ -26,27 +23,15 @@ export const actions: Actions = {
 
 		try {
 			const { email, password } = form.data;
-
-			const user = await AuthService.loginUser(email, password);
-
-			await SessionService.createUserSession(user.id, cookies);
-
-			redirect(303, '/');
+			const user = await loginUser(email, password);
+			await createSession(user.id, cookies);
 		} catch (error: unknown) {
 			console.error('Login error:', error);
-
 			if (error instanceof AuthError) {
-				switch (error.code) {
-					case 'INVALID_CREDENTIALS':
-						return message(form, { text: error.message }, { status: 400 });
-					case 'SESSION_CREATION_FAILED':
-						return message(form, { text: error.message }, { status: 500 });
-					default:
-						return message(form, { text: 'Login failed' }, { status: 500 });
-				}
+				return message(form, { text: error.message }, { status: 400 });
 			}
-
-			return message(form, { text: 'An unexpected error occurred' }, { status: 500 });
+			return message(form, { text: 'Login failed' }, { status: 500 });
 		}
+		throw redirect(303, '/');
 	},
 };

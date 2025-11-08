@@ -1,17 +1,15 @@
-import { registrationSchema } from '$lib/schemas/auth';
-import { fail, superValidate, setError, message } from 'sveltekit-superforms';
+import { redirect } from '@sveltejs/kit';
+import type { Actions, PageServerLoad } from './$types';
+import { fail, message, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
-import type { PageServerLoad } from './$types';
-import { redirect, type Actions } from '@sveltejs/kit';
+import { registrationSchema } from '$lib/schemas/auth';
+import { registerUser } from '$lib/server/services/authService';
+import { createSession } from '$lib/server/services/sessionService';
+import { AuthError } from '$lib/errors/errors';
 import { ERROR_MESSAGES } from '$lib/constants/error-messages';
-import { AuthService } from '$lib/services/authService';
-import { SessionService } from '$lib/services/sessionService';
 
 export const load: PageServerLoad = async ({ locals }) => {
-	if (locals.user) {
-		redirect(302, '/');
-	}
-
+	if (locals.user) throw redirect(302, '/');
 	const form = await superValidate(zod(registrationSchema));
 	return { form };
 };
@@ -24,19 +22,20 @@ export const actions: Actions = {
 			return fail(400, { form });
 		}
 
-		const { email, password, firstName, lastName } = form.data;
-
 		try {
-			const user = await AuthService.registerUser(email, password, firstName, lastName);
-
-			await SessionService.createUserSession(user.id, cookies);
+			const { email, password, firstName, lastName } = form.data;
+			const user = await registerUser(email, password, firstName, lastName);
+			await createSession(user.id, cookies);
 		} catch (error: unknown) {
+			console.error('Registration error:', error);
+
 			if (error instanceof Error && error.message === ERROR_MESSAGES.VALIDATION.EMAIL_EXISTS) {
-				return setError(form, 'email', error.message);
+				return message(form, { text: error.message }, { status: 400 });
 			}
-			return message(form, { text: 'Registration failed. Please try again.' }, { status: 500 });
+
+			return message(form, { text: ERROR_MESSAGES.AUTH.REGISTRATION_FAILED }, { status: 500 });
 		}
 
-		redirect(302, '/');
+		throw redirect(303, '/');
 	},
 };

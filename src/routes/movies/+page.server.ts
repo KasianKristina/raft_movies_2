@@ -5,8 +5,14 @@ import { AppError, AuthError, ValidationError } from '$lib/errors/errors';
 import { type Actions } from '@sveltejs/kit';
 import { getSuccessMessage } from '$lib/utils/successMessages.js';
 import { addToSuggestionSchema } from '$lib/schemas/suggestion';
-import { SuggestionService } from '$lib/services/suggestionService';
-import { MovieService } from '$lib/services/movieService';
+import {
+	addMovieToSuggestion,
+	createMovie,
+	findMovieInSuggestion,
+	getAllMovies,
+} from '$lib/server/services/movieService';
+import { getSuggestionsByAuthorId } from '$lib/server/services/suggestionService';
+import type { MovieWithViewsType, SuggestionWithRelationsType } from '$lib/types/types';
 
 export const load = async ({ locals }) => {
 	if (!locals.user) {
@@ -16,8 +22,8 @@ export const load = async ({ locals }) => {
 	const createMovieForm = await superValidate(zod(newMovieSchema));
 	const addToSuggestionForm = await superValidate(zod(addToSuggestionSchema));
 
-	const movies = await MovieService.getAllMovies();
-	const suggestions = await SuggestionService.getSuggestionsByAuthorId(locals.user.id);
+	const movies: MovieWithViewsType[] = await getAllMovies();
+	const suggestions: SuggestionWithRelationsType[] = await getSuggestionsByAuthorId(locals.user.id);
 
 	return {
 		createMovieForm,
@@ -37,7 +43,7 @@ export const actions: Actions = {
 		}
 
 		try {
-			await MovieService.createMovie(form.data.name, form.data.link);
+			await createMovie(form.data.name, form.data.link);
 
 			return {
 				form,
@@ -71,12 +77,12 @@ export const actions: Actions = {
 			const suggestionId = String(form.data.suggestion_id);
 			const movieId = String(form.data.movie_id);
 
-			const existing = await MovieService.findMovieInSuggestion(suggestionId, movieId);
+			const existing = await findMovieInSuggestion(suggestionId, movieId);
 			if (existing) {
 				throw new ValidationError('MOVIE_ALREADY_IN_SUGGESTION');
 			}
 
-			await MovieService.addMovieToSuggestion(suggestionId, movieId);
+			await addMovieToSuggestion(suggestionId, movieId);
 
 			return {
 				form,

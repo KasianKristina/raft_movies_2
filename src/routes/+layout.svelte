@@ -1,8 +1,16 @@
 <script lang="ts">
 	import Header from '$lib/components/Header.svelte';
+	import type { Snippet } from 'svelte';
+	import type { PageData } from './$types';
 	import '../app.css';
 
-	const { children, data } = $props();
+	const {
+		children,
+		data,
+	}: {
+		children: Snippet;
+		data: PageData;
+	} = $props();
 </script>
 
 <svelte:head>

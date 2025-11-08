@@ -1,12 +1,13 @@
 import { newSuggestionSchema } from '$lib/schemas/suggestion';
 import { fail, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
-import { prisma } from '$lib/server/prisma';
+import { prisma } from '$lib/server/db/prisma';
 import type { PageServerLoad } from './$types';
 import { redirect, type Actions } from '@sveltejs/kit';
 import { AppError, AuthError } from '$lib/errors/errors';
 import { createErrorResponse } from '$lib/errors';
 import { getSuccessMessage } from '$lib/utils/successMessages';
+import { createSuggestion } from '$lib/server/services/suggestionService';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	try {
@@ -48,13 +49,7 @@ export const actions: Actions = {
 				return fail(400, { form });
 			}
 
-			await prisma.suggestion.create({
-				data: {
-					name: form.data.name,
-					description: form.data.description,
-					author_id: locals.user.id,
-				},
-			});
+			await createSuggestion(form.data.name, form.data.description, locals.user.id);
 
 			return {
 				form,
