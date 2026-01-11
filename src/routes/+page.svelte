@@ -7,7 +7,6 @@
 	import VideoPlayIcon from '$lib/icons/VideoPlayIcon.svelte';
 	import { superForm } from 'sveltekit-superforms';
 	import type { PageData } from './$types';
-	import { invalidateAll } from '$app/navigation';
 
 	let showModal = $state(false);
 
