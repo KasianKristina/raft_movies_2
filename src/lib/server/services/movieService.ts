@@ -45,7 +45,7 @@ export async function addMovieToSuggestion(
 			data: { suggestion_id: suggestionId, movie_id: movieId },
 			include: { movie: true },
 		});
-	} catch (error: any) {
+	} catch (error) {
 		if (error.code === 'P2002') throw new ValidationError('MOVIE_ALREADY_IN_SUGGESTION');
 		throw error;
 	}
@@ -57,7 +57,7 @@ export async function createMovie(name: string, link?: string): Promise<MovieWit
 			data: { name, link },
 			include: { views: { select: { is_watched: true, user_id: true } } },
 		});
-	} catch (error: any) {
+	} catch (error) {
 		if (error.code === 'P2002') throw new ValidationError('MOVIE_WITH_SAME_NAME_ALREADY_EXISTS');
 		throw error;
 	}
