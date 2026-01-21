@@ -7,11 +7,11 @@
 	import { searchByWords } from '$lib/utils/search';
 	import type { PageData } from './$types';
 
-	let { suggestions }: { suggestions: PageData['suggestions'] } = $props();
+	let { data }: { data: PageData } = $props();
 
 	let inputValue = $state('');
 
-	const filteredSuggestions = $derived(searchByWords(suggestions, inputValue));
+	const filteredSuggestions = $derived(searchByWords(data.suggestions, inputValue));
 </script>
 
 <svelte:head>
@@ -30,8 +30,8 @@
 		<Button>Поиск</Button>
 	</div>
 	<p class="suggest__result">
-		{filteredSuggestions.length}
-		{getNoun(filteredSuggestions.length, 'Результат', 'Результата', 'Результатов')}
+		{filteredSuggestions?.length}
+		{getNoun(filteredSuggestions?.length, 'Результат', 'Результата', 'Результатов')}
 	</p>
 	<ul class="cards">
 		{#each filteredSuggestions as suggestion (suggestion.id)}

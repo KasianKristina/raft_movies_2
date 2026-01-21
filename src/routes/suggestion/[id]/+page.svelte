@@ -8,27 +8,26 @@
 	import { searchByWords } from '$lib/utils/search';
 	import type { PageData } from './$types';
 
-	let { suggestion, user }: { suggestion: PageData['suggestion']; user: PageData['user'] } =
-		$props();
+	let { data }: { data: PageData } = $props();
 
 	let inputValue = $state('');
 
 	const filteredMovies = $derived(
 		searchByWords(
-			suggestion.movies.map((el) => el.movie),
+			data.suggestion.movies.map((el) => el.movie),
 			inputValue,
 		),
 	);
 </script>
 
 <svelte:head>
-	<title>{`Подборка фильмов ${suggestion.name}`}</title>
+	<title>{`Подборка фильмов ${data.suggestion.name}`}</title>
 </svelte:head>
 
-<h1 class="title">{suggestion.name}</h1>
+<h1 class="title">{data.suggestion.name}</h1>
 <section>
 	<h2 class="visually-hidden">Блок с подборками фильмов от пользователей</h2>
-	<p class="suggestion__description">{suggestion.description}</p>
+	<p class="suggestion__description">{data.suggestion.description}</p>
 	<div class="suggestion__search-cards">
 		<Input label="Поиск фильмов" bind:value={inputValue}>
 			{#snippet leftIcon()}
@@ -46,7 +45,7 @@
 			<li class="cards__item">
 				<MovieCard id={movie.id} name={movie.name} imgSrc={movie.img_src} score={movie.rating}>
 					{#snippet bottomChildren()}
-						{#if movie.views.find((view) => view.user_id === user?.id)?.is_watched}
+						{#if movie.views.find((view) => view.user_id === data.user?.id)?.is_watched}
 							<div class="cards__item-text">
 								<VideoTickIcon />
 								<p>Уже просмотрено</p>

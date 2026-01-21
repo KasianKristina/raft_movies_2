@@ -14,29 +14,16 @@ export async function registerUser(
 		throw new ValidationError('EMAIL_EXISTS');
 	}
 
-	let passwordHash: string;
-	try {
-		passwordHash = await hash(password, ARGON2_CONFIG);
-	} catch {
-		throw new AuthError('PASSWORD_HASHING_FAILED');
-	}
+	const passwordHash = await hash(password, ARGON2_CONFIG);
 
-	try {
-		const user = await prisma.user.create({
-			data: {
-				email,
-				password: passwordHash,
-				first_name: firstName,
-				last_name: lastName,
-			},
-		});
-		return user;
-	} catch (error: any) {
-		if (error.code === 'P2002' && error.meta?.target?.includes('email')) {
-			throw new ValidationError('EMAIL_EXISTS');
-		}
-		throw new AuthError('REGISTRATION_FAILED');
-	}
+	return prisma.user.create({
+		data: {
+			email,
+			password: passwordHash,
+			first_name: firstName,
+			last_name: lastName,
+		},
+	});
 }
 
 export async function loginUser(email: string, password: string) {

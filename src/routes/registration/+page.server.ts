@@ -4,9 +4,8 @@ import { fail, message, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { registrationSchema } from '$lib/schemas/auth';
 import { registerUser } from '$lib/server/services/authService';
-import { createSession } from '$lib/server/services/sessionService';
-import { AuthError } from '$lib/errors/errors';
-import { ERROR_MESSAGES } from '$lib/constants/error-messages';
+import { createSession, setSessionCookie } from '$lib/server/services/sessionService';
+import { ValidationError } from '$lib/errors/errors';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	if (locals.user) throw redirect(302, '/');
@@ -25,15 +24,13 @@ export const actions: Actions = {
 		try {
 			const { email, password, firstName, lastName } = form.data;
 			const user = await registerUser(email, password, firstName, lastName);
-			await createSession(user.id, cookies);
-		} catch (error: unknown) {
-			console.error('Registration error:', error);
-
-			if (error instanceof Error && error.message === ERROR_MESSAGES.VALIDATION.EMAIL_EXISTS) {
+			const { token, session } = await createSession(user.id);
+			setSessionCookie(cookies, token, session.expiresAt);
+		} catch (error) {
+			if (error instanceof ValidationError) {
 				return message(form, { text: error.message }, { status: 400 });
 			}
-
-			return message(form, { text: ERROR_MESSAGES.AUTH.REGISTRATION_FAILED }, { status: 500 });
+			throw error;
 		}
 
 		throw redirect(303, '/');

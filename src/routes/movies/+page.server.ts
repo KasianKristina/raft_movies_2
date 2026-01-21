@@ -1,7 +1,7 @@
 import { newMovieSchema } from '$lib/schemas/movie';
 import { fail, message, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
-import { AppError, AuthError, ValidationError } from '$lib/errors/errors';
+import { AuthError, ValidationError } from '$lib/errors/errors';
 import { type Actions } from '@sveltejs/kit';
 import { getSuccessMessage } from '$lib/utils/successMessages.js';
 import { addToSuggestionSchema } from '$lib/schemas/suggestion';
@@ -50,38 +50,29 @@ export const actions: Actions = {
 				message: getSuccessMessage('MOVIE_CREATED'),
 			};
 		} catch (error: unknown) {
-			console.error('Error in createMovie action:', error);
-
-			if (error instanceof AppError) {
-				switch (error.code) {
-					case 'DUPLICATE_MOVIE_ERROR':
-						return message(form, { text: error.message }, { status: 400 });
-					case 'CREATE_ERROR_MOVIE':
-					default:
-						return message(form, { text: error.message }, { status: 500 });
-				}
+			if (error instanceof ValidationError) {
+				return message(form, { text: error.message }, { status: 400 });
 			}
 
-			return message(form, { text: 'Failed to create movie' }, { status: 500 });
+			throw error;
 		}
 	},
 
 	addToSuggestion: async ({ request }) => {
 		const form = await superValidate(request, zod(addToSuggestionSchema));
 
+		if (!form.valid) {
+			return fail(400, { form });
+		}
+
+		const suggestionId = form.data.suggestion_id;
+		const movieId = form.data.movie_id;
+
+		const existing = await findMovieInSuggestion(suggestionId, movieId);
+		if (existing) {
+			return message(form, { text: 'Movie already in suggestion' }, { status: 400 });
+		}
 		try {
-			if (!form.valid) {
-				return fail(400, { form });
-			}
-
-			const suggestionId = String(form.data.suggestion_id);
-			const movieId = String(form.data.movie_id);
-
-			const existing = await findMovieInSuggestion(suggestionId, movieId);
-			if (existing) {
-				throw new ValidationError('MOVIE_ALREADY_IN_SUGGESTION');
-			}
-
 			await addMovieToSuggestion(suggestionId, movieId);
 
 			return {
@@ -89,13 +80,11 @@ export const actions: Actions = {
 				message: getSuccessMessage('MOVIE_ADDED_TO_SUGGESTION'),
 			};
 		} catch (error: unknown) {
-			console.error('Error in addToSuggestion action:', error);
-
-			if (error instanceof ValidationError && error.code === 'MOVIE_ALREADY_IN_SUGGESTION') {
+			if (error instanceof ValidationError) {
 				return message(form, { text: error.message }, { status: 400 });
 			}
 
-			return message(form, { text: 'Failed to add movie to suggestion' }, { status: 500 });
+			throw error;
 		}
 	},
 };
