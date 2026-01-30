@@ -1,6 +1,8 @@
 import type { PageServerLoad } from './$types';
-import { suggestionsData } from '$lib/mockData';
+import { getAllSuggestions } from '$lib/server/services/suggestionService';
+import type { SuggestionWithRelationsType } from '$lib/types/types';
 
 export const load: PageServerLoad = async () => {
-	return { suggestions: suggestionsData };
+	const suggestions: SuggestionWithRelationsType[] = await getAllSuggestions();
+	return { suggestions: suggestions };
 };

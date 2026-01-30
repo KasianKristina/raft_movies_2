@@ -12,16 +12,42 @@
 	import { searchByWords } from '$lib/utils/search';
 	import type { PageData } from './$types';
 	import { superForm } from 'sveltekit-superforms';
-	import type { MovieCardInterface } from '$lib/types/types';
 
 	let inputValue = $state('');
 	let showModal = $state(false);
 	let showModalWithSuggestions = $state(false);
-	let { data } = $props<{ data: PageData }>();
+	let selectedMovieId: null | string = $state(null);
+	let { data }: { data: PageData } = $props();
+	const {
+		movies,
+		createMovieForm: createMovieFormData,
+		addToSuggestionForm,
+		suggestions,
+		user,
+	} = data;
 
-	const { form, errors, enhance } = superForm(data.form);
+	const filteredMovies = $derived(searchByWords(movies, inputValue));
 
-	const filteredMovies = $derived(searchByWords(data.movies as MovieCardInterface[], inputValue));
+	const {
+		form: createMovieForm,
+		errors: createMovieErrors,
+		enhance: createMovieEnhance,
+	} = superForm(createMovieFormData, {
+		onUpdated({ form }) {
+			if (form.valid) {
+				showModal = false;
+			}
+		},
+	});
+
+	const { enhance: addToSuggestionEnhance } = superForm(addToSuggestionForm, {
+		onUpdated({ form }) {
+			if (form.valid) {
+				showModalWithSuggestions = false;
+				selectedMovieId = null;
+			}
+		},
+	});
 </script>
 
 <svelte:head>
@@ -35,6 +61,7 @@
 		Я буду очень признателен, если вы найдете время и предложите мне что-нибудь интересное для
 		просмотра
 	</p>
+
 	<div class="search-section__input_wrapper">
 		<Input label="Поиск фильмов или телешоу" bind:value={inputValue}>
 			{#snippet leftIcon()}
@@ -51,11 +78,11 @@
 <section>
 	<h2 class="visually-hidden">Результаты поиска фильмов</h2>
 	<ul class="cards">
-		{#each filteredMovies as movie}
+		{#each filteredMovies as movie (movie.id)}
 			<li class="cards__item">
-				<MovieCard id={movie.id} name={movie.name} imgSrc={movie.imgSrc} score={movie.score}>
+				<MovieCard id={movie.id} name={movie.name} imgSrc={movie.img_src} score={movie.rating}>
 					{#snippet bottomChildren()}
-						{#if movie.isAlreadyWatched}
+						{#if movie.views.find((view) => view.user_id === user?.id)?.is_watched}
 							<div class="cards__item-text green-color">
 								<VideoTickIcon />
 								<p>Уже просмотрено</p>
@@ -66,6 +93,7 @@
 								onclick={(e) => {
 									e.preventDefault();
 									showModalWithSuggestions = true;
+									selectedMovieId = movie.id;
 								}}
 							>
 								<LikeIcon />
@@ -88,13 +116,13 @@
 <Modal bind:open={showModal}>
 	<div class="modal__wrapper">
 		<p class="modal__title">Предложи что-нибудь для просмотра</p>
-		<form class="modal__inputs_wrapper" method="POST" use:enhance>
+		<form class="modal__inputs_wrapper" method="POST" action="?/createMovie" use:createMovieEnhance>
 			<Input
 				label="Название"
 				type="string"
 				name="name"
-				bind:value={$form.name}
-				errorMessage={$errors.name?.[0] as string}
+				bind:value={$createMovieForm.name}
+				errorMessage={$createMovieErrors.name?.[0] as string}
 			>
 				{#snippet leftIcon()}
 					<VideoPlayIcon />
@@ -104,8 +132,8 @@
 				label="Ссылка (если есть)"
 				type="string"
 				name="link"
-				bind:value={$form.link}
-				errorMessage={$errors.link?.[0] as string}
+				bind:value={$createMovieForm.link}
+				errorMessage={$createMovieErrors.link?.[0] as string}
 			>
 				{#snippet leftIcon()}
 					<LinkIcon />
@@ -118,10 +146,11 @@
 
 <Modal bind:open={showModalWithSuggestions}>
 	<p class="modal__title">Добавить фильм в подборку</p>
-	<form class="modal__wrapper" method="POST">
-		<select class="modal__select">
-			{#each data.suggestions as suggestion}
-				<option>{suggestion.name}</option>
+	<form class="modal__wrapper" method="POST" action="?/addToSuggestion" use:addToSuggestionEnhance>
+		<input type="hidden" name="movie_id" value={selectedMovieId} />
+		<select class="modal__select" name="suggestion_id">
+			{#each suggestions as suggestion (suggestion.id)}
+				<option value={suggestion.id}>{suggestion.name}</option>
 			{/each}
 		</select>
 		<Button type="submit">Добавить</Button>

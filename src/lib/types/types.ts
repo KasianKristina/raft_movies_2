@@ -1,31 +1,42 @@
-interface BaseMovie {
-	id: string;
-	name: string;
-	score: string;
-	imgSrc?: string;
-}
+import type { Movie, Suggestion, SuggestionMovie, User } from '@prisma/client';
 
-export interface MovieCardInterface extends BaseMovie {
+export type MovieCardType = Pick<Movie, 'name' | 'id' | 'rating'> & {
 	isAlreadyWatched: boolean;
-}
+};
 
-export interface SuggestionInterface {
-	id: string;
-	name: string;
-	description: string;
-	author: string;
-	authorId: string;
-	countAlreadyWatched: number;
-	countAll: number;
-}
+export type SuggestionWithDetailsType = Omit<
+	Suggestion & {
+		movies: Movie[];
+		author: User;
+	},
+	'description' | 'author_id'
+>;
 
-export interface MovieInterface extends BaseMovie {
-	description: string;
-	genres: string[];
-	number_of_seasons: number;
-	year_of_production: number;
-	country: string;
-	film_director: string;
-	time: number;
-	backgroundImgSrc: string;
-}
+export type SuggestionMovieViewsType = Omit<
+	SuggestionMovie & { movie: Movie },
+	'suggestion_id' | 'movie_id'
+>;
+
+export type MovieViewType = {
+	is_watched: boolean;
+	user_id: string;
+};
+
+export type MovieWithViewsType = Movie & {
+	views: MovieViewType[];
+};
+
+export type SuggestionMovieType = SuggestionMovie & {
+	movie: Movie & {
+		id: string;
+		name: string;
+		rating: number;
+		views: MovieViewType[];
+		img_src: string | null;
+	};
+};
+
+export type SuggestionWithRelationsType = Omit<Suggestion, 'author_id'> & {
+	author: User;
+	movies: SuggestionMovieType[];
+};

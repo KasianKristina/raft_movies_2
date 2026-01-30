@@ -1,15 +1,25 @@
 <script lang="ts">
 	import Header from '$lib/components/Header.svelte';
+	import type { Snippet } from 'svelte';
+	import type { PageData } from './$types';
 	import '../app.css';
 
-	let { children } = $props();
+	const {
+		children,
+		data,
+	}: {
+		children: Snippet;
+		data: PageData;
+	} = $props();
 </script>
 
 <svelte:head>
 	<meta name="description" content="Raft movies app" />
 </svelte:head>
 
-<Header />
+{#if data.user}
+	<Header userName={`${data.user.first_name} ${data.user.last_name}`} />
+{/if}
 <main>
 	{@render children()}
 </main>

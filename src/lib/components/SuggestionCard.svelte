@@ -5,20 +5,20 @@
 	type Props = {
 		id: string;
 		name: string;
-		countAlreadyWatched: number;
-		countAll: number;
+		countAlreadyWatched?: number;
+		countAll?: number;
 		description?: string;
-		author: string;
+		authorName: string;
 		isNeedDisplayAuthor?: boolean;
 	};
 
 	let {
 		id,
 		name,
-		countAlreadyWatched,
-		countAll,
+		countAlreadyWatched = 0,
+		countAll = 0,
 		description,
-		author,
+		authorName,
 		isNeedDisplayAuthor = true,
 	}: Props = $props();
 
@@ -56,7 +56,7 @@
 	{/if}
 
 	{#if isNeedDisplayAuthor}
-		<p class="item__author">Автор: {author}</p>
+		<p class="item__author">Автор: {authorName}</p>
 	{/if}
 </a>
 
@@ -85,9 +85,9 @@
 	}
 
 	.item__description {
-		font: var(--type-body-regular);
-		-webkit-line-clamp: 4;
 		display: -webkit-box;
+		-webkit-line-clamp: 4;
+		font: var(--type-body-regular);
 		-webkit-box-orient: vertical;
 		margin-bottom: 15px;
 		height: 77px;

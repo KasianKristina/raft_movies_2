@@ -4,9 +4,6 @@
 	"trailingComma": "all",
 	"printWidth": 100,
 	"plugins": ["prettier-plugin-svelte", "prettier-plugin-css-order"],
-	"cssDeclarationSorter": {
-		"order": "smacss"
-	},
 	"overrides": [
 		{
 			"files": "*.svelte",

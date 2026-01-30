@@ -6,21 +6,25 @@
 	import MovieCard from '$lib/components/MovieCard.svelte';
 	import VideoTickIcon from '$lib/icons/VideoTick.svelte';
 	import { searchByWords } from '$lib/utils/search';
-	import type { MovieCardInterface } from '$lib/types/types';
 	import type { PageData } from './$types';
 
-	let { data } = $props<{ data: PageData }>();
+	let { data }: { data: PageData } = $props();
 
 	let inputValue = $state('');
 
-	const filteredMovies = $derived(searchByWords(data.movies as MovieCardInterface[], inputValue));
+	const filteredMovies = $derived(
+		searchByWords(
+			data.suggestion.movies.map((el) => el.movie),
+			inputValue,
+		),
+	);
 </script>
 
 <svelte:head>
 	<title>{`Подборка фильмов ${data.suggestion.name}`}</title>
 </svelte:head>
 
-<h1 class="title">{data.name}</h1>
+<h1 class="title">{data.suggestion.name}</h1>
 <section>
 	<h2 class="visually-hidden">Блок с подборками фильмов от пользователей</h2>
 	<p class="suggestion__description">{data.suggestion.description}</p>
@@ -37,11 +41,11 @@
 		{getNoun(filteredMovies.length, 'Результат', 'Результата', 'Результатов')}
 	</p>
 	<ul class="suggestion__result_cards">
-		{#each filteredMovies as movie}
+		{#each filteredMovies as movie (movie.id)}
 			<li class="cards__item">
-				<MovieCard id={movie.id} name={movie.name} imgSrc={movie.imgSrc} score={movie.score}>
+				<MovieCard id={movie.id} name={movie.name} imgSrc={movie.img_src} score={movie.rating}>
 					{#snippet bottomChildren()}
-						{#if movie.isAlreadyWatched}
+						{#if movie.views.find((view) => view.user_id === data.user?.id)?.is_watched}
 							<div class="cards__item-text">
 								<VideoTickIcon />
 								<p>Уже просмотрено</p>

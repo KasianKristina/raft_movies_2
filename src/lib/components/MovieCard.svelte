@@ -4,9 +4,9 @@
 
 	type Props = {
 		id: string;
-		imgSrc?: string;
+		imgSrc: string | null;
 		name: string;
-		score?: string;
+		score: number | null;
 		bottomChildren?: Snippet;
 	};
 

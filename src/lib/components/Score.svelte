@@ -2,7 +2,7 @@
 	import Star from '$lib/icons/Star.svelte';
 
 	type Props = {
-		score?: string;
+		score: number | null;
 	};
 
 	let { score }: Props = $props();

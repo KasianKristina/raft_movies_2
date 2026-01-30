@@ -9,17 +9,31 @@
 	import type { LoginSchema, RegistrationSchema } from '$lib/schemas/auth';
 	import type { SuperFormData, SuperFormErrors } from 'sveltekit-superforms/client';
 	import type { Snippet } from 'svelte';
+	import type { Writable } from 'svelte/store';
 
-	let { title, buttonText, switcherText, switcherHref, form, errors, enhance, children } = $props<{
+	type Props = {
 		title: string;
 		buttonText: string;
 		switcherText: string;
 		switcherHref: string;
 		form: SuperFormData<LoginSchema | RegistrationSchema>;
 		errors: SuperFormErrors<LoginSchema | RegistrationSchema>;
+		message?: Writable<App.Superforms.Message | undefined>;
 		enhance: (form: HTMLFormElement) => void;
 		children?: Snippet;
-	}>();
+	};
+
+	let {
+		title,
+		buttonText,
+		switcherText,
+		switcherHref,
+		form,
+		errors,
+		message,
+		enhance,
+		children,
+	}: Props = $props();
 
 	let hidePassword = $state(true);
 
@@ -81,6 +95,10 @@
 				{/if}
 			</div>
 
+			{#if $message}
+				<div class="auth-form__message">{$message.text}</div>
+			{/if}
+
 			<Button type="submit">{buttonText}</Button>
 		</form>
 		<div class="auth-form__switcher">
@@ -140,6 +158,10 @@
 		justify-content: center;
 		align-items: center;
 		gap: 10px;
+	}
+
+	.auth-form__message {
+		color: var(--error-500);
 	}
 
 	.human-img {

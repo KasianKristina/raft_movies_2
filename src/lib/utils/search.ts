@@ -1,9 +1,4 @@
-import type { MovieCardInterface, SuggestionInterface } from '$lib/types/types';
-
-export const searchByWords = <T extends MovieCardInterface | SuggestionInterface>(
-	items: T[],
-	searchText: string,
-): T[] => {
+export const searchByWords = <T extends { name: string }>(items: T[], searchText: string): T[] => {
 	const searchTerms = searchText
 		.toLowerCase()
 		.trim()

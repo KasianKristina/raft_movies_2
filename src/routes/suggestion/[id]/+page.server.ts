@@ -1,6 +1,7 @@
-import { moviesData, suggestionsData } from '$lib/mockData';
+import { getSuggestionById } from '$lib/server/services/suggestionService';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async () => {
-	return { suggestion: suggestionsData[2], movies: moviesData };
+export const load: PageServerLoad = async ({ params, locals }) => {
+	const suggestion = await getSuggestionById(params.id);
+	return { suggestion, user: locals.user };
 };

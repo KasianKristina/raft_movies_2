@@ -3,7 +3,7 @@
 	import Score from '$lib/components/Score.svelte';
 	import type { PageData } from './$types';
 
-	let { data } = $props<{ data: PageData }>();
+	let { data }: { data: PageData } = $props();
 </script>
 
 <svelte:head>
@@ -15,7 +15,7 @@
 	<h2 class="visually-hidden">Постер к фильму</h2>
 	<div class="header-section__image_wrapper">
 		<img
-			src={data.movie.backgroundImgSrc}
+			src={data.movie.background_img_src}
 			alt={`постер к фильму ${data.movie.name}`}
 			width={1200}
 			height={480}
@@ -26,17 +26,17 @@
 		<Breadcrumbs
 			breadcrumbs={[
 				{ text: 'suggestions', link: '/suggestions' },
-				{ text: 'Movie', link: '/movie/1' },
+				{ text: data.movie.name, link: `/movie/${data.movie.id}` },
 			]}
 		/>
-		<p>{data.name}</p>
+		<p>{data.movie.name}</p>
 	</div>
 </section>
 <section class="info-section">
 	<h2 class="visually-hidden">О фильме</h2>
 	<div class="info-section__wrapper">
 		<img
-			src={data.movie.imgSrc}
+			src={data.movie.img_src}
 			alt={`постер к фильму ${data.movie.name}`}
 			width={480}
 			height={720}
@@ -45,7 +45,7 @@
 		<div>
 			<p class="info-section__description">{data.movie.description}</p>
 			<div class="info-section__score">
-				<Score score={data.score} />
+				<Score score={data.movie.rating} />
 			</div>
 			<ul class="info-section__details">
 				<li class="info-section__detail">
@@ -58,7 +58,7 @@
 				</li>
 				<li class="info-section__detail">
 					<h3 class="info-section__detail-key">Страна</h3>
-					<p class="info-section__detail-value">{data.movie.country}</p>
+					<p class="info-section__detail-value">{data.movie.countries.join(', ')}</p>
 				</li>
 				<li class="info-section__detail">
 					<h3 class="info-section__detail-key">Режиссер</h3>
@@ -66,7 +66,9 @@
 				</li>
 				<li class="info-section__detail">
 					<h3 class="info-section__detail-key">Время</h3>
-					<p class="info-section__detail-value">{data.movie.time}</p>
+					{#if data.movie.duration}
+						<p class="info-section__detail-value">{data.movie.duration} мин</p>
+					{/if}
 				</li>
 			</ul>
 		</div>

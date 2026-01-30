@@ -3,18 +3,15 @@
 	import Input from '$lib/components/Input.svelte';
 	import SuggestionCard from '$lib/components/SuggestionCard.svelte';
 	import SearchIcon from '$lib/icons/SearchIcon.svelte';
-	import type { SuggestionInterface } from '$lib/types/types';
 	import { getNoun } from '$lib/utils/formatNames';
 	import { searchByWords } from '$lib/utils/search';
 	import type { PageData } from './$types';
 
-	let { data } = $props<{ data: PageData }>();
+	let { data }: { data: PageData } = $props();
 
 	let inputValue = $state('');
 
-	const filteredSuggestions = $derived(
-		searchByWords(data.suggestions as SuggestionInterface[], inputValue),
-	);
+	const filteredSuggestions = $derived(searchByWords(data.suggestions, inputValue));
 </script>
 
 <svelte:head>
@@ -33,13 +30,17 @@
 		<Button>Поиск</Button>
 	</div>
 	<p class="suggest__result">
-		{filteredSuggestions.length}
-		{getNoun(filteredSuggestions.length, 'Результат', 'Результата', 'Результатов')}
+		{filteredSuggestions?.length}
+		{getNoun(filteredSuggestions?.length, 'Результат', 'Результата', 'Результатов')}
 	</p>
 	<ul class="cards">
-		{#each filteredSuggestions as suggestion}
+		{#each filteredSuggestions as suggestion (suggestion.id)}
 			<li>
-				<SuggestionCard {...suggestion} />
+				<SuggestionCard
+					{...suggestion}
+					authorName={`${suggestion.author.first_name} ${suggestion.author.last_name}`}
+					countAll={suggestion.movies.length}
+				/>
 			</li>
 		{/each}
 	</ul>

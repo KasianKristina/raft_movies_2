@@ -1,14 +1,22 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
+	import { enhance } from '$app/forms';
 	import { page } from '$app/state';
 	import CloseIcon from '$lib/icons/CloseIcon.svelte';
 	import LogoIcon from '$lib/icons/Logo.svelte';
+	import LogoutIcon from '$lib/icons/LogoutIcon.svelte';
 	import MenuIcon from '$lib/icons/MenuIcon.svelte';
+
+	type Props = {
+		userName: string;
+	};
+
+	let { userName }: Props = $props();
 
 	const menuItems = [
 		{ pathName: '/', pageName: 'Главная' },
 		{ pathName: '/movies', pageName: 'Фильмы' },
-		{ pathName: '/suggestions', pageName: 'Предложения' },
+		{ pathName: '/suggestions', pageName: 'Подборки' },
 	];
 
 	let showMenu = $state(false);
@@ -36,8 +44,9 @@
 <svelte:window bind:innerWidth={size} />
 <header class="header">
 	<div class="header__logo-container">
-		<a href="/">
+		<a href="/" class="header__logo-link">
 			<LogoIcon />
+			<p>{userName}</p>
 		</a>
 		<button type="button" onclick={toggleNavbar} class="header__toggle">
 			{#if showMenu}
@@ -50,10 +59,10 @@
 
 	<nav class="header__nav" class:header__mobile={showMenu}>
 		<ul class="header__menu-list">
-			{#each menuItems as menuItem}
+			{#each menuItems as menuItem (menuItem.pathName)}
 				<li
 					class="header__menu-item"
-					aria-current={page.url.pathname === menuItem.pathName ? 'page' : undefined}
+					aria-current={page.url.pathname === menuItem.pathName ? 'page' : null}
 				>
 					<a
 						class="header__menu-link"
@@ -64,6 +73,13 @@
 					>
 				</li>
 			{/each}
+			<li class="header__menu-item">
+				<form method="POST" action="/logout" use:enhance>
+					<button class="header__menu-link header__menu-link_logout" type="submit"
+						><LogoutIcon /> Выйти</button
+					>
+				</form>
+			</li>
 		</ul>
 	</nav>
 </header>
@@ -84,6 +100,12 @@
 		justify-content: space-between;
 		align-items: center;
 		width: 100%;
+	}
+
+	.header__logo-link {
+		display: flex;
+		align-items: center;
+		gap: 10px;
 	}
 
 	.header__nav {
@@ -107,6 +129,7 @@
 	.header__menu-item {
 		position: relative;
 		height: 100%;
+		text-wrap: nowrap;
 	}
 
 	.header__menu-link {
@@ -131,6 +154,13 @@
 	.header__toggle :global(svg) {
 		width: 30px;
 		height: 30px;
+	}
+
+	.header__menu-link_logout {
+		display: flex;
+		align-items: center;
+		gap: 4px;
+		color: var(--grey-300);
 	}
 
 	@media (hover: hover) {
