@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Attachment } from 'svelte/attachments';
 	import Tooltip from './Tooltip.svelte';
+	import TrashIcon from '$lib/icons/Trash.svelte';
 
 	type Props = {
 		id: string;
@@ -10,6 +11,7 @@
 		description?: string;
 		authorName: string;
 		isNeedDisplayAuthor?: boolean;
+		onDelete?: () => void;
 	};
 
 	let {
@@ -20,6 +22,7 @@
 		description,
 		authorName,
 		isNeedDisplayAuthor = true,
+		onDelete,
 	}: Props = $props();
 
 	let isTruncated = $state(false);
@@ -33,7 +36,7 @@
 	};
 </script>
 
-<a class="item" href={`/suggestion/${id}`}>
+<a class="item" class:item--deletable={Boolean(onDelete)} href={`/suggestion/${id}`}>
 	<div class="item__name-wrapper">
 		<p class="item__name">{name}</p>
 	</div>
@@ -58,11 +61,23 @@
 	{#if isNeedDisplayAuthor}
 		<p class="item__author">Автор: {authorName}</p>
 	{/if}
+	{#if onDelete}
+		<button
+			class="item__button--delete"
+			onclick={(e) => {
+				e.preventDefault();
+				onDelete?.();
+			}}
+		>
+			<TrashIcon />
+		</button>
+	{/if}
 </a>
 
 <style>
 	.item {
 		display: block;
+		position: relative;
 		cursor: pointer;
 		border-radius: 12px;
 		background-color: var(--black-100);
@@ -84,9 +99,14 @@
 		text-decoration: none;
 	}
 
+	.item--deletable .item__name {
+		padding-right: 36px;
+	}
+
 	.item__description {
 		display: -webkit-box;
 		-webkit-line-clamp: 4;
+		line-clamp: 4;
 		font: var(--type-body-regular);
 		-webkit-box-orient: vertical;
 		margin-bottom: 15px;
@@ -105,5 +125,25 @@
 	.item__author {
 		color: var(--primary-400);
 		font: var(--type-body-extra-small);
+	}
+
+	.item__button--delete {
+		display: flex;
+		position: absolute;
+		top: 8px;
+		right: 8px;
+		justify-content: center;
+		align-items: center;
+		opacity: 0.85;
+		cursor: pointer;
+		border: none;
+		border-radius: 8px;
+		background-color: var(--black-200);
+		padding: 6px;
+		color: var(--error-300);
+
+		&:hover {
+			opacity: 1;
+		}
 	}
 </style>

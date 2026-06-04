@@ -36,7 +36,7 @@
 		/>
 
 		{#if label}
-			<label for={id} class="input__label">
+			<label for={id} class="input__label" class:input__label--with-icon={leftIcon}>
 				{label}
 			</label>
 		{/if}
@@ -96,7 +96,7 @@
 			-webkit-text-fill-color: var(--white-400);
 		}
 
-		&:autofill {
+		&:-webkit-autofill {
 			background-color: transparent !important;
 			color: var(--white-400) !important;
 		}
@@ -120,12 +120,16 @@
 	.input__label {
 		position: absolute;
 		top: 28px;
-		left: 48px;
+		left: 12px;
 		transform: translateY(-50%);
 		transition: all 0.2s ease-out;
 		pointer-events: none;
 		color: var(--grey-600);
 		font: var(--type-caption);
+	}
+
+	.input__label--with-icon {
+		left: 48px;
 	}
 
 	.input__control:focus ~ .input__label,

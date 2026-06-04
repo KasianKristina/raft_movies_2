@@ -6,22 +6,35 @@
 	import Textarea from '$lib/components/Textarea.svelte';
 	import VideoPlayIcon from '$lib/icons/VideoPlayIcon.svelte';
 	import { superForm } from 'sveltekit-superforms';
+	import { Toaster, toast } from 'svelte-sonner';
 	import type { PageData } from './$types';
 
 	let showModal = $state(false);
 
 	let { data }: { data: PageData } = $props();
-	let { form: formData, user, suggestions } = data;
+	let { form: formData, user } = data;
 
-	let suggestionsList = $state(suggestions);
+	const suggestionsList = $derived(data.suggestions);
 
-	let { form, errors, enhance } = superForm(formData);
+	let { form, errors, enhance } = superForm(formData, {
+		invalidateAll: true,
+		onUpdated({ form }) {
+			if (form.valid) {
+				toast.success('Подборка успешно создана!');
+				showModal = false;
+			}
+		},
+		onError() {
+			toast.error('Ошибка при создании подборки');
+		},
+	});
 </script>
 
 <svelte:head>
 	<title>Главная</title>
 </svelte:head>
 
+<Toaster position="top-right" richColors />
 <h1 class="title">{`Добро пожаловать, ${user.first_name} ${user.last_name}`}</h1>
 <section class="welcome-section">
 	<h2 class="visually-hidden">Папки с подборками фильмов</h2>
@@ -31,6 +44,10 @@
 				<SuggestionCard
 					{...suggestion}
 					authorName={`${suggestion.author.first_name} ${suggestion.author.last_name}`}
+					countAll={suggestion.movies.length}
+					countAlreadyWatched={suggestion.movies.filter(({ movie }) =>
+						movie.views.some((view) => view.user_id === user?.id && view.is_watched),
+					).length}
 				/>
 			</li>
 		{/each}
@@ -60,7 +77,7 @@
 				{/snippet}
 			</Input>
 			<Textarea label="Описание" name="description" bind:value={$form.description} />
-			<Button type="submit" onclick={() => (showModal = false)}>Создать</Button>
+			<Button type="submit">Создать</Button>
 		</form>
 	</div>
 </Modal>

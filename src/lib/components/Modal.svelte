@@ -15,7 +15,13 @@
 	};
 
 	const closeOnBackDropClick = (e: MouseEvent) => {
-		if (e.target === e.currentTarget) {
+		const rect = (e.currentTarget as HTMLDialogElement).getBoundingClientRect();
+		const clickedInsideDialog =
+			e.clientX >= rect.left &&
+			e.clientX <= rect.right &&
+			e.clientY >= rect.top &&
+			e.clientY <= rect.bottom;
+		if (!clickedInsideDialog) {
 			handleClose();
 		}
 	};
@@ -51,7 +57,6 @@
 
 <style>
 	.modal {
-		position: relative;
 		flex-direction: column;
 		backdrop-filter: blur(5px);
 		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);

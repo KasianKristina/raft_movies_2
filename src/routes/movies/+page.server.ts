@@ -28,14 +28,14 @@ export const load = async ({ locals }) => {
 	return {
 		createMovieForm,
 		addToSuggestionForm,
-		movies: movies,
-		suggestions: suggestions,
+		movies,
+		suggestions,
 		user: locals.user,
 	};
 };
 
 export const actions: Actions = {
-	createMovie: async ({ request }) => {
+	createMovie: async ({ locals, request }) => {
 		const form = await superValidate(request, zod(newMovieSchema));
 
 		if (!form.valid) {
@@ -43,7 +43,7 @@ export const actions: Actions = {
 		}
 
 		try {
-			await createMovie(form.data.name, form.data.link);
+			await createMovie(locals.user!.id, form.data.name, form.data.link);
 
 			return {
 				form,

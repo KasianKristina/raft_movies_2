@@ -35,6 +35,9 @@ export default ts.config(
 			'no-console': 'off',
 			...prettierConfig.rules,
 			'prettier/prettier': 'error',
+			'svelte/no-unknown-directive': 'off',
+			'svelte/valid-compile': 'warn',
+			'svelte/no-navigation-without-resolve': 'off',
 		},
 		plugins: {
 			prettier: pluginPrettier,

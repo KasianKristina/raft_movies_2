@@ -66,11 +66,23 @@ npm run db:start-and-migrate
 
 ### Запуск приложения
 
+Режим разработки:
+
 ```bash
 npm run dev
 ```
 
 Откройте `http://localhost:5173` в браузере.
+
+Продакшн-сборка:
+
+```bash
+npm run build
+npm run preview
+```
+
+`npm run build` компилирует приложение в папку `.svelte-kit/output`.
+`npm run preview` запускает собранное приложение локально для проверки перед деплоем.
 
 ---
 

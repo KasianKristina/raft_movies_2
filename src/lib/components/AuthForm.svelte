@@ -53,7 +53,7 @@
 		<form class="auth-form" method="POST" use:enhance>
 			<div class="auth-form__inputs-wrapper">
 				<Input
-					label="Почта"
+					label="Почта *"
 					type="email"
 					name="email"
 					bind:value={$form.email}
@@ -65,7 +65,7 @@
 					{/snippet}
 				</Input>
 				<Input
-					label="Пароль"
+					label="Пароль *"
 					name="password"
 					type={hidePassword ? 'password' : 'text'}
 					autocomplete="current-password"

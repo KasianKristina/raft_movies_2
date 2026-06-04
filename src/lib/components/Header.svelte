@@ -90,7 +90,7 @@
 		position: sticky;
 		top: 0;
 		justify-content: space-between;
-		z-index: 1;
+		z-index: 2;
 		background-color: var(--primary-900);
 		padding: 16px 6em;
 	}

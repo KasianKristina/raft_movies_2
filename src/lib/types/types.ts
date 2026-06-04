@@ -1,25 +1,9 @@
 import type { Movie, Suggestion, SuggestionMovie, User } from '@prisma/client';
 
-export type MovieCardType = Pick<Movie, 'name' | 'id' | 'rating'> & {
-	isAlreadyWatched: boolean;
-};
-
-export type SuggestionWithDetailsType = Omit<
-	Suggestion & {
-		movies: Movie[];
-		author: User;
-	},
-	'description' | 'author_id'
->;
-
-export type SuggestionMovieViewsType = Omit<
-	SuggestionMovie & { movie: Movie },
-	'suggestion_id' | 'movie_id'
->;
-
 export type MovieViewType = {
 	is_watched: boolean;
 	user_id: string;
+	rating: number | null;
 };
 
 export type MovieWithViewsType = Movie & {
@@ -27,13 +11,7 @@ export type MovieWithViewsType = Movie & {
 };
 
 export type SuggestionMovieType = SuggestionMovie & {
-	movie: Movie & {
-		id: string;
-		name: string;
-		rating: number;
-		views: MovieViewType[];
-		img_src: string | null;
-	};
+	movie: MovieWithViewsType;
 };
 
 export type SuggestionWithRelationsType = Omit<Suggestion, 'author_id'> & {

@@ -18,6 +18,11 @@ export const ERROR_MESSAGES = {
 		MOVIE_ALREADY_IN_SUGGESTION: 'Этот фильм уже добавлен в выбранную подборку',
 		MOVIE_WITH_SAME_NAME_ALREADY_EXISTS: 'Фильм с таким названием уже существует',
 		SUGGESTION_REQUIRED: 'Необходимо выбрать подборку',
+		MOVIE_NOT_FOUND_IN_SUGGESTION: 'В подборке нет фильма с таким id',
+		MOVIE_NOT_FOUND: 'Фильм не найден',
+		SUGGESTION_NOT_FOUND: 'Подборка не найдена',
+		NOT_AUTHORIZED_TO_EDIT_MOVIE: 'Вы не можете редактировать информацию о фильме',
+		NOT_AUTHORIZED: 'Нет прав для выполнения этого действия',
 	},
 
 	COMMON: {
@@ -28,10 +33,6 @@ export const ERROR_MESSAGES = {
 		CREATE_ERROR_SUGGESTION: 'Не удалось создать подборку',
 		CREATE_ERROR_MOVIE: 'Не удалось создать фильм',
 		DUPLICATE_MOVIE_ERROR: 'Фильм с таким названием уже есть',
+		IMAGE_UPLOAD_FAILED: 'Не удалось загрузить изображение',
 	},
 } as const;
-
-export type ErrorCode =
-	| keyof typeof ERROR_MESSAGES.AUTH
-	| keyof typeof ERROR_MESSAGES.VALIDATION
-	| keyof typeof ERROR_MESSAGES.COMMON;

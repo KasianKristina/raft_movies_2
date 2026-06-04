@@ -1,29 +1,24 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import { fade } from 'svelte/transition';
+
 	type Props = {
 		text?: string;
+		disabled?: boolean;
 		children: Snippet;
 	};
 
-	let { text = '', children }: Props = $props();
+	let { text = '', disabled = false, children }: Props = $props();
 	let show = $state(false);
 </script>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<div
-	class="container"
-	onmouseenter={() => {
-		show = true;
-	}}
-	onmouseleave={() => {
-		show = false;
-	}}
->
+<div class="container" onmouseenter={() => (show = true)} onmouseleave={() => (show = false)}>
 	{@render children()}
-	{#if show}
-		<div class="tooltip" transition:fade={{ duration: 200 }}>
+	{#if show && !disabled}
+		<div class="tooltip" transition:fade={{ duration: 150 }}>
 			{text}
+			<span class="tooltip__arrow"></span>
 		</div>
 	{/if}
 </div>
@@ -35,16 +30,26 @@
 
 	.tooltip {
 		position: absolute;
-		bottom: 100%;
+		bottom: calc(100% + 8px);
 		left: 50%;
 		transform: translateX(-50%);
-		z-index: 1000;
-		margin-bottom: 8px;
-		border-radius: 4px;
-		background-color: black;
-		padding: 8px 12px;
-		min-width: 270px;
-		color: white;
-		font-size: 14px;
+		z-index: 100;
+		border-radius: 8px;
+		background-color: var(--black-200);
+		padding: 6px 10px;
+		width: max-content;
+		max-width: 220px;
+		pointer-events: none;
+		color: var(--grey-100);
+		font: var(--type-caption);
+	}
+
+	.tooltip__arrow {
+		position: absolute;
+		top: 100%;
+		left: 50%;
+		transform: translateX(-50%);
+		border: 5px solid transparent;
+		border-top-color: var(--black-200);
 	}
 </style>
