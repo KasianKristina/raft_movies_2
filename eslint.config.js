@@ -26,7 +26,8 @@ export default ts.config(
 		},
 		rules: {
 			'no-undef': 'off',
-			'no-unused-vars': 'warn',
+			'no-unused-vars': 'off',
+			'@typescript-eslint/no-unused-vars': 'warn',
 			'no-unused-expressions': 'error',
 			'no-duplicate-imports': 'warn',
 			'no-irregular-whitespace': 'warn',
@@ -35,6 +36,7 @@ export default ts.config(
 			'no-console': 'off',
 			...prettierConfig.rules,
 			'prettier/prettier': 'error',
+			'svelte/valid-compile': 'warn',
 		},
 		plugins: {
 			prettier: pluginPrettier,

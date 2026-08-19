@@ -10,12 +10,13 @@
 	import type { SuperFormData, SuperFormErrors } from 'sveltekit-superforms/client';
 	import type { Snippet } from 'svelte';
 	import type { Writable } from 'svelte/store';
+	import type { ResolvedPathname } from '$app/types';
 
 	type Props = {
 		title: string;
 		buttonText: string;
 		switcherText: string;
-		switcherHref: string;
+		switcherHref: ResolvedPathname;
 		form: SuperFormData<LoginSchema | RegistrationSchema>;
 		errors: SuperFormErrors<LoginSchema | RegistrationSchema>;
 		message?: Writable<App.Superforms.Message | undefined>;
@@ -50,7 +51,7 @@
 	<img src={LoginHumanImg} alt="" width={486} height={560} class="human-img" />
 	<div>
 		<h1 class="auth-form__title">{title}</h1>
-		<form class="auth-form" method="POST" use:enhance>
+		<form class="auth-form" method="POST" novalidate use:enhance>
 			<div class="auth-form__inputs-wrapper">
 				<Input
 					label="Почта"

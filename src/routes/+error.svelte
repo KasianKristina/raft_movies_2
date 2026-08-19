@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import notFoundImage from '$lib/images/notFoundImage.avif';
 </script>
 
@@ -12,7 +13,7 @@
 	<section class="error-page__section">
 		<h2 class="error-page__heading">Заблудились?</h2>
 		<p class="error-page__description">Упс! Вы ищете что-то, чего на самом деле не существует</p>
-		<a href="/" class="error-page__link">Вернуться на главную</a>
+		<a href={resolve('/')} class="error-page__link">Вернуться на главную</a>
 	</section>
 </div>
 

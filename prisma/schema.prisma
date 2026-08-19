@@ -14,73 +14,74 @@ datasource db {
 }
 
 model AuthSession {
-  id         String   @id @default(cuid())
+  id        String   @id @default(cuid())
   token     String   @unique
-  userId    String  @map("user_id")
-  expiresAt DateTime  @map("expires_at")
+  userId    String   @map("user_id")
+  expiresAt DateTime @map("expires_at")
 
-  user      User     @relation(references: [id], fields: [userId], onDelete: Cascade)
+  user User @relation(references: [id], fields: [userId], onDelete: Cascade)
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  password  String
-  first_name  String
-  last_name String
-  
-  views      MovieView[]
+  id         String @id @default(uuid())
+  email      String @unique
+  password   String
+  first_name String
+  last_name  String
+
+  views       MovieView[]
   suggestions Suggestion[]
-  sessions AuthSession[]
+  sessions    AuthSession[]
 }
 
 model Movie {
-  id        String   @id @default(uuid())
-  name     String
-  rating   Float?
-  img_src  String?
-  description  String?
-  genres    String[]
+  id                 String   @id @default(uuid())
+  name               String
+  rating             Float?
+  img_src            String?
+  description        String?
+  genres             String[]
   number_of_seasons  Int?
-  year_of_production  Int?
-  countries String[]
-  film_director String?
-  duration  Int?
+  year_of_production Int?
+  countries          String[]
+  film_director      String?
+  duration           Int?
   background_img_src String?
-  link String?
-  
-  views MovieView[]
+  link               String?
+  created_by         String?
+
+  views       MovieView[]
   suggestions SuggestionMovie[]
 }
 
 model MovieView {
-  id        String   @id @default(cuid())
-  is_watched   Boolean  @default(false)
-  rating    Float?     
-  
-  user   User   @relation(fields: [user_id], references: [id])
-  user_id String
-  movie  Movie  @relation(fields: [movie_id], references: [id])
+  id         String  @id @default(cuid())
+  is_watched Boolean @default(false)
+  rating     Float?
+
+  user     User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id  String
+  movie    Movie  @relation(fields: [movie_id], references: [id], onDelete: Cascade)
   movie_id String
 
   @@unique([user_id, movie_id])
 }
 
 model Suggestion {
-  id          String   @id @default(cuid())
-  name     String
-  description String
-  
-  author   User   @relation(fields: [author_id], references: [id])
+  id          String @id @default(cuid())
+  name        String
+  description String?
+
+  author    User              @relation(fields: [author_id], references: [id])
   author_id String
-  movies SuggestionMovie[]
+  movies    SuggestionMovie[]
 }
 
 model SuggestionMovie {
-  id            String       @id @default(cuid())
-  suggestion    Suggestion  @relation(fields: [suggestion_id], references: [id])
+  id            String     @id @default(cuid())
+  suggestion    Suggestion @relation(fields: [suggestion_id], references: [id], onDelete: Cascade)
   suggestion_id String
-  movie         Movie       @relation(fields: [movie_id], references: [id])
+  movie         Movie      @relation(fields: [movie_id], references: [id], onDelete: Cascade)
   movie_id      String
 
   @@unique([suggestion_id, movie_id])

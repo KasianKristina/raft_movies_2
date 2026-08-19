@@ -1,16 +1,18 @@
-export const searchByWords = <T extends { name: string }>(items: T[], searchText: string): T[] => {
-	const searchTerms = searchText
-		.toLowerCase()
-		.trim()
-		.split(/\s+/)
-		.filter((term) => term.length > 0);
+import FlexSearch from 'flexsearch';
 
-	if (searchTerms.length === 0) {
-		return items;
-	}
+export const createSearchIndex = <T>(items: T[], getIndexText: (item: T) => string) => {
+	const index = new FlexSearch.Index({ tokenize: 'forward' });
 
-	return items.filter((item) => {
-		const itemText = item.name.toLowerCase();
-		return searchTerms.every((term) => itemText.includes(term));
+	items.forEach((item, position) => {
+		index.add(position, getIndexText(item));
 	});
+
+	return {
+		search: (query: string): T[] => {
+			if (!query.trim()) return items;
+			return (index.search(query, { limit: items.length }) as number[]).map(
+				(position) => items[position],
+			);
+		},
+	};
 };

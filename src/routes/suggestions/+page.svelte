@@ -1,17 +1,44 @@
 <script lang="ts">
-	import Button from '$lib/components/Button.svelte';
 	import Input from '$lib/components/Input.svelte';
 	import SuggestionCard from '$lib/components/SuggestionCard.svelte';
 	import SearchIcon from '$lib/icons/SearchIcon.svelte';
 	import { getNoun } from '$lib/utils/formatNames';
-	import { searchByWords } from '$lib/utils/search';
+	import { createSearchIndex } from '$lib/utils/search';
 	import type { PageData } from './$types';
+	import DeleteConfirmationModal from '$lib/components/DeleteConfirmationModal.svelte';
+	import { invalidateAll } from '$app/navigation';
+	import { enhance } from '$app/forms';
+	import { toast } from 'svelte-sonner';
 
 	let { data }: { data: PageData } = $props();
 
 	let inputValue = $state('');
+	let suggestionToDeleteId = $state<string | null>(null);
+	let suggestionToDeleteName = $state<string | null>(null);
+	let showDeleteModal = $state(false);
+	let isDeleting = $state(false);
+	let deleteSuggestionFormEl: HTMLFormElement;
+	let deleteSuggestionInputEl: HTMLInputElement;
 
-	const filteredSuggestions = $derived(searchByWords(data.suggestions, inputValue));
+	const handleDelete = () => {
+		if (!suggestionToDeleteId) return;
+		deleteSuggestionInputEl.value = suggestionToDeleteId;
+		deleteSuggestionFormEl.requestSubmit();
+	};
+
+	const suggestionsIndex = $derived(
+		createSearchIndex(data.suggestions, (suggestion) =>
+			[
+				suggestion.name,
+				suggestion.description,
+				suggestion.author.first_name,
+				suggestion.author.last_name,
+			]
+				.filter(Boolean)
+				.join(' '),
+		),
+	);
+	const filteredSuggestions = $derived(suggestionsIndex.search(inputValue));
 </script>
 
 <svelte:head>
@@ -27,11 +54,10 @@
 				<SearchIcon />
 			{/snippet}
 		</Input>
-		<Button>Поиск</Button>
 	</div>
 	<p class="suggest__result">
-		{filteredSuggestions?.length}
-		{getNoun(filteredSuggestions?.length, 'Результат', 'Результата', 'Результатов')}
+		{filteredSuggestions.length}
+		{getNoun(filteredSuggestions.length, 'Результат', 'Результата', 'Результатов')}
 	</p>
 	<ul class="cards">
 		{#each filteredSuggestions as suggestion (suggestion.id)}
@@ -40,11 +66,60 @@
 					{...suggestion}
 					authorName={`${suggestion.author.first_name} ${suggestion.author.last_name}`}
 					countAll={suggestion.movies.length}
+					countAlreadyWatched={suggestion.movies.filter(({ movie }) =>
+						movie.views.some((view) => view.user_id === data.user?.id && view.is_watched),
+					).length}
+					onDelete={suggestion.author.id === data.user?.id
+						? () => {
+								suggestionToDeleteId = suggestion.id;
+								suggestionToDeleteName = suggestion.name;
+								showDeleteModal = true;
+							}
+						: undefined}
 				/>
 			</li>
 		{/each}
 	</ul>
 </section>
+
+<DeleteConfirmationModal
+	bind:isOpen={showDeleteModal}
+	itemType="подборку"
+	itemName={suggestionToDeleteName ?? ''}
+	onConfirm={handleDelete}
+	onCancel={() => {
+		showDeleteModal = false;
+		suggestionToDeleteId = null;
+		suggestionToDeleteName = null;
+	}}
+	{isDeleting}
+/>
+
+<form
+	method="POST"
+	action="?/deleteSuggestion"
+	hidden
+	bind:this={deleteSuggestionFormEl}
+	use:enhance={() => {
+		isDeleting = true;
+
+		return async ({ result }) => {
+			isDeleting = false;
+			showDeleteModal = false;
+			suggestionToDeleteId = null;
+			suggestionToDeleteName = null;
+
+			if (result.type === 'success') {
+				await invalidateAll();
+				toast.success('Подборка успешно удалена!');
+			} else {
+				toast.error('Ошибка при удалении подборки');
+			}
+		};
+	}}
+>
+	<input type="hidden" name="suggestion_id" bind:this={deleteSuggestionInputEl} />
+</form>
 
 <style>
 	.title {
@@ -60,13 +135,8 @@
 		display: flex;
 		align-items: start;
 		gap: 8px;
-		width: 100%;
-		max-width: 513px;
+		max-width: 50%;
 		color: var(--grey-600);
-	}
-
-	.suggest__search :global(.button) {
-		width: auto;
 	}
 
 	.cards {
@@ -92,10 +162,6 @@
 		.suggest__search {
 			flex-direction: column;
 			width: auto;
-		}
-
-		.suggest__search :global(.button) {
-			width: 100%;
 		}
 
 		.suggest__result {

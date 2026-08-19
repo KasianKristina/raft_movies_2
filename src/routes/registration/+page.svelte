@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
+	import { resolve } from '$app/paths';
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { registrationSchema } from '$lib/schemas/auth';
@@ -20,19 +21,6 @@
 
 	const { form, errors, enhance, message } = superForm(data.form, {
 		validators: zodClient(registrationSchema),
-		validationMethod: 'onblur',
-		onChange: (event) => {
-			const target = event.target as HTMLInputElement | null;
-			const name = target?.name;
-
-			if (!name) return;
-
-			errors.update((e) => {
-				const next = { ...e };
-				delete next[name as keyof typeof next];
-				return next;
-			});
-		},
 	});
 </script>
 
@@ -44,7 +32,7 @@
 	title="Регистрация"
 	buttonText="Зарегистрироваться"
 	switcherText="Уже зарегистрированы?"
-	switcherHref="/login"
+	switcherHref={resolve('/login')}
 	{form}
 	{message}
 	{errors}
