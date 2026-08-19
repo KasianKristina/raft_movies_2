@@ -1,5 +1,8 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import type { SubmitFunction } from '@sveltejs/kit';
+	import { resolve } from '$app/paths';
+	import { enhance } from '$app/forms';
 	import Score from './Score.svelte';
 	import Tooltip from './Tooltip.svelte';
 	import NoPhotoImage from '$lib/icons/NoPhoto.svelte';
@@ -14,7 +17,7 @@
 		bottomChildren?: Snippet;
 		onDelete?: () => void;
 		isWatched?: boolean;
-		onToggleWatched?: () => void;
+		onToggleWatchedSubmit?: SubmitFunction;
 		userRating?: number | null;
 		onOpenRating?: () => void;
 	};
@@ -27,7 +30,7 @@
 		bottomChildren,
 		onDelete,
 		isWatched,
-		onToggleWatched,
+		onToggleWatchedSubmit,
 		userRating,
 		onOpenRating,
 	}: Props = $props();
@@ -42,25 +45,30 @@
 	});
 </script>
 
-<a class="card" href={`/movie/${id}`}>
+<div class="card">
 	<div class="score-wrapper">
 		<Score {score} {userRating} onclick={onOpenRating} />
 	</div>
-	{#if onToggleWatched || onDelete}
+	{#if onToggleWatchedSubmit || onDelete}
 		<div class="card__actions">
-			{#if onToggleWatched}
+			{#if onToggleWatchedSubmit}
 				<Tooltip text={isWatched ? 'Просмотрено' : 'Отметить как просмотренное'}>
-					<button
-						class="card__action-btn"
-						class:card__action-btn--active={isWatched}
-						type="button"
-						onclick={(e) => {
-							e.preventDefault();
-							onToggleWatched?.();
-						}}
+					<form
+						class="card__action-form"
+						method="POST"
+						action="?/toggleWatched"
+						use:enhance={onToggleWatchedSubmit}
 					>
-						<VideoTickIcon />
-					</button>
+						<button
+							class="card__action-btn"
+							class:card__action-btn--active={isWatched}
+							type="submit"
+							name="movie_id"
+							value={id}
+						>
+							<VideoTickIcon />
+						</button>
+					</form>
 				</Tooltip>
 			{/if}
 			{#if onDelete}
@@ -68,10 +76,7 @@
 					<button
 						class="card__action-btn card__action-btn--delete"
 						type="button"
-						onclick={(e) => {
-							e.preventDefault();
-							onDelete?.();
-						}}
+						onclick={onDelete}
 					>
 						<TrashIcon />
 					</button>
@@ -88,30 +93,44 @@
 			</div>
 		{/if}
 	</div>
-	<Tooltip text={name} disabled={!isTitleTruncated}>
-		<p class="card__title" bind:this={titleElement}>{name}</p>
-	</Tooltip>
+	<a class="card__link" href={resolve('/movie/[id]', { id })}>
+		<Tooltip text={name} disabled={!isTitleTruncated}>
+			<p class="card__title" bind:this={titleElement}>{name}</p>
+		</Tooltip>
+	</a>
 	{#if bottomChildren}
 		{@render bottomChildren()}
 	{/if}
-</a>
+</div>
 
 <style>
 	.card {
-		display: block;
 		position: relative;
 		border-radius: 12px;
 		background-color: var(--black-100);
 		padding: 8px;
 		width: 282px;
 		height: 100%;
+	}
+
+	.card__link {
+		display: block;
+		color: inherit;
 		text-decoration: none;
+
+		&::after {
+			position: absolute;
+			inset: 0;
+			border-radius: 12px;
+			content: '';
+		}
 	}
 
 	.score-wrapper {
 		position: absolute;
 		top: 16px;
 		left: 16px;
+		z-index: 1;
 	}
 
 	.card__actions {
@@ -120,6 +139,11 @@
 		top: 16px;
 		right: 16px;
 		gap: 8px;
+		z-index: 1;
+	}
+
+	.card__action-form {
+		display: contents;
 	}
 
 	.card__action-btn {

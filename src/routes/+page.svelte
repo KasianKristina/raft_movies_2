@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import Button from '$lib/components/Button.svelte';
 	import Input from '$lib/components/Input.svelte';
 	import Modal from '$lib/components/Modal.svelte';
@@ -6,7 +7,9 @@
 	import Textarea from '$lib/components/Textarea.svelte';
 	import VideoPlayIcon from '$lib/icons/VideoPlayIcon.svelte';
 	import { superForm } from 'sveltekit-superforms';
-	import { Toaster, toast } from 'svelte-sonner';
+	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { newSuggestionSchema } from '$lib/schemas/suggestion';
+	import { toast } from 'svelte-sonner';
 	import type { PageData } from './$types';
 
 	let showModal = $state(false);
@@ -18,6 +21,7 @@
 
 	let { form, errors, enhance } = superForm(formData, {
 		invalidateAll: true,
+		validators: zodClient(newSuggestionSchema),
 		onUpdated({ form }) {
 			if (form.valid) {
 				toast.success('Подборка успешно создана!');
@@ -34,7 +38,6 @@
 	<title>Главная</title>
 </svelte:head>
 
-<Toaster position="top-right" richColors />
 <h1 class="title">{`Добро пожаловать, ${user.first_name} ${user.last_name}`}</h1>
 <section class="welcome-section">
 	<h2 class="visually-hidden">Папки с подборками фильмов</h2>
@@ -56,7 +59,7 @@
 <section class="quick-links">
 	<h2 class="quick-links__title">Быстрые ссылки</h2>
 	<div class="quick-links__list">
-		<a href="/suggestions" class="quick-links__item">Подборки</a>
+		<a href={resolve('/suggestions')} class="quick-links__item">Подборки</a>
 		<button class="quick-links__item" onclick={() => (showModal = true)}>Добавить</button>
 	</div>
 </section>
@@ -64,7 +67,7 @@
 <Modal bind:open={showModal}>
 	<div class="modal__wrapper">
 		<p class="modal__title">Новая подборка</p>
-		<form class="inputs__wrapper" method="POST" use:enhance>
+		<form class="inputs__wrapper" method="POST" novalidate use:enhance>
 			<Input
 				label="Название"
 				type="string"

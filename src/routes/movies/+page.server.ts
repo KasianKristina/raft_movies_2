@@ -8,10 +8,14 @@ import { addToSuggestionSchema } from '$lib/schemas/suggestion';
 import {
 	addMovieToSuggestion,
 	createMovie,
+	deleteMovie,
 	findMovieInSuggestion,
 	getAllMovies,
+	getMovieById,
 } from '$lib/server/services/movieService';
 import { getSuggestionsByAuthorId } from '$lib/server/services/suggestionService';
+import { rateMovieAction } from '$lib/server/actions/rateMovie';
+import { toggleWatchedAction } from '$lib/server/actions/toggleWatched';
 import type { MovieWithViewsType, SuggestionWithRelationsType } from '$lib/types/types';
 
 export const load = async ({ locals }) => {
@@ -84,6 +88,35 @@ export const actions: Actions = {
 				return message(form, { text: error.message }, { status: 400 });
 			}
 
+			throw error;
+		}
+	},
+
+	rateMovie: rateMovieAction,
+
+	toggleWatched: toggleWatchedAction,
+
+	deleteMovie: async ({ request, locals }) => {
+		const formData = await request.formData();
+		const movieId = formData.get('movie_id');
+
+		if (typeof movieId !== 'string') {
+			return fail(400, { error: 'INVALID_MOVIE_ID' });
+		}
+
+		try {
+			const movie = await getMovieById(movieId);
+
+			if (movie.created_by !== locals.user!.id) {
+				return fail(403, { error: 'NOT_AUTHORIZED' });
+			}
+
+			await deleteMovie(movieId);
+			return { message: getSuccessMessage('MOVIE_DELETED') };
+		} catch (error: unknown) {
+			if (error instanceof ValidationError) {
+				return fail(400, { error: error.message });
+			}
 			throw error;
 		}
 	},

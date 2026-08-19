@@ -3,12 +3,12 @@ import { hash, verify } from '@node-rs/argon2';
 import { ARGON2_CONFIG } from '$lib/constants/auth';
 import { AuthError, ValidationError } from '$lib/errors/errors';
 
-export async function registerUser(
+export const registerUser = async (
 	email: string,
 	password: string,
 	firstName: string,
 	lastName: string,
-) {
+) => {
 	const existing = await prisma.user.findUnique({ where: { email } });
 	if (existing) {
 		throw new ValidationError('EMAIL_EXISTS');
@@ -24,9 +24,9 @@ export async function registerUser(
 			last_name: lastName,
 		},
 	});
-}
+};
 
-export async function loginUser(email: string, password: string) {
+export const loginUser = async (email: string, password: string) => {
 	const user = await prisma.user.findUnique({ where: { email } });
 	if (!user) {
 		// защита от timing-attack
@@ -40,13 +40,13 @@ export async function loginUser(email: string, password: string) {
 	}
 
 	return user;
-}
+};
 
-async function dummyVerify() {
+const dummyVerify = async () => {
 	const dummyHash = '$argon2id$v=19$m=19456,t=2,p=1$dummy$dummy';
 	try {
 		await verify(dummyHash, 'dummy_password', ARGON2_CONFIG);
 	} catch {
 		// ignore
 	}
-}
+};

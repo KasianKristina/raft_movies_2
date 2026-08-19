@@ -1,3 +1,14 @@
+export const splitList = (value?: string): string[] => {
+	if (!value) {
+		return [];
+	}
+
+	return value
+		.split(',')
+		.map((item) => item.trim())
+		.filter(Boolean);
+};
+
 export const getNoun = (number: number, one: string, two: string, five: string): string => {
 	let n = Math.abs(number);
 	n %= 100;

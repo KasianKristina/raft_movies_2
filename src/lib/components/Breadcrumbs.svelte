@@ -1,6 +1,8 @@
 <script lang="ts">
+	import type { ResolvedPathname } from '$app/types';
+
 	type Props = {
-		breadcrumbs: { link: string; text: string }[];
+		breadcrumbs: { link: ResolvedPathname; text: string }[];
 	};
 
 	let { breadcrumbs }: Props = $props();

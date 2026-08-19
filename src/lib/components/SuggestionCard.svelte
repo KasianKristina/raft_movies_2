@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Attachment } from 'svelte/attachments';
+	import { resolve } from '$app/paths';
 	import Tooltip from './Tooltip.svelte';
 	import TrashIcon from '$lib/icons/Trash.svelte';
 
@@ -36,7 +37,11 @@
 	};
 </script>
 
-<a class="item" class:item--deletable={Boolean(onDelete)} href={`/suggestion/${id}`}>
+<a
+	class="item"
+	class:item--deletable={Boolean(onDelete)}
+	href={resolve('/suggestion/[id]', { id })}
+>
 	<div class="item__name-wrapper">
 		<p class="item__name">{name}</p>
 	</div>

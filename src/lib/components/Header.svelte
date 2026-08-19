@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
 	import { enhance } from '$app/forms';
+	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import CloseIcon from '$lib/icons/CloseIcon.svelte';
 	import LogoIcon from '$lib/icons/Logo.svelte';
@@ -14,17 +15,17 @@
 	let { userName }: Props = $props();
 
 	const menuItems = [
-		{ pathName: '/', pageName: 'Главная' },
-		{ pathName: '/movies', pageName: 'Фильмы' },
-		{ pathName: '/suggestions', pageName: 'Подборки' },
+		{ pathName: resolve('/'), pageName: 'Главная' },
+		{ pathName: resolve('/movies'), pageName: 'Фильмы' },
+		{ pathName: resolve('/suggestions'), pageName: 'Подборки' },
 	];
 
 	let showMenu = $state(false);
 	let size = $state(0);
 
-	function toggleNavbar(): void {
+	const toggleNavbar = (): void => {
 		showMenu = !showMenu;
-	}
+	};
 
 	$effect(() => {
 		if (!browser) return;
@@ -44,7 +45,7 @@
 <svelte:window bind:innerWidth={size} />
 <header class="header">
 	<div class="header__logo-container">
-		<a href="/" class="header__logo-link">
+		<a href={resolve('/')} class="header__logo-link">
 			<LogoIcon />
 			<p>{userName}</p>
 		</a>

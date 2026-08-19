@@ -6,8 +6,11 @@
 	import LinkIcon from '$lib/icons/Link.svelte';
 	import VideoPlayIcon from '$lib/icons/VideoPlayIcon.svelte';
 	import { superForm } from 'sveltekit-superforms';
-	import type { PageData } from './$types';
+	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { updateMovieSchema } from '$lib/schemas/movie';
+	import type { PageData, SubmitFunction } from './$types';
 	import { toast } from 'svelte-sonner';
+	import { enhance } from '$app/forms';
 	import TrashIcon from '$lib/icons/Trash.svelte';
 	import EditIcon from '$lib/icons/Edit.svelte';
 	import Textarea from '$lib/components/Textarea.svelte';
@@ -19,100 +22,91 @@
 	import NoPhotoImage from '$lib/icons/NoPhoto.svelte';
 	import RatingModal from '$lib/components/RatingModal.svelte';
 	import { goto, invalidateAll } from '$app/navigation';
+	import { resolve } from '$app/paths';
 
 	let { data }: { data: PageData } = $props();
-	let { user, updateMovieFormValidate } = data;
 
+	const user = $derived(data.user);
 	const movie = $derived(data.movie);
 
 	let isEditing = $state(false);
 	let showDeleteConfirmationModal = $state(false);
 	let isDeleting = $state(false);
-	let isWatched = $state(data.isWatched);
-	let userRating = $state(data.userRating);
 	let showRatingModal = $state(false);
+	let deleteMovieFormEl: HTMLFormElement;
 
-	$effect(() => {
-		isWatched = data.isWatched;
-		userRating = data.userRating;
-	});
+	let isWatched = $derived(data.isWatched);
+	const userRating = $derived(data.userRating);
 
-	async function handleToggleWatched() {
-		const previousValue = isWatched;
+	const submitToggleWatched: SubmitFunction = () => {
 		isWatched = !isWatched;
 
-		const response = await fetch(`/api/movies/${movie.id}/watched`, { method: 'POST' });
+		return async ({ result }) => {
+			if (result.type === 'success' && result.data && 'isWatched' in result.data) {
+				const updatedIsWatched = result.data.isWatched;
 
-		if (response.ok) {
-			const result = await response.json();
-			isWatched = result.is_watched;
-			toast.success(isWatched ? 'Отмечено как просмотренное!' : 'Отметка снята');
-			if (result.is_watched) {
-				showRatingModal = true;
-			}
-		} else {
-			isWatched = previousValue;
-			toast.error('Ошибка при обновлении статуса');
-		}
-	}
+				await invalidateAll();
 
-	const { errors: updateMovieErrors, enhance: updateMovieEnhance } = superForm(
-		updateMovieFormValidate,
-		{
-			invalidateAll: true,
-			onUpdated({ form }) {
-				if (form.valid) {
-					toast.success('Фильм успешно обновлён!');
-					isEditing = false;
+				toast.success(updatedIsWatched ? 'Отмечено как просмотренное!' : 'Отметка снята');
+
+				if (updatedIsWatched) {
+					showRatingModal = true;
 				}
-			},
-			onError() {
-				toast.error('Ошибка при обновлении фильма');
-			},
-		},
-	);
+			} else {
+				isWatched = data.isWatched;
+				toast.error('Ошибка при обновлении статуса');
+			}
+		};
+	};
 
-	const original = $derived({
-		name: movie.name,
-		description: movie.description,
-		genres: movie.genres,
-		number_of_seasons: movie.number_of_seasons,
-		year_of_production: movie.year_of_production,
-		countries: movie.countries,
-		film_director: movie.film_director,
-		duration: movie.duration,
-		link: movie.link,
-	});
-
-	let localForm = $state({ ...original });
-
-	function cancelEdit() {
-		localForm = { ...original };
-		isEditing = false;
-	}
-
-	async function handleRated(newUserRating: number) {
-		userRating = newUserRating;
-		await invalidateAll();
-		toast.success(`Оценка ${newUserRating}/10 сохранена!`);
-	}
-
-	async function handleDeleteMovie() {
+	const submitDeleteMovie: SubmitFunction = () => {
 		isDeleting = true;
-		try {
-			const response = await fetch(`/api/movies/${movie.id}`, { method: 'DELETE' });
-			if (response.ok) {
-				goto('/movies');
+
+		return async ({ result }) => {
+			isDeleting = false;
+			showDeleteConfirmationModal = false;
+
+			if (result.type === 'success') {
+				goto(resolve('/movies'));
 			} else {
 				toast.error('Ошибка при удалении фильма');
 			}
-		} catch {
-			toast.error('Ошибка при удалении фильма');
-		} finally {
-			isDeleting = false;
-			showDeleteConfirmationModal = false;
-		}
-	}
+		};
+	};
+
+	const {
+		form: updateMovieForm,
+		errors: updateMovieErrors,
+		enhance: updateMovieEnhance,
+		reset: resetUpdateMovieForm,
+	} = superForm(data.updateMovieFormValidate, {
+		invalidateAll: true,
+		resetForm: false,
+		validators: zodClient(updateMovieSchema),
+		onUpdated({ form }) {
+			if (form.valid) {
+				toast.success('Фильм успешно обновлён!');
+				isEditing = false;
+			}
+		},
+		onError() {
+			toast.error('Ошибка при обновлении фильма');
+		},
+	});
+
+	const cancelEdit = () => {
+		resetUpdateMovieForm({ data: data.updateMovieFormValidate.data });
+		isEditing = false;
+	};
+
+	const handleRated = async (newUserRating: number) => {
+		await invalidateAll();
+		toast.success(`Оценка ${newUserRating}/10 сохранена!`);
+	};
+
+	const handleDeleteMovie = () => {
+		deleteMovieFormEl.requestSubmit();
+	};
 </script>
 
 <svelte:head>
@@ -121,12 +115,44 @@
 
 <h1 class="visually-hidden">Информация о фильме {data.movie.name}</h1>
 
-<form method="POST" action="?/updateMovie" enctype="multipart/form-data" use:updateMovieEnhance>
+<form
+	method="POST"
+	action="?/updateMovie"
+	enctype="multipart/form-data"
+	novalidate
+	use:updateMovieEnhance
+>
 	<section
 		class="header-section"
 		class:header-section--no-background={!data.movie.background_img_src}
 	>
 		<h2 class="visually-hidden">Постер к фильму</h2>
+		{#if movie.created_by === user?.id}
+			<div
+				class="header-section__form-actions"
+				class:header-section__form-actions--editing={isEditing}
+			>
+				{#if isEditing}
+					<Button type="submit">
+						<SuccessIcon />
+						<span>Сохранить</span>
+					</Button>
+					<Button type="button" onclick={cancelEdit}>
+						<CloseIcon />
+						<span>Отменить</span>
+					</Button>
+				{:else}
+					<Button type="button" onclick={() => (isEditing = true)}>
+						<EditIcon />
+						<span>Редактировать</span>
+					</Button>
+					<Button type="button" onclick={() => (showDeleteConfirmationModal = true)}>
+						<TrashIcon />
+						<span>Удалить</span>
+					</Button>
+				{/if}
+			</div>
+		{/if}
 		{#if data.movie.background_img_src}
 			<div class="header-section__image_wrapper">
 				<img
@@ -142,8 +168,8 @@
 		<div class="header-section__name-wrapper">
 			<Breadcrumbs
 				breadcrumbs={[
-					{ text: 'Подборки', link: '/suggestions' },
-					{ text: data.movie.name, link: `/movie/${data.movie.id}` },
+					{ text: 'Подборки', link: resolve('/suggestions') },
+					{ text: data.movie.name, link: resolve('/movie/[id]', { id: data.movie.id }) },
 				]}
 			/>
 			{#if isEditing}
@@ -151,56 +177,28 @@
 					label="Название фильма"
 					type="string"
 					name="name"
-					bind:value={localForm.name}
+					required
+					bind:value={$updateMovieForm.name}
 					errorMessage={$updateMovieErrors.name?.[0] as string}
 				/>
 			{:else}
-				<p>{data.movie.name}</p>
+				<p class="header-section__name">{data.movie.name}</p>
 			{/if}
 
-			{#if movie.created_by === user?.id}
-				{#if !isEditing}
-					<div class="header-section__updating">
-						<Button
-							type="button"
-							onclick={() => {
-								localForm = { ...original };
-								isEditing = true;
-							}}
-						>
-							<EditIcon />
-							<span>Редактировать</span>
-						</Button>
-						<Button type="button" onclick={() => (showDeleteConfirmationModal = true)}>
-							<TrashIcon />
-							<span>Удалить</span>
-						</Button>
-					</div>
-				{:else}
-					<div class="header-section__updating">
-						<Button type="submit">
-							<SuccessIcon />
-							<span>Сохранить</span>
-						</Button>
-						<Button type="button" onclick={cancelEdit}>
-							<CloseIcon />
-							<span>Отменить</span>
-						</Button>
-					</div>
-					<div class="header-section__upload">
-						<p class="header-section__upload-label">
-							{data.movie.background_img_src
-								? 'Заменить фоновое изображение'
-								: 'Загрузить фоновое изображение'}
-						</p>
-						<input
-							class="header-section__file-input"
-							type="file"
-							name="background_img_src"
-							accept="image/*"
-						/>
-					</div>
-				{/if}
+			{#if movie.created_by === user?.id && isEditing}
+				<div class="header-section__upload">
+					<p class="header-section__upload-label">
+						{data.movie.background_img_src
+							? 'Заменить фоновое изображение'
+							: 'Загрузить фоновое изображение'}
+					</p>
+					<input
+						class="header-section__file-input"
+						type="file"
+						name="background_img_src"
+						accept="image/*"
+					/>
+				</div>
 			{/if}
 		</div>
 	</section>
@@ -229,28 +227,28 @@
 						<button
 							class="info-section__btn-watched"
 							class:info-section__btn-watched--active={isWatched}
-							type="button"
-							onclick={handleToggleWatched}
+							type="submit"
+							form="toggle-watched-form"
 						>
 							<VideoTickIcon />
 						</button>
 					</Tooltip>
 				</div>
+				{#if isEditing}
+					<div class="info-section__upload">
+						<p class="info-section__upload-label">
+							{data.movie.img_src ? 'Заменить постер' : 'Загрузить постер'}
+						</p>
+						<input class="info-section__file-input" type="file" name="img_src" accept="image/*" />
+					</div>
+				{/if}
 			</div>
-			{#if isEditing}
-				<div class="info-section__upload">
-					<p class="info-section__upload-label">
-						{data.movie.img_src ? 'Заменить постер' : 'Загрузить постер'}
-					</p>
-					<input class="info-section__file-input" type="file" name="img_src" accept="image/*" />
-				</div>
-			{/if}
 			<div>
 				{#if isEditing}
 					<Textarea
 						label="Описание"
 						name="description"
-						bind:value={localForm.description}
+						bind:value={$updateMovieForm.description}
 						errorMessage={$updateMovieErrors.description?.[0] as string}
 					/>
 				{:else}
@@ -261,89 +259,88 @@
 				</div>
 				<ul class="info-section__details">
 					<li class="info-section__detail">
-						<h3 class="info-section__detail-key">Жанр</h3>
 						{#if isEditing}
 							<Input
 								label="Жанр"
 								type="string"
 								name="genres"
-								bind:value={localForm.genres}
-								errorMessage={$updateMovieErrors.genres?.[0][0] as string}
+								bind:value={$updateMovieForm.genres}
+								errorMessage={$updateMovieErrors.genres?.[0] as string}
 							/>
 						{:else}
+							<h3 class="info-section__detail-key">Жанр</h3>
 							<p class="info-section__detail-value">
 								{movie.genres.length ? movie.genres.join(', ') : '—'}
 							</p>
 						{/if}
 					</li>
 					<li class="info-section__detail">
-						<h3 class="info-section__detail-key">Год производства</h3>
 						{#if isEditing}
 							<Input
 								label="Год производства"
 								type="number"
 								name="year_of_production"
-								bind:value={localForm.year_of_production}
+								bind:value={$updateMovieForm.year_of_production}
 								errorMessage={$updateMovieErrors.year_of_production?.[0] as string}
 							/>
 						{:else}
+							<h3 class="info-section__detail-key">Год производства</h3>
 							<p class="info-section__detail-value">{movie.year_of_production ?? '—'}</p>
 						{/if}
 					</li>
 					<li class="info-section__detail">
-						<h3 class="info-section__detail-key">Страна</h3>
 						{#if isEditing}
 							<Input
 								label="Страна"
 								type="string"
 								name="countries"
-								bind:value={localForm.countries}
-								errorMessage={$updateMovieErrors.countries?.[0][0] as string}
+								bind:value={$updateMovieForm.countries}
+								errorMessage={$updateMovieErrors.countries?.[0] as string}
 							/>
 						{:else}
+							<h3 class="info-section__detail-key">Страна</h3>
 							<p class="info-section__detail-value">
 								{movie.countries.length ? movie.countries.join(', ') : '—'}
 							</p>
 						{/if}
 					</li>
 					<li class="info-section__detail">
-						<h3 class="info-section__detail-key">Режиссер</h3>
 						{#if isEditing}
 							<Input
 								label="Режиссер"
 								type="string"
 								name="film_director"
-								bind:value={localForm.film_director}
+								bind:value={$updateMovieForm.film_director}
 								errorMessage={$updateMovieErrors.film_director?.[0] as string}
 							/>
 						{:else}
+							<h3 class="info-section__detail-key">Режиссер</h3>
 							<p class="info-section__detail-value">{movie.film_director ?? '—'}</p>
 						{/if}
 					</li>
 					<li class="info-section__detail">
-						<h3 class="info-section__detail-key">Время</h3>
 						{#if isEditing}
 							<Input
 								label="Время (в минутах)"
 								type="number"
 								name="duration"
-								bind:value={localForm.duration}
+								bind:value={$updateMovieForm.duration}
 								errorMessage={$updateMovieErrors.duration?.[0] as string}
 							/>
-						{:else if movie.duration}
-							<p class="info-section__detail-value">{movie.duration} мин</p>
 						{:else}
-							<p class="info-section__detail-value">—</p>
+							<h3 class="info-section__detail-key">Время</h3>
+							<p class="info-section__detail-value">
+								{movie.duration ? `${movie.duration} мин` : '—'}
+							</p>
 						{/if}
 					</li>
 					{#if isEditing}
 						<li class="info-section__detail">
-							<h3 class="info-section__detail-key">Ссылка</h3>
 							<Input
 								label="Ссылка (если есть)"
 								type="string"
 								name="link"
-								bind:value={localForm.link}
+								bind:value={$updateMovieForm.link}
 								errorMessage={$updateMovieErrors.link?.[0] as string}
 							>
 								{#snippet leftIcon()}
@@ -354,7 +351,11 @@
 					{:else if movie.link}
 						<li class="info-section__detail">
 							<h3 class="info-section__detail-key">Ссылка</h3>
-							<a class="info-section__detail-value info-section__link" href={movie.link}>
+							<a
+								class="info-section__detail-value info-section__link"
+								href={movie.link}
+								rel="external"
+							>
 								<VideoPlayIcon />
 								Смотреть
 							</a>
@@ -365,6 +366,21 @@
 		</div>
 	</section>
 </form>
+
+<form
+	id="toggle-watched-form"
+	method="POST"
+	action="?/toggleWatched"
+	use:enhance={submitToggleWatched}
+></form>
+
+<form
+	method="POST"
+	action="?/deleteMovie"
+	hidden
+	bind:this={deleteMovieFormEl}
+	use:enhance={submitDeleteMovie}
+></form>
 
 <DeleteConfirmationModal
 	bind:isOpen={showDeleteConfirmationModal}
@@ -417,34 +433,9 @@
 		padding: 40px;
 		width: 560px;
 
-		p {
+		.header-section__name {
 			color: var(--grey-50);
 			font: var(--type-heading-three);
-		}
-	}
-
-	.header-section__updating {
-		display: flex;
-		gap: 12px;
-
-		:global(.button) {
-			display: flex;
-			align-items: center;
-			gap: 8px;
-			border: none;
-			background-color: transparent;
-			padding: 5px;
-			height: 24px;
-			color: var(--grey-600);
-			font: var(--type-link-regular);
-		}
-
-		:global(.button):first-child {
-			color: var(--success-300);
-		}
-
-		:global(.button):last-child {
-			color: var(--error-300);
 		}
 	}
 
@@ -454,6 +445,53 @@
 		gap: 70px;
 		margin-top: 152px;
 		margin-left: 70px;
+	}
+
+	.header-section__form-actions {
+		display: flex;
+		position: absolute;
+		right: 62px;
+		bottom: -92px;
+		align-items: center;
+		gap: 24px;
+		z-index: 1;
+		-webkit-backdrop-filter: blur(10px);
+		backdrop-filter: blur(10px);
+		border-radius: 16px;
+		background: var(--black-200);
+		padding: 16px 24px;
+
+		:global(.button) {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			border: none;
+			background-color: transparent;
+			padding: 5px;
+			height: 24px;
+			font: var(--type-link-regular);
+		}
+
+		:global(.button):first-child {
+			color: var(--primary-400);
+		}
+
+		:global(.button):last-child {
+			color: var(--error-300);
+		}
+	}
+
+	.header-section__form-actions--editing :global(.button):first-child {
+		color: var(--success-300);
+	}
+
+	.header-section--no-background .header-section__form-actions {
+		position: static;
+		justify-content: flex-end;
+		-webkit-backdrop-filter: none;
+		backdrop-filter: none;
+		background: transparent;
+		padding: 0;
 	}
 
 	.header-section--no-background .header-section__name-wrapper {
@@ -470,10 +508,6 @@
 		.info-section__wrapper--no-background {
 			margin-top: 40px;
 		}
-	}
-
-	.info-section__wrapper--no-poster {
-		margin-left: 0;
 	}
 
 	.info-section__description {
@@ -612,7 +646,7 @@
 	}
 
 	@media (width <= 768px) {
-		.header-section__updating span {
+		.header-section__form-actions span {
 			display: none;
 		}
 	}
@@ -638,7 +672,11 @@
 		gap: 8px;
 	}
 
-	.header-section__upload-label,
+	.header-section__upload-label {
+		color: var(--grey-400);
+		font: var(--type-body-regular);
+	}
+
 	.info-section__upload-label {
 		color: var(--grey-400);
 		font: var(--type-caption);

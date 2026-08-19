@@ -14,6 +14,9 @@
 		errorMessage = '',
 		...rest
 	}: Props = $props();
+
+	const generatedId = $props.id();
+	const textareaId = $derived(id ?? generatedId);
 </script>
 
 <div class="textarea">
@@ -22,12 +25,12 @@
 			bind:value
 			class="textarea__control"
 			placeholder={!label ? placeholder : ''}
-			{id}
+			id={textareaId}
 			{...rest}
 		></textarea>
 
 		{#if label}
-			<label for={id} class="textarea__label">
+			<label for={textareaId} class="textarea__label">
 				{label}
 			</label>
 		{/if}

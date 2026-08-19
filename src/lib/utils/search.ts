@@ -1,6 +1,6 @@
 import FlexSearch from 'flexsearch';
 
-export function createSearchIndex<T>(items: T[], getIndexText: (item: T) => string) {
+export const createSearchIndex = <T>(items: T[], getIndexText: (item: T) => string) => {
 	const index = new FlexSearch.Index({ tokenize: 'forward' });
 
 	items.forEach((item, position) => {
@@ -10,7 +10,9 @@ export function createSearchIndex<T>(items: T[], getIndexText: (item: T) => stri
 	return {
 		search: (query: string): T[] => {
 			if (!query.trim()) return items;
-			return (index.search(query) as number[]).map((position) => items[position]);
+			return (index.search(query, { limit: items.length }) as number[]).map(
+				(position) => items[position],
+			);
 		},
 	};
-}
+};

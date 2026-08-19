@@ -19,6 +19,9 @@
 		rightIcon,
 		...rest
 	}: Props = $props();
+
+	const generatedId = $props.id();
+	const inputId = $derived(id ?? generatedId);
 </script>
 
 <div class="input">
@@ -31,12 +34,12 @@
 			bind:value
 			class="input__control"
 			placeholder={!label ? placeholder : ''}
-			{id}
+			id={inputId}
 			{...rest}
 		/>
 
 		{#if label}
-			<label for={id} class="input__label" class:input__label--with-icon={leftIcon}>
+			<label for={inputId} class="input__label" class:input__label--with-icon={leftIcon}>
 				{label}
 			</label>
 		{/if}
@@ -69,10 +72,17 @@
 		border-radius: 12px;
 		padding: 16px 12px;
 		width: 100%;
+		min-height: 54px;
 
 		&:disabled {
 			opacity: 0.7;
 			cursor: not-allowed;
+		}
+
+		:global(svg) {
+			flex-shrink: 0;
+			width: 20px;
+			height: 20px;
 		}
 	}
 
@@ -130,6 +140,12 @@
 
 	.input__label--with-icon {
 		left: 48px;
+	}
+
+	.input__control:required ~ .input__label::after {
+		margin-left: 4px;
+		content: '*';
+		color: var(--primary-400);
 	}
 
 	.input__control:focus ~ .input__label,

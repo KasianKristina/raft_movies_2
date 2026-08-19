@@ -7,7 +7,8 @@
 	import type { PageData } from './$types';
 	import DeleteConfirmationModal from '$lib/components/DeleteConfirmationModal.svelte';
 	import { invalidateAll } from '$app/navigation';
-	import { Toaster, toast } from 'svelte-sonner';
+	import { enhance } from '$app/forms';
+	import { toast } from 'svelte-sonner';
 
 	let { data }: { data: PageData } = $props();
 
@@ -16,29 +17,14 @@
 	let suggestionToDeleteName = $state<string | null>(null);
 	let showDeleteModal = $state(false);
 	let isDeleting = $state(false);
+	let deleteSuggestionFormEl: HTMLFormElement;
+	let deleteSuggestionInputEl: HTMLInputElement;
 
-	async function handleDelete() {
+	const handleDelete = () => {
 		if (!suggestionToDeleteId) return;
-		isDeleting = true;
-
-		try {
-			const response = await fetch(`/api/suggestions/${suggestionToDeleteId}`, { method: 'DELETE' });
-
-			if (response.ok) {
-				await invalidateAll();
-				toast.success('Подборка успешно удалена!');
-			} else {
-				toast.error('Ошибка при удалении подборки');
-			}
-		} catch {
-			toast.error('Ошибка при удалении подборки');
-		} finally {
-			isDeleting = false;
-			showDeleteModal = false;
-			suggestionToDeleteId = null;
-			suggestionToDeleteName = null;
-		}
-	}
+		deleteSuggestionInputEl.value = suggestionToDeleteId;
+		deleteSuggestionFormEl.requestSubmit();
+	};
 
 	const suggestionsIndex = $derived(
 		createSearchIndex(data.suggestions, (suggestion) =>
@@ -59,7 +45,6 @@
 	<title>Подборки фильмов</title>
 </svelte:head>
 
-<Toaster position="top-right" richColors />
 <h1 class="title">Подборки фильмов</h1>
 <section class="suggest">
 	<h2 class="visually-hidden">Блок с подборками фильмов от пользователей</h2>
@@ -109,6 +94,32 @@
 	}}
 	{isDeleting}
 />
+
+<form
+	method="POST"
+	action="?/deleteSuggestion"
+	hidden
+	bind:this={deleteSuggestionFormEl}
+	use:enhance={() => {
+		isDeleting = true;
+
+		return async ({ result }) => {
+			isDeleting = false;
+			showDeleteModal = false;
+			suggestionToDeleteId = null;
+			suggestionToDeleteName = null;
+
+			if (result.type === 'success') {
+				await invalidateAll();
+				toast.success('Подборка успешно удалена!');
+			} else {
+				toast.error('Ошибка при удалении подборки');
+			}
+		};
+	}}
+>
+	<input type="hidden" name="suggestion_id" bind:this={deleteSuggestionInputEl} />
+</form>
 
 <style>
 	.title {

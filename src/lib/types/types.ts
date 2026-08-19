@@ -18,3 +18,8 @@ export type SuggestionWithRelationsType = Omit<Suggestion, 'author_id'> & {
 	author: User;
 	movies: SuggestionMovieType[];
 };
+
+export type RateMovieResultType = {
+	userRating: number;
+	movieRating: number;
+};

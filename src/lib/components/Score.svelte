@@ -8,17 +8,14 @@
 	};
 
 	let { score, userRating = null, onclick }: Props = $props();
+
+	const formattedScore = $derived((score ?? 0).toFixed(1));
 </script>
 
 {#if score !== null || onclick}
-	<button
-		class="score"
-		class:score--clickable={Boolean(onclick)}
-		onclick={(e) => { e.preventDefault(); onclick?.(); }}
-		type="button"
-	>
+	<button class="score" class:score--clickable={Boolean(onclick)} {onclick} type="button">
 		<Star filled={Boolean(userRating)} />
-		<p>{score ?? 0}</p>
+		<p>{formattedScore}</p>
 	</button>
 {/if}
 

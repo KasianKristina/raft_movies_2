@@ -59,9 +59,9 @@ model MovieView {
   is_watched Boolean @default(false)
   rating     Float?
 
-  user     User   @relation(fields: [user_id], references: [id])
+  user     User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id  String
-  movie    Movie  @relation(fields: [movie_id], references: [id])
+  movie    Movie  @relation(fields: [movie_id], references: [id], onDelete: Cascade)
   movie_id String
 
   @@unique([user_id, movie_id])

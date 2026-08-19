@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from './zod';
 
 export const newSuggestionSchema = z.object({
 	name: z.string().min(1, 'Название обязателено').max(254, 'Название слишком длинное'),

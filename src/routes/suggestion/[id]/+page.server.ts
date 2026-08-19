@@ -1,8 +1,11 @@
 import {
+	deleteSuggestion,
 	getSuggestionById,
 	updateSuggestion,
 } from '$lib/server/services/suggestionService';
 import { deleteMovieFromSuggestion } from '$lib/server/services/movieService';
+import { rateMovieAction } from '$lib/server/actions/rateMovie';
+import { toggleWatchedAction } from '$lib/server/actions/toggleWatched';
 import type { PageServerLoad, Actions } from './$types';
 import { fail, message, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
@@ -12,7 +15,10 @@ import { ValidationError } from '$lib/errors/errors';
 
 export const load: PageServerLoad = async ({ params, locals }) => {
 	const suggestion = await getSuggestionById(params.id);
-	const form = await superValidate(zod(newSuggestionSchema));
+	const form = await superValidate(
+		{ name: suggestion.name, description: suggestion.description ?? undefined },
+		zod(newSuggestionSchema),
+	);
 
 	return { suggestion, user: locals.user, form };
 };
@@ -46,11 +52,34 @@ export const actions: Actions = {
 
 	removeMovieFromSuggestion: async ({ params, locals, request }) => {
 		const formData = await request.formData();
-		const movieId = formData.get('movie_id') as string;
+		const movieId = formData.get('movie_id');
+
+		if (typeof movieId !== 'string') {
+			return fail(400, { error: 'INVALID_MOVIE_ID' });
+		}
 
 		try {
 			await deleteMovieFromSuggestion(params.id, movieId, locals.user!.id);
 			return { message: getSuccessMessage('SUGGESTION_UPDATED') };
+		} catch (error: unknown) {
+			if (error instanceof ValidationError && error.code === 'NOT_AUTHORIZED') {
+				return fail(403, { error: 'NOT_AUTHORIZED' });
+			}
+			if (error instanceof ValidationError) {
+				return fail(400, { error: error.message });
+			}
+			throw error;
+		}
+	},
+
+	rateMovie: rateMovieAction,
+
+	toggleWatched: toggleWatchedAction,
+
+	deleteSuggestion: async ({ params, locals }) => {
+		try {
+			await deleteSuggestion(params.id, locals.user!.id);
+			return { message: getSuccessMessage('SUGGESTION_DELETED') };
 		} catch (error: unknown) {
 			if (error instanceof ValidationError && error.code === 'NOT_AUTHORIZED') {
 				return fail(403, { error: 'NOT_AUTHORIZED' });

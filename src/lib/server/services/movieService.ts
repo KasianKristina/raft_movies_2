@@ -1,21 +1,20 @@
 import { prisma } from '$lib/server/db/prisma';
 import { ValidationError } from '$lib/errors/errors';
-import type { Prisma, SuggestionMovie } from '@prisma/client';
+import { Prisma, type SuggestionMovie } from '@prisma/client';
 import type { MovieWithViewsType } from '$lib/types/types';
-import type { updateMovieSchema } from '$lib/schemas/movie';
-import type { z } from 'zod';
+import type { UpdateMoviePayload } from '$lib/schemas/movie';
 
 const MOVIE_INCLUDE = {
 	views: { select: { is_watched: true, user_id: true, rating: true } },
 } satisfies Prisma.MovieInclude;
 
-export async function getAllMovies(): Promise<MovieWithViewsType[]> {
+export const getAllMovies = async (): Promise<MovieWithViewsType[]> => {
 	return prisma.movie.findMany({
 		include: MOVIE_INCLUDE,
 	});
-}
+};
 
-export async function getMovieById(id: string): Promise<MovieWithViewsType> {
+export const getMovieById = async (id: string): Promise<MovieWithViewsType> => {
 	const movie = await prisma.movie.findUnique({
 		where: { id },
 		include: MOVIE_INCLUDE,
@@ -23,12 +22,12 @@ export async function getMovieById(id: string): Promise<MovieWithViewsType> {
 
 	if (!movie) throw new ValidationError('MOVIE_NOT_FOUND');
 	return movie;
-}
+};
 
-export async function findMovieInSuggestion(
+export const findMovieInSuggestion = async (
 	suggestionId: string,
 	movieId: string,
-): Promise<SuggestionMovie | null> {
+): Promise<SuggestionMovie | null> => {
 	return prisma.suggestionMovie.findUnique({
 		where: {
 			suggestion_id_movie_id: {
@@ -37,22 +36,29 @@ export async function findMovieInSuggestion(
 			},
 		},
 	});
-}
+};
 
-export async function addMovieToSuggestion(
+export const addMovieToSuggestion = async (
 	suggestionId: string,
 	movieId: string,
-): Promise<SuggestionMovie> {
-	return prisma.suggestionMovie.create({
-		data: { suggestion_id: suggestionId, movie_id: movieId },
-	});
-}
+): Promise<SuggestionMovie> => {
+	try {
+		return await prisma.suggestionMovie.create({
+			data: { suggestion_id: suggestionId, movie_id: movieId },
+		});
+	} catch (error) {
+		if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+			throw new ValidationError('MOVIE_ALREADY_IN_SUGGESTION');
+		}
+		throw error;
+	}
+};
 
-export async function deleteMovieFromSuggestion(
+export const deleteMovieFromSuggestion = async (
 	suggestionId: string,
 	movieId: string,
 	userId: string,
-): Promise<SuggestionMovie> {
+): Promise<SuggestionMovie> => {
 	const suggestion = await prisma.suggestion.findUnique({
 		where: { id: suggestionId },
 		select: { author_id: true },
@@ -69,13 +75,13 @@ export async function deleteMovieFromSuggestion(
 			},
 		},
 	});
-}
+};
 
-export async function createMovie(
+export const createMovie = async (
 	userId: string,
 	name: string,
 	link?: string,
-): Promise<MovieWithViewsType> {
+): Promise<MovieWithViewsType> => {
 	try {
 		return await prisma.movie.create({
 			data: { name, link, created_by: userId },
@@ -85,21 +91,21 @@ export async function createMovie(
 		if (error.code === 'P2002') throw new ValidationError('MOVIE_WITH_SAME_NAME_ALREADY_EXISTS');
 		throw error;
 	}
-}
+};
 
-export async function deleteMovie(movieId: string): Promise<void> {
+export const deleteMovie = async (movieId: string): Promise<void> => {
 	await prisma.movie.delete({
 		where: { id: movieId },
 	});
-}
+};
 
-export async function updateMovie(
+export const updateMovie = async (
 	movieId: string,
-	data: z.infer<typeof updateMovieSchema>,
+	data: UpdateMoviePayload,
 	userId: string,
 	imgSrc?: string,
 	backgroundImgSrc?: string,
-): Promise<MovieWithViewsType> {
+): Promise<MovieWithViewsType> => {
 	const existingMovie = await prisma.movie.findUnique({
 		where: { id: movieId },
 	});
@@ -139,13 +145,13 @@ export async function updateMovie(
 		},
 		include: MOVIE_INCLUDE,
 	});
-}
+};
 
-export async function setRating(
+export const setRating = async (
 	userId: string,
 	movieId: string,
 	rating: number,
-): Promise<{ userRating: number; movieRating: number }> {
+): Promise<{ userRating: number; movieRating: number }> => {
 	await prisma.movieView.upsert({
 		where: { user_id_movie_id: { user_id: userId, movie_id: movieId } },
 		update: { rating },
@@ -165,9 +171,9 @@ export async function setRating(
 	});
 
 	return { userRating: rating, movieRating };
-}
+};
 
-export async function toggleWatched(userId: string, movieId: string): Promise<boolean> {
+export const toggleWatched = async (userId: string, movieId: string): Promise<boolean> => {
 	const existingView = await prisma.movieView.findUnique({
 		where: { user_id_movie_id: { user_id: userId, movie_id: movieId } },
 	});
@@ -181,4 +187,4 @@ export async function toggleWatched(userId: string, movieId: string): Promise<bo
 	});
 
 	return newIsWatched;
-}
+};

@@ -14,10 +14,10 @@
 		isDeleting = false,
 	} = $props();
 
-	function handleCancel() {
+	const handleCancel = () => {
 		onCancel?.();
 		isOpen = false;
-	}
+	};
 </script>
 
 <Modal bind:open={isOpen}>

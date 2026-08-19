@@ -5,19 +5,25 @@
 	import { getNoun } from '$lib/utils/formatNames';
 	import MovieCard from '$lib/components/MovieCard.svelte';
 	import { createSearchIndex } from '$lib/utils/search';
-	import type { PageData } from './$types';
+	import type { PageData, SubmitFunction } from './$types';
 	import TrashIcon from '$lib/icons/Trash.svelte';
 	import Textarea from '$lib/components/Textarea.svelte';
 	import { superForm } from 'sveltekit-superforms';
-	import { toast, Toaster } from 'svelte-sonner';
+	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { newSuggestionSchema } from '$lib/schemas/suggestion';
+	import { toast } from 'svelte-sonner';
 	import EditIcon from '$lib/icons/Edit.svelte';
 	import CloseIcon from '$lib/icons/CloseIcon.svelte';
 	import DeleteConfirmationModal from '$lib/components/DeleteConfirmationModal.svelte';
 	import RatingModal from '$lib/components/RatingModal.svelte';
 	import { goto, invalidateAll } from '$app/navigation';
+	import { resolve } from '$app/paths';
+	import { enhance as formEnhance } from '$app/forms';
 
 	let { data }: { data: PageData } = $props();
-	let { form: formData, user } = data;
+	const { form: formData } = data;
+
+	const user = $derived(data.user);
 
 	let inputValue = $state('');
 	let isEditing = $state(false);
@@ -27,7 +33,7 @@
 	let isDeletingMovie = $state(false);
 	let isDeletingSuggestion = $state(false);
 
-	let watchedMap = $state<Record<string, boolean>>(
+	let watchedMap = $derived(
 		Object.fromEntries(
 			data.suggestion.movies.map(({ movie }) => [
 				movie.id,
@@ -36,7 +42,7 @@
 		),
 	);
 
-	let ratingMap = $state<Record<string, number | null>>(
+	const ratingMap = $derived(
 		Object.fromEntries(
 			data.suggestion.movies.map(({ movie }) => [
 				movie.id,
@@ -47,35 +53,9 @@
 
 	let showRatingModal = $state(false);
 	let ratingMovieId = $state<string | null>(null);
-
-	$effect(() => {
-		if (!showRatingModal) ratingMovieId = null;
-	});
-
-	async function handleToggleWatched(movieId: string) {
-		const previousValue = watchedMap[movieId];
-		watchedMap[movieId] = !previousValue;
-
-		try {
-			const response = await fetch(`/api/movies/${movieId}/watched`, { method: 'POST' });
-
-			if (response.ok) {
-				const result = await response.json();
-				watchedMap[movieId] = result.is_watched;
-				toast.success(result.is_watched ? 'Отмечено как просмотренное!' : 'Отметка снята');
-				if (result.is_watched) {
-					ratingMovieId = movieId;
-					showRatingModal = true;
-				}
-			} else {
-				watchedMap[movieId] = previousValue;
-				toast.error('Ошибка при обновлении статуса');
-			}
-		} catch {
-			watchedMap[movieId] = previousValue;
-			toast.error('Ошибка при обновлении статуса');
-		}
-	}
+	let deleteSuggestionFormEl: HTMLFormElement;
+	let removeMovieFormEl: HTMLFormElement;
+	let removeMovieInputEl: HTMLInputElement;
 
 	const moviesIndex = $derived(
 		createSearchIndex(
@@ -85,7 +65,14 @@
 	);
 	const filteredMovies = $derived(moviesIndex.search(inputValue));
 
-	let { form, errors, enhance } = superForm(formData, {
+	let {
+		form,
+		errors,
+		enhance,
+		reset: resetSuggestionForm,
+	} = superForm(formData, {
+		resetForm: false,
+		validators: zodClient(newSuggestionSchema),
 		onUpdated({ form }) {
 			if (form.valid) {
 				toast.success('Подборка успешно обновлена!');
@@ -97,112 +84,125 @@
 		},
 	});
 
-	let localName = $state(data.suggestion.name);
-	let localDescription = $state(data.suggestion.description);
-
-	async function handleRated(userRating: number) {
-		if (ratingMovieId) {
-			ratingMap[ratingMovieId] = userRating;
-		}
+	const handleRated = async (userRating: number) => {
 		await invalidateAll();
 		toast.success(`Оценка ${userRating}/10 сохранена!`);
-	}
+	};
 
-	async function handleDelete() {
+	const handleDelete = () => {
+		deleteSuggestionFormEl.requestSubmit();
+	};
+
+	const handleRemoveMovie = () => {
+		if (!movieToDeleteId) return;
+		removeMovieInputEl.value = movieToDeleteId;
+		removeMovieFormEl.requestSubmit();
+	};
+
+	const cancelEdit = () => {
+		resetSuggestionForm({ data: data.form.data });
+		isEditing = false;
+	};
+
+	const submitToggleWatched: SubmitFunction = ({ formData }) => {
+		const movieId = formData.get('movie_id') as string;
+		watchedMap = { ...watchedMap, [movieId]: !watchedMap[movieId] };
+
+		return async ({ result }) => {
+			if (result.type === 'success' && result.data && 'isWatched' in result.data) {
+				const { isWatched } = result.data;
+
+				await invalidateAll();
+
+				toast.success(isWatched ? 'Отмечено как просмотренное!' : 'Отметка снята');
+
+				if (isWatched) {
+					ratingMovieId = movieId;
+					showRatingModal = true;
+				}
+			} else {
+				watchedMap = { ...watchedMap, [movieId]: !watchedMap[movieId] };
+				toast.error('Ошибка при обновлении статуса');
+			}
+		};
+	};
+
+	const submitDeleteSuggestion: SubmitFunction = () => {
 		isDeletingSuggestion = true;
 
-		try {
-			const response = await fetch(`/api/suggestions/${data.suggestion.id}`, {
-				method: 'DELETE',
-			});
+		return async ({ result }) => {
+			isDeletingSuggestion = false;
+			showDeleteConfirmationModal = false;
 
-			if (response.ok) {
-				goto('/suggestions');
+			if (result.type === 'success') {
+				goto(resolve('/suggestions'));
 			} else {
 				toast.error('Ошибка при удалении подборки');
 			}
-		} catch {
-			toast.error('Ошибка при удалении подборки');
-		} finally {
-			isDeletingSuggestion = false;
-			showDeleteConfirmationModal = false;
-		}
-	}
+		};
+	};
 
-	async function handleRemoveMovie() {
+	const submitRemoveMovie: SubmitFunction = () => {
 		isDeletingMovie = true;
-		const formData = new FormData();
-		formData.append('movie_id', movieToDeleteId!);
 
-		try {
-			const response = await fetch('?/removeMovieFromSuggestion', {
-				method: 'POST',
-				body: formData,
-			});
+		return async ({ result }) => {
+			isDeletingMovie = false;
+			showDeleteMovieModal = false;
+			movieToDeleteId = null;
 
-			if (response.ok) {
+			if (result.type === 'success') {
 				await invalidateAll();
 			} else {
 				toast.error('Ошибка при удалении фильма из подборки');
 			}
-		} catch {
-			toast.error('Ошибка при удалении фильма из подборки');
-		} finally {
-			isDeletingMovie = false;
-			showDeleteMovieModal = false;
-			movieToDeleteId = null;
-		}
-	}
-
-	function cancelEdit() {
-		localName = data.suggestion.name;
-		localDescription = data.suggestion.description;
-		isEditing = false;
-	}
+		};
+	};
 </script>
 
 <svelte:head>
 	<title>{`Подборка фильмов ${data.suggestion.name}`}</title>
 </svelte:head>
 
-<Toaster position="top-right" richColors />
 <h1 class="visually-hidden">{`Подборка фильмов ${data.suggestion.name}`}</h1>
 <section>
 	{#if isEditing}
 		<h2 class="visually-hidden">{data.suggestion.name}</h2>
-		<form class="form-editing" method="POST" action="?/updateSuggestion" use:enhance>
+		<form class="form-editing" method="POST" action="?/updateSuggestion" novalidate use:enhance>
 			<Input
 				label="Название подборки"
 				type="string"
 				name="name"
-				bind:value={localName}
+				required
+				bind:value={$form.name}
 				errorMessage={$errors.name?.[0] as string}
 			/>
-			<Textarea label="Описание" name="description" bind:value={localDescription} />
+			<Textarea label="Описание" name="description" bind:value={$form.description} />
 			<div class="suggestion__updating">
-				<Button onclick={cancelEdit}>
+				<Button type="button" onclick={cancelEdit}>
 					<CloseIcon />
 					<span>Отменить</span>
 				</Button>
 				<Button type="submit">Сохранить</Button>
 			</div>
 		</form>
-	{:else if data.suggestion.author.id === user?.id}
+	{:else}
 		<div class="suggestion__title_wrapper">
 			<div>
-				<h2 class="title">{localName}</h2>
-				<p class="suggestion__description">{localDescription}</p>
+				<h2 class="title">{data.suggestion.name}</h2>
+				<p class="suggestion__description">{data.suggestion.description}</p>
 			</div>
-			<div class="suggestion__updating">
-				<Button onclick={() => (isEditing = true)}>
-					<EditIcon />
-					<span>Редактировать</span>
-				</Button>
-				<Button onclick={() => (showDeleteConfirmationModal = true)}>
-					<TrashIcon />
-					<span>Удалить</span>
-				</Button>
-			</div>
+			{#if data.suggestion.author.id === user?.id}
+				<div class="suggestion__updating">
+					<Button type="button" onclick={() => (isEditing = true)}>
+						<EditIcon />
+						<span>Редактировать</span>
+					</Button>
+					<Button type="button" onclick={() => (showDeleteConfirmationModal = true)}>
+						<TrashIcon />
+						<span>Удалить</span>
+					</Button>
+				</div>
+			{/if}
 		</div>
 	{/if}
 	<div class="suggestion__search-cards">
@@ -227,7 +227,7 @@
 					score={movie.rating}
 					userRating={ratingMap[movie.id]}
 					isWatched={watchedMap[movie.id]}
-					onToggleWatched={!isEditing ? () => handleToggleWatched(movie.id) : undefined}
+					onToggleWatchedSubmit={!isEditing ? submitToggleWatched : undefined}
 					onOpenRating={!isEditing
 						? () => {
 								ratingMovieId = movie.id;
@@ -240,8 +240,7 @@
 							<button
 								type="button"
 								class="remove-movie-btn"
-								onclick={(e) => {
-									e.preventDefault();
+								onclick={() => {
 									movieToDeleteId = movie.id;
 									showDeleteMovieModal = true;
 								}}
@@ -274,6 +273,24 @@
 	}}
 	isDeleting={isDeletingMovie}
 />
+
+<form
+	method="POST"
+	action="?/deleteSuggestion"
+	hidden
+	bind:this={deleteSuggestionFormEl}
+	use:formEnhance={submitDeleteSuggestion}
+></form>
+
+<form
+	method="POST"
+	action="?/removeMovieFromSuggestion"
+	hidden
+	bind:this={removeMovieFormEl}
+	use:formEnhance={submitRemoveMovie}
+>
+	<input type="hidden" name="movie_id" bind:this={removeMovieInputEl} />
+</form>
 
 <RatingModal
 	bind:isOpen={showRatingModal}
@@ -384,6 +401,7 @@
 		justify-content: center;
 		align-items: center;
 		opacity: 0.85;
+		z-index: 1;
 		cursor: pointer;
 		border: none;
 		border-radius: 8px;

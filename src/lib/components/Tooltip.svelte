@@ -12,8 +12,14 @@
 	let show = $state(false);
 </script>
 
-<!-- svelte-ignore a11y_no_static_element_interactions -->
-<div class="container" onmouseenter={() => (show = true)} onmouseleave={() => (show = false)}>
+<div
+	class="container"
+	role="presentation"
+	onmouseenter={() => (show = true)}
+	onmouseleave={() => (show = false)}
+	onfocusin={() => (show = true)}
+	onfocusout={() => (show = false)}
+>
 	{@render children()}
 	{#if show && !disabled}
 		<div class="tooltip" transition:fade={{ duration: 150 }}>

@@ -12,7 +12,18 @@
 		"moduleResolution": "bundler",
 		"strictNullChecks": true
 	},
-	"include": ["eslint.config.js", "src", "vite.config.ts"]
+	// Сгенерированные Kit'ом объявления обязаны быть здесь: мы переопределяем "include",
+	// а TypeScript не сливает его с include из ./.svelte-kit/tsconfig.json.
+	// Без них $app/types и $env/* откатываются к базовым заглушкам (ResolvedPathname === string).
+	"include": [
+		".svelte-kit/ambient.d.ts",
+		".svelte-kit/env.d.ts",
+		".svelte-kit/non-ambient.d.ts",
+		".svelte-kit/types/**/$types.d.ts",
+		"eslint.config.js",
+		"src",
+		"vite.config.ts"
+	]
 	// Path aliases are handled by https://svelte.dev/docs/kit/configuration#alias
 	// except $lib which is handled by https://svelte.dev/docs/kit/configuration#files
 	//

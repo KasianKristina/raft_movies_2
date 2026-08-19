@@ -9,10 +9,14 @@
 	import LikeIcon from '$lib/icons/Like.svelte';
 	import { getNoun } from '$lib/utils/formatNames';
 	import { createSearchIndex } from '$lib/utils/search';
-	import type { PageData } from './$types';
+	import type { PageData, SubmitFunction } from './$types';
 	import { superForm } from 'sveltekit-superforms';
-	import { Toaster, toast } from 'svelte-sonner';
+	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { newMovieSchema } from '$lib/schemas/movie';
+	import { addToSuggestionSchema } from '$lib/schemas/suggestion';
+	import { toast } from 'svelte-sonner';
 	import { invalidateAll } from '$app/navigation';
+	import { enhance } from '$app/forms';
 	import DeleteConfirmationModal from '$lib/components/DeleteConfirmationModal.svelte';
 	import RatingModal from '$lib/components/RatingModal.svelte';
 
@@ -28,9 +32,14 @@
 	let showRatingModal = $state(false);
 	let ratingMovieId = $state<string | null>(null);
 	let isDeleteModalOpen = $state(false);
-	const { createMovieForm: createMovieFormData, addToSuggestionForm, suggestions, user } = data;
+	let deleteMovieFormEl: HTMLFormElement;
+	let deleteMovieInputEl: HTMLInputElement;
+	const { createMovieForm: createMovieFormData, addToSuggestionForm } = data;
 
-	let watchedMap = $state<Record<string, boolean>>(
+	const user = $derived(data.user);
+	const suggestions = $derived(data.suggestions);
+
+	let watchedMap = $derived(
 		Object.fromEntries(
 			data.movies.map((movie) => [
 				movie.id,
@@ -39,7 +48,7 @@
 		),
 	);
 
-	let ratingMap = $state<Record<string, number | null>>(
+	const ratingMap = $derived(
 		Object.fromEntries(
 			data.movies.map((movie) => [
 				movie.id,
@@ -47,39 +56,6 @@
 			]),
 		),
 	);
-
-	$effect(() => {
-		if (!showRatingModal) ratingMovieId = null;
-		if (!isDeleteModalOpen) {
-			movieToDeleteId = null;
-			movieToDeleteName = null;
-		}
-	});
-
-	async function handleToggleWatched(movieId: string) {
-		const previousValue = watchedMap[movieId];
-		watchedMap[movieId] = !previousValue;
-
-		try {
-			const response = await fetch(`/api/movies/${movieId}/watched`, { method: 'POST' });
-
-			if (response.ok) {
-				const result = await response.json();
-				watchedMap[movieId] = result.is_watched;
-				toast.success(result.is_watched ? 'Отмечено как просмотренное!' : 'Отметка снята');
-				if (result.is_watched) {
-					ratingMovieId = movieId;
-					showRatingModal = true;
-				}
-			} else {
-				watchedMap[movieId] = previousValue;
-				toast.error('Ошибка при обновлении статуса');
-			}
-		} catch {
-			watchedMap[movieId] = previousValue;
-			toast.error('Ошибка при обновлении статуса');
-		}
-	}
 
 	const moviesIndex = $derived(
 		createSearchIndex(data.movies, (movie) =>
@@ -95,6 +71,7 @@
 		errors: createMovieErrors,
 		enhance: createMovieEnhance,
 	} = superForm(createMovieFormData, {
+		validators: zodClient(newMovieSchema),
 		onUpdated({ form }) {
 			if (form.valid) {
 				showModal = false;
@@ -107,6 +84,7 @@
 	});
 
 	const { enhance: addToSuggestionEnhance } = superForm(addToSuggestionForm, {
+		validators: zodClient(addToSuggestionSchema),
 		onUpdated({ form }) {
 			if (form.valid) {
 				showModalWithSuggestions = false;
@@ -119,44 +97,63 @@
 		},
 	});
 
-	async function handleRated(userRating: number) {
-		if (ratingMovieId) {
-			ratingMap[ratingMovieId] = userRating;
-		}
+	const handleRated = async (userRating: number) => {
 		await invalidateAll();
 		toast.success(`Оценка ${userRating}/10 сохранена!`);
-	}
+	};
 
-	async function handleDelete() {
+	const handleDelete = () => {
 		if (!movieToDeleteId) return;
+		deleteMovieInputEl.value = movieToDeleteId;
+		deleteMovieFormEl.requestSubmit();
+	};
+
+	const submitToggleWatched: SubmitFunction = ({ formData }) => {
+		const movieId = formData.get('movie_id') as string;
+		watchedMap = { ...watchedMap, [movieId]: !watchedMap[movieId] };
+
+		return async ({ result }) => {
+			if (result.type === 'success' && result.data && 'isWatched' in result.data) {
+				const { isWatched } = result.data;
+
+				await invalidateAll();
+
+				toast.success(isWatched ? 'Отмечено как просмотренное!' : 'Отметка снята');
+
+				if (isWatched) {
+					ratingMovieId = movieId;
+					showRatingModal = true;
+				}
+			} else {
+				watchedMap = { ...watchedMap, [movieId]: !watchedMap[movieId] };
+				toast.error('Ошибка при обновлении статуса');
+			}
+		};
+	};
+
+	const submitDeleteMovie: SubmitFunction = () => {
 		isDeleting = true;
 
-		try {
-			const response = await fetch(`/api/movies/${movieToDeleteId}`, {
-				method: 'DELETE',
-			});
+		return async ({ result }) => {
+			isDeleting = false;
+			isDeleteModalOpen = false;
+			movieToDeleteId = null;
+			movieToDeleteName = null;
 
-			if (response.ok) {
+			if (result.type === 'success') {
 				await invalidateAll();
 				toast.success('Фильм успешно удален!');
 			} else {
 				toast.error('Ошибка при удалении');
 			}
-		} catch (error) {
-			toast.error('Ошибка при удалении');
-		} finally {
-			isDeleting = false;
-			movieToDeleteId = null;
-			movieToDeleteName = null;
-		}
-	}
+		};
+	};
 </script>
 
 <svelte:head>
 	<title>Поиск фильмов</title>
 </svelte:head>
 
-<Toaster position="top-right" richColors />
 <h1 class="title">Предложи фильм</h1>
 <section class="search-section">
 	<h2 class="visually-hidden">Блок с поиском фильмов или телепередач</h2>
@@ -190,7 +187,7 @@
 					score={movie.rating}
 					userRating={ratingMap[movie.id]}
 					isWatched={watchedMap[movie.id]}
-					onToggleWatched={() => handleToggleWatched(movie.id)}
+					onToggleWatchedSubmit={submitToggleWatched}
 					onOpenRating={() => {
 						ratingMovieId = movie.id;
 						showRatingModal = true;
@@ -206,8 +203,8 @@
 					{#snippet bottomChildren()}
 						<button
 							class="cards__item-text"
-							onclick={(e) => {
-								e.preventDefault();
+							type="button"
+							onclick={() => {
 								showModalWithSuggestions = true;
 								selectedMovieId = movie.id;
 							}}
@@ -240,7 +237,13 @@
 <Modal bind:open={showModal}>
 	<div class="modal__wrapper">
 		<p class="modal__title">Предложи что-нибудь для просмотра</p>
-		<form class="modal__inputs_wrapper" method="POST" action="?/createMovie" use:createMovieEnhance>
+		<form
+			class="modal__inputs_wrapper"
+			method="POST"
+			action="?/createMovie"
+			novalidate
+			use:createMovieEnhance
+		>
 			<Input
 				label="Название"
 				type="string"
@@ -270,7 +273,13 @@
 
 <Modal bind:open={showModalWithSuggestions}>
 	<p class="modal__title">Добавить фильм в подборку</p>
-	<form class="modal__wrapper" method="POST" action="?/addToSuggestion" use:addToSuggestionEnhance>
+	<form
+		class="modal__wrapper"
+		method="POST"
+		action="?/addToSuggestion"
+		novalidate
+		use:addToSuggestionEnhance
+	>
 		<input type="hidden" name="movie_id" value={selectedMovieId} />
 		<select class="modal__select" name="suggestion_id">
 			{#each suggestions as suggestion (suggestion.id)}
@@ -280,6 +289,16 @@
 		<Button type="submit">Добавить</Button>
 	</form>
 </Modal>
+
+<form
+	method="POST"
+	action="?/deleteMovie"
+	hidden
+	bind:this={deleteMovieFormEl}
+	use:enhance={submitDeleteMovie}
+>
+	<input type="hidden" name="movie_id" bind:this={deleteMovieInputEl} />
+</form>
 
 <RatingModal
 	bind:isOpen={showRatingModal}
@@ -357,8 +376,10 @@
 
 	.cards__item-text {
 		display: flex;
+		position: relative;
 		align-items: center;
 		gap: 8px;
+		z-index: 1;
 		cursor: pointer;
 		margin-bottom: 16px;
 		margin-left: 8px;

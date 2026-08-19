@@ -12,21 +12,21 @@ export interface SessionData {
 	expiresAt: Date;
 }
 
-function hashSessionToken(token: string): string {
+const hashSessionToken = (token: string): string => {
 	return createHash('sha256').update(token).digest('hex');
-}
+};
 
-function isWithinExpiration(date: Date): boolean {
+const isWithinExpiration = (date: Date): boolean => {
 	return date.getTime() > Date.now();
-}
+};
 
-function generateId(length: number): string {
+const generateId = (length: number): string => {
 	const array = new Uint8Array(length);
 	crypto.getRandomValues(array);
 	return Array.from(array, (byte) => byte.toString(16).padStart(2, '0')).join('');
-}
+};
 
-export async function createSession(userId: string) {
+export const createSession = async (userId: string) => {
 	const token = generateId(40);
 	const tokenHash = hashSessionToken(token);
 	const expiresAt = new Date(Date.now() + SESSION_MAX_AGE);
@@ -40,9 +40,9 @@ export async function createSession(userId: string) {
 	});
 
 	return { token, session };
-}
+};
 
-export async function validateSession(token?: string) {
+export const validateSession = async (token?: string) => {
 	if (!token) {
 		return { user: null, session: null };
 	}
@@ -74,9 +74,9 @@ export async function validateSession(token?: string) {
 	}
 
 	return { user: session.user, session };
-}
+};
 
-export function setSessionCookie(cookies: Cookies, token: string, expiresAt: Date) {
+export const setSessionCookie = (cookies: Cookies, token: string, expiresAt: Date) => {
 	cookies.set(SESSION_TOKEN_NAME, token, {
 		path: '/',
 		httpOnly: true,
@@ -84,15 +84,15 @@ export function setSessionCookie(cookies: Cookies, token: string, expiresAt: Dat
 		secure: import.meta.env.PROD,
 		expires: expiresAt,
 	});
-}
+};
 
-export function clearSessionCookie(cookies: Cookies) {
+export const clearSessionCookie = (cookies: Cookies) => {
 	cookies.delete(SESSION_TOKEN_NAME, { path: '/' });
-}
+};
 
-export async function invalidateSession(token: string): Promise<void> {
+export const invalidateSession = async (token: string): Promise<void> => {
 	const sessionId = hashSessionToken(token);
 	await prisma.authSession.deleteMany({
 		where: { id: sessionId },
 	});
-}
+};

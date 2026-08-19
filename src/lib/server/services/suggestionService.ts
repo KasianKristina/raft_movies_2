@@ -12,26 +12,26 @@ const SUGGESTION_INCLUDE = {
 	},
 } satisfies Prisma.SuggestionInclude;
 
-export async function getAllSuggestions(): Promise<SuggestionWithRelationsType[]> {
+export const getAllSuggestions = async (): Promise<SuggestionWithRelationsType[]> => {
 	return prisma.suggestion.findMany({
 		include: SUGGESTION_INCLUDE,
 	});
-}
+};
 
-export async function getSuggestionsByAuthorId(
+export const getSuggestionsByAuthorId = async (
 	authorId: string,
-): Promise<SuggestionWithRelationsType[]> {
+): Promise<SuggestionWithRelationsType[]> => {
 	return prisma.suggestion.findMany({
 		where: { author_id: authorId },
 		include: SUGGESTION_INCLUDE,
 	});
-}
+};
 
-export async function createSuggestion(
+export const createSuggestion = async (
 	name: string,
 	authorId: string,
 	description?: string,
-): Promise<Suggestion> {
+): Promise<Suggestion> => {
 	return prisma.suggestion.create({
 		data: {
 			name,
@@ -39,18 +39,18 @@ export async function createSuggestion(
 			author_id: authorId,
 		},
 	});
-}
+};
 
-export async function getSuggestionById(id: string): Promise<SuggestionWithRelationsType> {
+export const getSuggestionById = async (id: string): Promise<SuggestionWithRelationsType> => {
 	const suggestion = await prisma.suggestion.findUnique({
 		where: { id },
 		include: SUGGESTION_INCLUDE,
 	});
 	if (!suggestion) throw new ValidationError('SUGGESTION_NOT_FOUND');
 	return suggestion;
-}
+};
 
-export async function deleteSuggestion(suggestionId: string, userId: string): Promise<void> {
+export const deleteSuggestion = async (suggestionId: string, userId: string): Promise<void> => {
 	const suggestion = await prisma.suggestion.findUnique({
 		where: { id: suggestionId },
 		select: { author_id: true },
@@ -60,16 +60,16 @@ export async function deleteSuggestion(suggestionId: string, userId: string): Pr
 	if (suggestion.author_id !== userId) throw new ValidationError('NOT_AUTHORIZED');
 
 	await prisma.suggestion.delete({ where: { id: suggestionId } });
-}
+};
 
-export async function updateSuggestion(
+export const updateSuggestion = async (
 	suggestionId: string,
 	userId: string,
 	data: {
 		name?: string;
 		description?: string;
 	},
-): Promise<Suggestion> {
+): Promise<Suggestion> => {
 	const suggestion = await prisma.suggestion.findUnique({
 		where: { id: suggestionId },
 		select: { author_id: true },
@@ -85,4 +85,4 @@ export async function updateSuggestion(
 			...(data.description !== undefined && { description: data.description }),
 		},
 	});
-}
+};

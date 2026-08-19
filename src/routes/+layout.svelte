@@ -2,6 +2,7 @@
 	import Header from '$lib/components/Header.svelte';
 	import type { Snippet } from 'svelte';
 	import type { PageData } from './$types';
+	import { Toaster } from 'svelte-sonner';
 	import '../app.css';
 
 	const {
@@ -23,6 +24,7 @@
 <main>
 	{@render children()}
 </main>
+<Toaster position="top-right" richColors />
 
 <style>
 	main {
